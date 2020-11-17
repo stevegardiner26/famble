@@ -1,16 +1,15 @@
-/* eslint-disable no-underscore-dangle, no-unused-vars */
-import React, { useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+/* eslint-disable no-underscore-dangle */
+import React from 'react';
+import { useDispatch } from 'react-redux';
 import GoogleLogin from 'react-google-login';
 import { Jumbotron } from 'reactstrap';
 import styles from './Home.module.css';
 // SERVICES
 import userService from '../services/userService';
-import { selectUser, login } from '../store/slices/userSlice';
+import { login } from '../store/slices/userSlice';
 import InfoCard from './InfoCard';
 
-function Home(props) {
-  const user = useSelector(selectUser);
+function Home() {
   const dispatch = useDispatch();
   const responseGoogle = async (response) => {
     const payload = {
