@@ -10,6 +10,7 @@ import { selectUser } from './store/slices/userSlice';
 import Dashboard from './dashboard/Dashboard';
 import Home from './home/Home';
 import './App.css';
+import BetPage from './dashboard/BetPage';
 
 function App() {
   const user = useSelector(selectUser);
@@ -24,6 +25,7 @@ function App() {
           <Route exact path="/dashboard">
             {!user.name ? <Redirect to="/" /> : <Dashboard /> }
           </Route>
+          <Route path="/betpage/:id" component={BetPage} />
         </Switch>
       </Router>
     </div>
