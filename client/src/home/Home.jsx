@@ -35,8 +35,11 @@ function Home() {
    recovery from gambling addiction. By offering the ability to gamble without the consequences, 
    people can safely work their way toward a healthier life.`);
 
-  const team = (`Who you (collectively)
-   are`);
+  const team = (`We are a group of passionate developers that are all hoping to solve the
+   world’s problems with technology. Our team is comprised of the following: Steven Gardiner, 
+   Pedro Ramos, Jay Rana, and Vivek Sreenivasan. Some of us have had experience working as software 
+   developers in some capacity. From the first proposal to the final presentation, we enjoyed creating 
+   this application and are proud of what we have built.`);
 
   const development = (`Famble was built with MongoDB, Express JS, React JS, Node JS
    and LOVE. MongoDB was used for data persistence, storing users, bets, teams, and 
