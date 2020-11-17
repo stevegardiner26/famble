@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-/* eslint-disable */
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 
