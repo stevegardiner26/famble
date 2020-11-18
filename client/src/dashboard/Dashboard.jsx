@@ -118,7 +118,6 @@ function Dashboard(props) {
   const [games, setGames] = useState([]);
   const classes = useStyles2();
   const [rowsPerPage, setRowsPerPage] = React.useState(9);
-
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, games.length - page * rowsPerPage);
   const user = useSelector(selectUser);
   const dispatch = useDispatch();
@@ -134,11 +133,10 @@ function Dashboard(props) {
   const handleLogout = () => {
     dispatch(logout());
   };
-
   // Code for getting the games -----------------
   // const [games, setGames] = useState(null);
   const getGames = async () => {
-    const res = await gameService.getAllGames();
+    const res = await gameService.getWeeklyGames();
     setGames(res);
   };
 
@@ -184,7 +182,7 @@ function Dashboard(props) {
               </TableHead>
               <TableBody>
                 {(rowsPerPage > 0
-                  ? games.slice(142, games.length - 1).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  ? games.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   : games
                 ).map((row) => (
                   <Game info={row} />
@@ -196,7 +194,7 @@ function Dashboard(props) {
                   <TablePagination
                     rowsPerPageOptions={[9, 10, 25]}
                     colSpan={3}
-                    count={games.length - 141}
+                    count={games.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     SelectProps={{
