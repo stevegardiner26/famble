@@ -136,8 +136,7 @@ function Dashboard(props) {
   // Code for getting the games -----------------
   // const [games, setGames] = useState(null);
   const getGames = async () => {
-    const res = await gameService.getWeeklyGames();
-    setGames(res);
+    await gameService.getWeeklyGames().then(setGames);
   };
 
   useEffect(() => {

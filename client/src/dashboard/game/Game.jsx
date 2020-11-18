@@ -4,24 +4,21 @@
 import TableCell from '@material-ui/core/TableCell';
 import React, { useState, useEffect } from 'react';
 import TableRow from '@material-ui/core/TableRow';
+
 import {
   Link,
 } from 'react-router-dom';
 import gameService from '../../services/gameService';
-import BetModal from '../BetModal';
-import BetPage from '../BetPage';
 
 function Game({ info }) {
   const [homeTeamName, setHome] = useState('');
   const [awayTeamName, setAway] = useState('');
 
   const getHomeTeam = async (id) => {
-    const res = await gameService.getTeam(id);
-    setHome(res);
+    const res = await gameService.getTeam(id).then(setHome);
   };
   const getAwayTeam = async (id) => {
-    const res = await gameService.getTeam(id);
-    setAway(res);
+    const res = await gameService.getTeam(id).then(setAway);
   };
 
   const { home_team_id } = info;
@@ -46,8 +43,13 @@ function Game({ info }) {
       <TableCell align="center">{start_time}</TableCell>
       <TableCell align="center">{status}</TableCell>
       <TableCell align="center">
-        {/*  <BetModal gameID={game_id} team1={{ name: `${homeTeamName}`, id: `${home_team_id}` }}
-        team2={{ name: `${awayTeamName}`, id: `${away_team_id}` }} /> */}
+        {/*
+        <BetModal
+          gameID={game_id}
+          team1={{ name: `${homeTeamName}`, id: `${home_team_id}` }}
+          team2={{ name: `${awayTeamName}`, id: `${away_team_id}` }}
+        />
+        */}
         <Link to={{
           pathname: `/betpage/${game_id}`,
           game: {
@@ -56,7 +58,6 @@ function Game({ info }) {
             awayTeamID: `${away_team_id}`,
             homeTeam: `${homeTeamName}`,
             awayTeam: `${awayTeamName}`,
-
           },
         }}
         >
