@@ -13,16 +13,38 @@ import { useSelector } from 'react-redux';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
+import {
+  Card,
+  CardContent,
+  Grid,
+  Paper,
+} from '@material-ui/core';
+
+import { makeStyles } from '@material-ui/core/styles';
 import styles from './BetModal.module.css';
 import betService from '../services/betService';
 import { selectUser } from '../store/slices/userSlice';
 import gameService from '../services/gameService';
 
+const useStyles = makeStyles({
+  root: {
+    padding: '24px',
+    flexGrow: 1,
+  },
+  paper: {
+    textAlign: 'center',
+    padding: '20px',
+  },
+});
+
 export default function BetPage(props) {
+  const classes = useStyles();
   const user = useSelector(selectUser);
   const [teamID, setTeamID] = useState(null);
   const [amount, setAmount] = useState(null);
+  // eslint-disable-next-line no-unused-vars
   const [homeLogo, setHomeLogo] = useState('');
+  // eslint-disable-next-line no-unused-vars
   const [awayLogo, setAwayLogo] = useState('');
   const [valid, setValid] = useState(false);
   // eslint-disable-next-line react/destructuring-assignment
@@ -86,46 +108,78 @@ export default function BetPage(props) {
     getAwayLogo(awayTeamID);
   });
   return (
-    <>
-      <CssBaseline />
+    <CssBaseline>
       <Container maxWidth="md">
         <Typography component="div" style={{ backgroundColor: '#cfe8fc', height: '100vh' }}>
-          <h3>{`${homeTeam} vs ${awayTeam}`}</h3>
-          <img alt="" src={`${homeLogo}`} />
-          <img alt="" src={`${awayLogo}`} />
-          <Form className={styles.bet_form}>
-            <FormGroup row>
-              <Label for="betAmount" sm={3}>Bet Amount:</Label>
-              <Col sm={9}>
-                <Input type="number" name="betAmount" id="betAmount" onChange={changeBet} placeholder="Enter Bet Amount" />
-              </Col>
-            </FormGroup>
-            <FormGroup tag="fieldset" row>
-              <Label sm={4}>Select a Team:</Label>
-              <FormGroup check>
-                <Col sm={4}>
-                  <Label check>
-                    <Input onClick={() => changeTeamID(homeTeamID)} type="radio" name="team" />
-                    {homeTeam}
-                  </Label>
-                </Col>
-              </FormGroup>
-              <FormGroup check>
-                <Col sm={4}>
-                  <Label check>
-                    <Input onClick={() => changeTeamID(awayTeamID)} type="radio" name="team" />
-                    {awayTeam}
-                  </Label>
-                </Col>
-              </FormGroup>
-            </FormGroup>
-          </Form>
-          <Button color="primary" onClick={handleBet}>Submit Bet</Button>
-          <Link to="/dashboard">
-            <Button color="secondary">Cancel</Button>
-          </Link>
+          <div className={classes.root}>
+            <Grid container spacing={3}>
+              <Grid item xs={12}>
+                <Paper className={classes.paper}>
+                  <Card variant="outlined">
+                    <CardContent>
+                      <Typography variant="h5" component="h2">
+                        {`${homeTeam} vs ${awayTeam}`}
+                      </Typography>
+                      <img alt="" width="250px" src={`${homeLogo}`} />
+                      <img alt="" width="250px" src={`${awayLogo}`} />
+                    </CardContent>
+                  </Card>
+                </Paper>
+              </Grid>
+              <Grid item xs={6}>
+                <Paper className={classes.paper}>xs=5</Paper>
+              </Grid>
+              <Grid item xs={6}>
+
+                <Paper className={classes.paper}>
+                  <Form className={styles.bet_form}>
+                    <FormGroup row>
+                      <Label for="betAmount" sm={3}>Bet Amount:</Label>
+                      <Col sm={9}>
+                        <Input type="number" name="betAmount" id="betAmount" onChange={changeBet} placeholder="Enter Bet Amount" />
+                      </Col>
+                    </FormGroup>
+                    <FormGroup tag="fieldset" row>
+                      <Label sm={4}>Select a Team:</Label>
+                      <FormGroup check>
+                        <Col sm={4}>
+                          <Label check>
+                            <Input onClick={() => changeTeamID(homeTeamID)} type="radio" name="team" />
+                            {homeTeam}
+                          </Label>
+                        </Col>
+                        <Col sm={4}>
+                          <Label check>
+                            <Input onClick={() => changeTeamID(awayTeamID)} type="radio" name="team" />
+                            {awayTeam}
+                          </Label>
+                        </Col>
+                      </FormGroup>
+                    </FormGroup>
+                  </Form>
+                  <Button color="primary" style={{ margin: '10px' }} onClick={handleBet}>Submit Bet</Button>
+                  <Link to="/dashboard">
+                    <Button color="secondary">Cancel</Button>
+                  </Link>
+                </Paper>
+
+              </Grid>
+              <Grid item xs={3}>
+                <Paper className={classes.paper}>xs=3</Paper>
+              </Grid>
+              <Grid item xs={3}>
+                <Paper className={classes.paper}>xs=3</Paper>
+              </Grid>
+              <Grid item xs={3}>
+                <Paper className={classes.paper}>xs=3</Paper>
+              </Grid>
+              <Grid item xs={3}>
+                <Paper className={classes.paper}>xs=3</Paper>
+              </Grid>
+            </Grid>
+          </div>
         </Typography>
       </Container>
-    </>
+    </CssBaseline>
   );
 }
