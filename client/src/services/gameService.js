@@ -6,6 +6,11 @@ export default {
 
     return res.data || [];
   },
+  getWeeklyGames: async () => {
+    const res = await axios.get('/api/current_week/');
+
+    return res.data || [];
+  },
   getTeam: async (id) => {
     const res = await axios.get(`/api/teams/${id}`);
     return res.data[0].name || [];
