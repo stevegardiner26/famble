@@ -34,8 +34,6 @@ module.exports = (app) => {
     return res.status(200).send(currentWeekGames);
   })
 
-
-
   var date_cache = null;
   app.get('/api/fetch_weekly_scores', async (req, res) => {
     // Check and only allow this to execute the api call if it is 10 minutes past the last time it was called:
