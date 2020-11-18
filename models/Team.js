@@ -7,7 +7,8 @@ const teamSchema = new Schema({
     key: String,
     conference: String,
     division: String,
-    stadium_id: Number
+    stadium_id: Number,
+    image_url:String
 }, {timestamps: true})
 
 mongoose.model('teams', teamSchema);
