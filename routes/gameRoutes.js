@@ -17,6 +17,24 @@ module.exports = (app) => {
     const game = await Game.findOne({ game_id: id })
     return res.status(200).send(game);
   });
+  app.get('/api/current_week', async (req,res)=>{
+    var curr = new Date;
+    var firstday = new Date(curr.setDate(curr.getDate() - curr.getDay()));
+    const games = await Game.find();
+    const currentWeekGames = [];
+    
+    for (i = 142; i < games.length; i++){
+      if (((games[i].start_time -firstday)/86400000).toFixed() > 7){
+        break;
+      }
+      if (games[i].start_time >= firstday){
+        currentWeekGames.push(games[i]);
+      }  
+    }
+    return res.status(200).send(currentWeekGames);
+  })
+
+
 
   var date_cache = null;
   app.get('/api/fetch_weekly_scores', async (req, res) => {
