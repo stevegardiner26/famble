@@ -95,7 +95,7 @@ module.exports = (app) => {
             await Game.create(payload);
           } else {
             let payload = {
-              start_time: game.Date,          
+              start_time: game.Date,
               canceled: game.Canceled,
               status: game.Status,
               score_id: game.ScoreID,
@@ -106,6 +106,44 @@ module.exports = (app) => {
       });
       return res.status(201).send({message: "Imported All Games!"});
     });
+  });
+
+  // Get Odds for Game
+  app.get('/api/games/odds/:id', async (req, res) => {
+    const { id } = req.params;
+    var game = await Game.findOne({ game_id: id });
+    
+    if (!game.home_odds || !game.away_odds) {
+      await client.get(`https://api.sportsdata.io/v3/nfl/odds/json/GameOddsLineMovement/${game.score_id}`, {headers: {"Ocp-Apim-Subscription-Key": process.env['NFL_API_TOKEN']}}, async function (data, response) {
+        var away_odds = data[0].PregameOdds[0].AwayMoneyLine;
+        var home_odds = data[0].PregameOdds[0].HomeMoneyLine;
+
+        var index = 1;
+        while (away_odds == null && home_odds == null) {
+          away_odds = data[0].PregameOdds[index].AwayMoneyLine;
+          home_odds = data[0].PregameOdds[index].HomeMoneyLine;
+          index++;
+        }
+
+        let payload = {
+          away_odds: away_odds,
+          home_odds: home_odds,
+        }
+          
+        await Game.findOneAndUpdate({game_id: id}, payload, {useFindAndModify: false});
+        return res.status(200).send({
+          error: false,
+          away_team_odds: away_odds,
+          home_team_odds: home_odds,
+        })
+      });
+    } else {
+      return res.status(200).send({
+        error: false,
+        away_team_odds: game.away_odds,
+        home_team_odds: game.home_odds,
+      })
+    }
   });
 
   // Update
