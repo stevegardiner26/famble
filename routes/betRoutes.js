@@ -37,16 +37,17 @@ module.exports = (app) => {
   // Create
   // TODO Check for possible bets already placed by possible User ID and handle updates
   app.post('/api/make_bet', async (req, res) => {
-    const {game_id} = req.params;
-    const bets = await Bet.find({game_id:game_id});
+    const { game_id } = req.body;
+    const bets = await Bet.find({game_id:game_id});  
+    const user = await User.findById(req.body.user_id);
     for (i = 0; i < bets.length; i++){
       if(bets[i].user_id === req.body.user_id){
         if(req.body.amount > bets[i].amount){
-          await Bet.findByIdAndUpdate(req.params.id,{
+          await Bet.findByIdAndUpdate(bets[i]._id,{
             amount: req.body.amount
           });
           await User.findByIdAndUpdate(req.body.user_id, {
-            shreddit_balance: user.shreddit_balance - (req.body.updatedAmount - bet.amount)
+            shreddit_balance: user.shreddit_balance - (req.body.amount - bets[i].amount)
           });
           updatedBet = await Bet.findById(req.params.id);
           return res.status(202).send({
@@ -62,8 +63,6 @@ module.exports = (app) => {
       }
     }
     const bet = await Bet.create(req.body);
-  
-    const user = await User.findById(req.body.user_id);
     await User.findByIdAndUpdate(req.body.user_id, {
         shreddit_balance: user.shreddit_balance - req.body.amount
     });
