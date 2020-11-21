@@ -67,8 +67,10 @@ export default function BetPage(props) {
         if (res === []) {
           alert('Could not place bet at this time. Try again later.');
         } else {
+          const betAmt = document.getElementById('betAmount');
           alert('Bet placed successfully!');
           setValid(false);
+          betAmt.value = '';
         }
       };
       setBet();
