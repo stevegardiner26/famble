@@ -52,7 +52,7 @@ function Game({ info }) {
         */}
         <Link to={{
           pathname: `/betpage/${game_id}`,
-          game: {
+          state: {
             gameID: `${game_id}`,
             homeTeamID: `${home_team_id}`,
             awayTeamID: `${away_team_id}`,
