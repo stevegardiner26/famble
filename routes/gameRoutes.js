@@ -89,14 +89,16 @@ module.exports = (app) => {
               away_team_id: game.GlobalAwayTeamID,
               home_team_id: game.GlobalHomeTeamID,
               canceled: game.Canceled,
-              status: game.Status
+              status: game.Status,
+              score_id: game.ScoreID,
             };
             await Game.create(payload);
           } else {
             let payload = {
               start_time: game.Date,          
               canceled: game.Canceled,
-              status: game.Status
+              status: game.Status,
+              score_id: game.ScoreID,
             };
             await Game.findOneAndUpdate({game_id: game.GlobalGameID}, payload, {useFindAndModify: false});
           }
