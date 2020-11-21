@@ -144,13 +144,13 @@ export default function BetPage(props) {
                     <FormGroup tag="fieldset" row>
                       <Label sm={4}>Select a Team:</Label>
                       <FormGroup check>
-                        <Col sm={4}>
+                        <Col sm={2}>
                           <Label check>
                             <Input onClick={() => changeTeamID(homeTeamID)} type="radio" name="team" />
                             {homeTeamName}
                           </Label>
                         </Col>
-                        <Col sm={4}>
+                        <Col sm={2}>
                           <Label check>
                             <Input onClick={() => changeTeamID(awayTeamID)} type="radio" name="team" />
                             {awayTeam}
