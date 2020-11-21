@@ -1,13 +1,15 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-alert */
+/* eslint-disable react/destructuring-assignment */
 import React, { useEffect, useState } from 'react';
 import {
   Col, Button, Form, FormGroup, Label, Input,
 } from 'reactstrap';
 import {
-  Link,
+  Link, Redirect,
 } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -38,26 +40,26 @@ const useStyles = makeStyles({
 });
 
 export default function BetPage(props) {
+  if (!props.location.state) {
+    return (
+      <Redirect to="/" />
+    );
+  }
   const classes = useStyles();
   const user = useSelector(selectUser);
   const [teamID, setTeamID] = useState(null);
   const [amount, setAmount] = useState(null);
-  // eslint-disable-next-line no-unused-vars
+  const [homeTeamName] = useState(props.location.state.homeTeam);
+  const [awayTeam] = useState(props.location.state.awayTeam);
+  const [homeTeamID] = useState(props.location.state.homeTeamID);
+  const [awayTeamID] = useState(props.location.state.awayTeamID);
+  const [gameID] = useState(props.location.state.gameID);
   const [homeLogo, setHomeLogo] = useState('');
-  // eslint-disable-next-line no-unused-vars
   const [awayLogo, setAwayLogo] = useState('');
   const [valid, setValid] = useState(false);
-  // eslint-disable-next-line react/destructuring-assignment
-  const { homeTeam } = props.location.game;
-  // eslint-disable-next-line react/destructuring-assignment
-  const { awayTeam } = props.location.game;
-  // eslint-disable-next-line react/destructuring-assignment
-  const { homeTeamID } = props.location.game;
-  // eslint-disable-next-line react/destructuring-assignment
-  const { awayTeamID } = props.location.game;
-  // eslint-disable-next-line react/destructuring-assignment
-  const { gameID } = props.location.game;
+
   const userID = user._id;
+
   useEffect(() => {
     if (valid) {
       const setBet = async () => {
@@ -118,7 +120,7 @@ export default function BetPage(props) {
                   <Card variant="outlined">
                     <CardContent>
                       <Typography variant="h5" component="h2">
-                        {`${homeTeam} vs ${awayTeam}`}
+                        {`${homeTeamName} vs ${awayTeam}`}
                       </Typography>
                       <img alt="" width="250px" src={`${homeLogo}`} />
                       <img alt="" width="250px" src={`${awayLogo}`} />
@@ -145,7 +147,7 @@ export default function BetPage(props) {
                         <Col sm={4}>
                           <Label check>
                             <Input onClick={() => changeTeamID(homeTeamID)} type="radio" name="team" />
-                            {homeTeam}
+                            {homeTeamName}
                           </Label>
                         </Col>
                         <Col sm={4}>
