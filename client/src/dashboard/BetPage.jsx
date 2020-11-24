@@ -109,7 +109,6 @@ export default function BetPage(props) {
   useEffect(() => {
     getHomeLogo(homeTeamID);
     getAwayLogo(awayTeamID);
-    getBetsForGame(gameID);
   });
   return (
     <CssBaseline>
