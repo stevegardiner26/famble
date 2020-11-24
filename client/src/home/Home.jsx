@@ -1,5 +1,5 @@
 /* eslint-disable no-underscore-dangle, no-unused-vars */
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import GoogleLogin from 'react-google-login';
 import FacebookLogin from 'react-facebook-login';
