@@ -18,19 +18,11 @@ export default {
   },
 
   createBet: async (user_id, game_id, team_id, amount) => {
-    const res = await axios.post('/api/make_bet', {
+    const res = await axios.post('/api/bets', {
       user_id,
       game_id,
       team_id,
       amount,
-    });
-    return res.data || [];
-  },
-
-  updateBet: async (id, user_id, updatedAmount) => {
-    const res = await axios.put(`/api/bets/${id}`, {
-      user_id,
-      updatedAmount,
     });
     return res.data || [];
   },
