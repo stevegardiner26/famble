@@ -35,7 +35,7 @@ module.exports = (app) => {
   });
 
   // Create
-  // TODO Check for possible bets already placed by possible User ID and handle updates
+  // TODO check bet amount if it's more than their current balance
   app.post('/api/make_bet', async (req, res) => {
     const { game_id } = req.body;
     const bets = await Bet.find({game_id:game_id});  
@@ -55,7 +55,7 @@ module.exports = (app) => {
             updatedBet,
           });
         } else{
-          return res.status(202).send({
+          return res.status(500).send({
             error: true,
             msg: "Could not update because the updated amount is less than or equal to the current amount",
           });
