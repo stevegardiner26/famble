@@ -3,12 +3,10 @@ import axios from 'axios';
 export default {
   getAllGames: async () => {
     const res = await axios.get('/api/games');
-
     return res.data || [];
   },
   getWeeklyGames: async () => {
-    const res = await axios.get('/api/current_week/');
-
+    const res = await axios.get('/api/games/current_week');
     return res.data || [];
   },
   getTeam: async (id) => {
