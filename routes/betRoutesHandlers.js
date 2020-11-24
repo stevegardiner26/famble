@@ -54,7 +54,6 @@ async function postBets(req, res){
       }
     }
   }
-  const bet = await Bet.create(req.body);
   await User.findByIdAndUpdate(req.body.user_id, {
       shreddit_balance: user.shreddit_balance - req.body.amount
   });
