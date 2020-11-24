@@ -43,10 +43,8 @@ async function postBets(req, res){
         await User.findByIdAndUpdate(req.body.user_id, {
           shreddit_balance: user.shreddit_balance - (req.body.amount - bets[i].amount)
         });
-        updatedBet = await Bet.findById(req.params.id);
-        return res.status(202).send({
+        return res.status(201).send({
           error: false,
-          updatedBet,
         });
       } else{
         return res.status(500).send({
