@@ -3,6 +3,7 @@ const {
   getGameById,
   fetchWeeklyScores,
   fetchGames,
+  getCurrentWeekGames,
   updateGameById,
   deleteGameById  
 } = require('./gameRoutesHandlers');

@@ -78,6 +78,5 @@ async function deleteBets(req, res){
 exports.getBets = getBets;
 exports.getBetsByGameID = getBetsByGameID;
 exports.postBets = postBets;
-exports.putBets = putBets;
 exports.deleteBets = deleteBets;
 exports.getBetsByUserID = getBetsByUserID;

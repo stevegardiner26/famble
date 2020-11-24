@@ -2,9 +2,7 @@ const {
   getBets, 
   getBetsByGameID, 
   postBets, 
-  putBets,
   getBetsByUserID, 
-  deleteBets 
 } = require('./betRoutesHandlers');
 
 module.exports = (app) => {
