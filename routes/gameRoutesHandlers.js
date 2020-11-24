@@ -17,7 +17,7 @@ async function getGameById(req, res){
   const game = await Game.findOne({ game_id: id })
   return res.status(200).send(game);
 }
-// app.get('/api/games/current_week', getCurrentWeekGames)
+// app.get('/api/current_week', getCurrentWeekGames)
 async function getCurrentWeekGames(req,res){
   var curr = new Date;
   var firstday = new Date(curr.setDate(curr.getDate() - curr.getDay()));
