@@ -29,7 +29,7 @@ describe("GET /api/bets", function() {
   it("it should have status code 200 and pass data from Bet.find", function(done) {
     const mockRequest = httpMocks.createRequest({
       method: "GET",
-      url: "/api/bets"
+      url: "/api/get_bets"
     });
     const mockResponse = httpMocks.createResponse({
       eventEmitter: require('events').EventEmitter
@@ -116,7 +116,7 @@ describe("POST /api/bets", function() {
   let mockFindById;
   let mockFindByIdUpdate;
   let userResult;
-
+  let mockFind;
   beforeEach((done) =>{
     userResult = {
       shreddit_balance: 10000,
@@ -126,10 +126,15 @@ describe("POST /api/bets", function() {
       google_id: "108376284041323611441"
     }
 
+    game = {
+      game_id: "17403",
+      home_team_id: 5,
+    }
+
     mockCreate = sinon.stub(betModel, "create").callsFake((body) => {
       return body;
     })
-    
+    mockFind = sinon.stub(betModel, "find").returns(game);
     mockFindById = sinon.stub(userModel, "findById").returns(userResult);
     mockFindByIdUpdate = sinon.stub(userModel, "findByIdAndUpdate").returns();
     done();
