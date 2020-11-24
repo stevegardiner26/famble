@@ -8,8 +8,8 @@ export default {
   },
 
   getBetsByGameId: async (game_id) => {
-    const res = await axios.get(`/api/bets/games/${game_id}`);
-    return res.data || [];
+    const res = await axios.get(`/api/bets/${game_id}`);
+    return res.data.bets || [];
   },
 
   getBetsByUserId: async (user_id) => {
@@ -17,11 +17,12 @@ export default {
     return res.data || [];
   },
 
-  createBet: async (user_id, game_id, team_id, amount) => {
+  createBet: async (user_id, game_id, team_id, amount, name) => {
     const res = await axios.post('/api/bets', {
       user_id,
       game_id,
       team_id,
+      name,
       amount,
     });
     return res.data || [];
