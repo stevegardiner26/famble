@@ -32,7 +32,7 @@ async function getCurrentWeekGames(req,res){
     }  
   }
   return res.status(200).send(currentWeekGames);
-})
+}
 
 var date_cache = null;
 // app.get('/api/fetch_weekly_scores', fetchWeeklyScores) 
