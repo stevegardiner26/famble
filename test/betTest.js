@@ -156,6 +156,7 @@ describe("POST /api/bets", function() {
         game_id: "17403",
         team_id: "5",
         amount: 1100,
+        name: "Jay"
       }
     });
     const mockResponse = httpMocks.createResponse({
@@ -170,6 +171,7 @@ describe("POST /api/bets", function() {
           game_id: "17403",
           team_id: "5",
           amount: 1100,
+          name: "Jay"
         }
       }
       try {
