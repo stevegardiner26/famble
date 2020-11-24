@@ -14,9 +14,9 @@ workflows:
   node-test-deploy:
     jobs:
       - node/test:
-        filters:
-            branches:
-              only: master
+          filters:
+              branches:
+                only: master
       - deploy:
           requires:
             - node/test
