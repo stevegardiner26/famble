@@ -14,7 +14,8 @@ import {
 import { useSelector } from 'react-redux';
 import {
   Container, CssBaseline, Typography, Card,
-  CardContent, Grid, makeStyles, Paper,
+  CardContent, Grid, makeStyles, Paper, List,
+  ListItem, ListItemText,
 } from '@material-ui/core';
 import styles from './BetModal.module.css';
 import betService from '../services/betService';
@@ -43,6 +44,7 @@ export default function BetPage(props) {
   const user = useSelector(selectUser);
   const [teamID, setTeamID] = useState(null);
   const [amount, setAmount] = useState(null);
+  const [bets, setBets] = useState([]);
   const [homeTeamName] = useState(props.location.state.homeTeam);
   const [awayTeam] = useState(props.location.state.awayTeam);
   const [homeTeamID] = useState(props.location.state.homeTeamID);
@@ -101,9 +103,13 @@ export default function BetPage(props) {
   const getAwayLogo = async (id) => {
     await gameService.getLogo(id).then(setAwayLogo);
   };
+  const getBetsForGame = async (id) => {
+    await betService.getBetsByGameId(id).then(setBets);
+  };
   useEffect(() => {
     getHomeLogo(homeTeamID);
     getAwayLogo(awayTeamID);
+    getBetsForGame(gameID);
   });
   return (
     <CssBaseline>
@@ -125,7 +131,25 @@ export default function BetPage(props) {
                 </Paper>
               </Grid>
               <Grid item xs={6}>
-                <Paper className={classes.paper}>xs=5</Paper>
+                <Paper className={classes.paper}>
+                  {bets.map((row) => (
+                    <ListItem alignItems="flex-start">
+                      <ListItemText
+                        primary={row.user}
+                        secondary={(
+                          <>
+                            <Typography
+                              component="span"
+                              variant="body2"
+                              className={classes.inline}
+                              color="textPrimary"
+                            />
+                          </>
+                       )}
+                      />
+                    </ListItem>
+                  ))}
+                </Paper>
               </Grid>
               <Grid item xs={6}>
 
