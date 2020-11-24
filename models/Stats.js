@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const statsSchema = new Schema({
+    team_id: String,
     wins: Number,
     losses: Number,
     touchdowns: Number,
