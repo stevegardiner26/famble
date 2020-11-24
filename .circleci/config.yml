@@ -13,7 +13,10 @@ jobs:
 workflows:
   node-test-deploy:
     jobs:
-      - node/test
+      - node/test:
+        filters:
+            branches:
+              only: master
       - deploy:
           requires:
             - node/test
