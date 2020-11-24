@@ -1,3 +1,5 @@
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable guard-for-in */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
 /* eslint-disable no-underscore-dangle */
@@ -55,11 +57,11 @@ export default function BetPage(props) {
   const [valid, setValid] = useState(false);
 
   const userID = user._id;
-
+  const fullName = user.name;
   useEffect(() => {
     if (valid) {
       const setBet = async () => {
-        const res = await betService.createBet(userID, gameID, teamID, amount);
+        const res = await betService.createBet(userID, gameID, teamID, amount, fullName);
         if (res === []) {
           alert('Could not place bet at this time. Try again later.');
         } else {
@@ -71,7 +73,7 @@ export default function BetPage(props) {
       };
       setBet();
     }
-  }, [valid, userID, gameID, teamID, amount]);
+  }, [valid, userID, gameID, teamID, amount, fullName]);
   const changeTeamID = (teamSelectedID) => {
     setTeamID(teamSelectedID);
   };
@@ -109,6 +111,7 @@ export default function BetPage(props) {
   useEffect(() => {
     getHomeLogo(homeTeamID);
     getAwayLogo(awayTeamID);
+    getBetsForGame(gameID);
   });
   return (
     <CssBaseline>
@@ -134,7 +137,7 @@ export default function BetPage(props) {
                   {bets.map((row) => (
                     <ListItem alignItems="flex-start">
                       <ListItemText
-                        primary={row.user}
+                        primary={row.name}
                         secondary={(
                           <>
                             <Typography
@@ -142,7 +145,9 @@ export default function BetPage(props) {
                               variant="body2"
                               className={classes.inline}
                               color="textPrimary"
-                            />
+                            >
+                              {`${row.amount} Shreddits`}
+                            </Typography>
                           </>
                        )}
                       />
