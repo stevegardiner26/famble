@@ -12,17 +12,10 @@ import {
   Link, Redirect,
 } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Typography from '@material-ui/core/Typography';
-import Container from '@material-ui/core/Container';
 import {
-  Card,
-  CardContent,
-  Grid,
-  Paper,
+  Container, CssBaseline, Typography, Card,
+  CardContent, Grid, makeStyles, Paper,
 } from '@material-ui/core';
-
-import { makeStyles } from '@material-ui/core/styles';
 import styles from './BetModal.module.css';
 import betService from '../services/betService';
 import { selectUser } from '../store/slices/userSlice';
@@ -38,6 +31,7 @@ const useStyles = makeStyles({
     padding: '20px',
   },
 });
+// TODO Alert User if the amount bet they placed is larger than their balance
 
 export default function BetPage(props) {
   if (!props.location.state) {

@@ -11,9 +11,11 @@ import {
   TableFooter, TablePagination,
 }
   from '@material-ui/core';
-import {
-  FirstPageIcon, KeyboardArrowLeft, KeyboardArrowRight, LastPageIcon,
-} from '@material-ui/icons';
+import FirstPageIcon from '@material-ui/icons/FirstPage';
+import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
+
+import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
+import LastPageIcon from '@material-ui/icons/LastPage';
 import { GoogleLogout } from 'react-google-login';
 import { selectUser, logout } from '../store/slices/userSlice';
 import Game from './game/Game';
