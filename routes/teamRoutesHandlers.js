@@ -36,7 +36,8 @@ async function fetchTeams(req, res){
                 key: team.Key,
                 conference: team.Conference,
                 division: team.Division,
-                stadium_id: team.StadiumID
+                stadium_id: team.StadiumID,
+                image_url:team.WikipediaLogoUrl
             };
             Team.create(payload);
         });

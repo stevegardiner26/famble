@@ -3,7 +3,7 @@ const User = mongoose.model('users');
 const Bet = mongoose.model('bets');
 const Game = mongoose.model('games');
 
-// app.get('/api/bets', getBets);
+// app.get('/api/get_bets', getBets);
 async function getBets(req, res){
     const bets = await Bet.find();
     return res.status(200).send(bets);
@@ -65,31 +65,6 @@ async function postBets(req, res){
     bet,
   });
 };
-
-// app.put('/api/bets/:id', putBets);
-async function putBets(req, res) {
-    let bet = await Bet.findById(req.params.id);
-    const user = await User.findById(req.body.user_id);
-    if(req.body.updatedAmount > bet.amount){
-      await Bet.findByIdAndUpdate(req.params.id,{
-        amount: req.body.updatedAmount
-      });
-      await User.findByIdAndUpdate(req.body.user_id, {
-        shreddit_balance: user.shreddit_balance - (req.body.updatedAmount - bet.amount)
-      });
-      updatedBet = await Bet.findById(req.params.id);
-      return res.status(202).send({
-        error: false,
-        updatedBet,
-      });
-    }else{
-      return res.status(202).send({
-        error: true,
-        msg: "Could not update because the updated amount is the less than or equal to the current amount",
-      });
-    }
-}
-
 // app.delete('/api/bets/:id', deleteBets);
 async function deleteBets(req, res){
     const { id } = req.params;
