@@ -23,7 +23,7 @@ async function getBetsByUserID(req, res){
 async function getBetsByGameID(req, res){
     const { game_id } = req.params;
     const bets = await Bet.find({game_id: game_id});
-    return res.status(202).send({
+    return res.status(200).send({
         error: false,
         bets,
     });
@@ -31,15 +31,22 @@ async function getBetsByGameID(req, res){
 
 // app.post('/api/bets', postBets);
 async function postBets(req, res){
-    const bet = await Bet.create(req.body);
-    const user = await User.findById(req.body.user_id);
+  const bet = await Bet.create(req.body);
+  const user = await User.findById(req.body.user_id);
+  if(bet.amount <= user.shreddit_balance){
     await User.findByIdAndUpdate(req.body.user_id, {
-        shreddit_balance: user.shreddit_balance - req.body.amount
-    });
-    return res.status(201).send({
-      error: false,
-      bet,
-    });
+          shreddit_balance: user.shreddit_balance - req.body.amount
+      });
+      return res.status(201).send({
+        error: false,
+        bet,
+      });
+    }else{
+      return res.status(201).send({
+        error: true,
+        msg: "Could not place a bet because the amount you selected is greater than the amount you own",
+      });
+    }
 }
 
 // app.put('/api/bets/:id', putBets);
