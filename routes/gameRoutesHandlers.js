@@ -17,7 +17,7 @@ async function getGameById(req, res){
   const game = await Game.findOne({ game_id: id })
   return res.status(200).send(game);
 }
-app.get('/api/current_week', async (req,res)=>{
+async function getCurrentWeekGames(req,res){
   var curr = new Date;
   var firstday = new Date(curr.setDate(curr.getDate() - curr.getDay()));
   const games = await Game.find();
@@ -149,6 +149,7 @@ async function deleteGameById(req, res){
 exports.client = client;
 exports.getGames = getGames;
 exports.getGameById = getGameById;
+exports.getCurrentWeekGames = getCurrentWeekGames;
 exports.fetchWeeklyScores = fetchWeeklyScores;
 exports.fetchGames = fetchGames;
 exports.updateGameById = updateGameById;
