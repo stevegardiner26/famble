@@ -84,7 +84,7 @@ function Home() {
       </Jumbotron>
       <InfoCard imgSide="left" title="About" content={about} image="/Features.jpg" />
       <InfoCard imgSide="right" title="Our Mission" content={mission} image="/Mission.jpg" />
-      <InfoCard imgSide="left" title="Our Team" content={team} image="https://via.placeholder.com/250" />
+      <InfoCard imgSide="left" title="Our Team" content={team} image="/Collage.png" />
       <InfoCard imgSide="right" title="Development" content={development} image="/Development.png" />
       <br />
     </div>
