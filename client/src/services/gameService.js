@@ -21,5 +21,8 @@ export default {
     const res = await axios.get('/api/fetch_weekly_scores');
     return res.data || [];
   },
-
+  getGameById: async (id) => {
+    const res = await axios.get(`/api/games/${id}`);
+    return res.data || [];
+  },
 };
