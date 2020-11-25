@@ -103,7 +103,13 @@ function Profile() {
   };
 
   useEffect(() => {
-    getBet();
+    let mounted = true;
+    if (mounted) {
+      getBet();
+    }
+    return function cleanup() {
+      mounted = false;
+    };
   });
 
   return (

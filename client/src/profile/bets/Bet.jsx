@@ -41,13 +41,25 @@ function Game({ info }) {
   };
 
   useEffect(() => {
-    getHomeTeam(homeTeamID);
-    getAwayTeam(awayTeamID);
+    let mounted = true;
+    if (mounted) {
+      getHomeTeam(homeTeamID);
+      getAwayTeam(awayTeamID);
+    }
+    return function cleanup() {
+      mounted = false;
+    };
   }, [homeTeamID, awayTeamID]);
 
   useEffect(() => {
-    getTeamName(team_id);
-    getGame(game_id);
+    let mounted = true;
+    if (mounted) {
+      getTeamName(team_id);
+      getGame(game_id);
+    }
+    return function cleanup() {
+      mounted = false;
+    };
   });
 
   return (
