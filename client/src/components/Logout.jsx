@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import { Button } from 'reactstrap';
 import { Redirect } from 'react-router-dom';
 import { logout } from '../store/slices/userSlice';
+import styles from './Components.module.css';
 
 function Logout() {
   // const user = useSelector(selectUser);
@@ -20,7 +21,7 @@ function Logout() {
 
   return (
     <>
-      <Button color="secondary" onClick={handleLogout}>Logout</Button>
+      <Button color="secondary" className={styles.LogoutButton} onClick={handleLogout}>Logout</Button>
     </>
   );
 }
