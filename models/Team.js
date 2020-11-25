@@ -7,11 +7,12 @@ const teamSchema = new Schema({
     key: String,
     conference: String,
     division: String,
-    stadium_id: Number
+    stadium_id: Number,
+    image_url:String
 }, {timestamps: true})
 
 mongoose.model('teams', teamSchema);
-
+exports.teamModel = mongoose.model('teams', teamSchema);
 exports.registerTeamModel = function() {
     try {
       mongoose.model('teams', teamSchema);

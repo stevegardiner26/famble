@@ -3,11 +3,19 @@ import axios from 'axios';
 // eslint-disable-next-line
 export default {
   getAll: async () => {
-    const res = await axios.get('/api/bets');
+    const res = await axios.get('/api/get_bets');
     return res.data || [];
   },
 
-  // TODO: Create a Get by Game ID
+  getBetsByGameId: async (game_id) => {
+    const res = await axios.get(`/api/bets/games/${game_id}`);
+    return res.data || [];
+  },
+
+  getBetsByUserId: async (user_id) => {
+    const res = await axios.get(`/api/bets/users/${user_id}`);
+    return res.data || [];
+  },
 
   createBet: async (user_id, game_id, team_id, amount) => {
     const res = await axios.post('/api/bets', {
@@ -18,17 +26,4 @@ export default {
     });
     return res.data || [];
   },
-//   updateBet: async (id, user_id, game_id, team_id, amount) => {
-//     const res = await axios.put('/api/bets/'+ id, {
-//         user_id,
-//         game_id,
-//         team_id,
-//         amount,
-//     });
-//     return res.data || [];
-//   },
-//   deleteBet: async (id) => {
-//     const res = await axios.delete('/api/bets/'+ id);
-//     return res.data || [];
-//   },
 };

@@ -5,28 +5,17 @@ import { makeStyles, useTheme } from '@material-ui/core/styles';
 
 import { useSelector, useDispatch } from 'react-redux';
 
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Typography from '@material-ui/core/Typography';
-import Container from '@material-ui/core/Container';
-import TableContainer from '@material-ui/core/TableContainer';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-import Avatar from '@material-ui/core/Avatar';
-import IconButton from '@material-ui/core/IconButton';
+import {
+  CssBaseline, Typography, Container, TableContainer, Table, TableBody, TableCell,
+  TableHead, List, ListItem, ListItemText, ListItemAvatar, TableRow, Paper, Avatar, IconButton,
+  TableFooter, TablePagination,
+}
+  from '@material-ui/core';
 import FirstPageIcon from '@material-ui/icons/FirstPage';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
+
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import LastPageIcon from '@material-ui/icons/LastPage';
-import TableFooter from '@material-ui/core/TableFooter';
-import TablePagination from '@material-ui/core/TablePagination';
 import { GoogleLogout } from 'react-google-login';
 import { selectUser, logout } from '../store/slices/userSlice';
 import Game from './game/Game';
@@ -115,10 +104,10 @@ function Dashboard(props) {
   const [games, setGames] = useState([]);
   const classes = useStyles2();
   const [rowsPerPage, setRowsPerPage] = React.useState(9);
-
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, games.length - page * rowsPerPage);
   const user = useSelector(selectUser);
   const dispatch = useDispatch();
+  const [balance] = useState(user.shreddit_balance);
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -131,12 +120,10 @@ function Dashboard(props) {
   const handleLogout = () => {
     dispatch(logout());
   };
-
   // Code for getting the games -----------------
   // const [games, setGames] = useState(null);
   const getGames = async () => {
-    const res = await gameService.getAllGames();
-    setGames(res);
+    await gameService.getWeeklyGames().then(setGames);
   };
 
   useEffect(() => {
@@ -158,7 +145,7 @@ function Dashboard(props) {
                 <ListItemAvatar>
                   <Avatar alt="User" src={user.profile_image} />
                 </ListItemAvatar>
-                <ListItemText primary={user.name} secondary={`Balance: ${user.shreddit_balance}`} />
+                <ListItemText primary={user.name} secondary={`Balance: ${balance} Shreddits`} />
               </ListItem>
             </List>
           </div>
@@ -181,7 +168,7 @@ function Dashboard(props) {
               </TableHead>
               <TableBody>
                 {(rowsPerPage > 0
-                  ? games.slice(142, games.length - 1).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  ? games.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   : games
                 ).map((row) => (
                   <Game info={row} />
@@ -193,7 +180,7 @@ function Dashboard(props) {
                   <TablePagination
                     rowsPerPageOptions={[9, 10, 25]}
                     colSpan={3}
-                    count={games.length - 141}
+                    count={games.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     SelectProps={{

@@ -2,6 +2,7 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import GoogleLogin from 'react-google-login';
+import FacebookLogin from 'react-facebook-login';
 import { Jumbotron } from 'reactstrap';
 import styles from './Home.module.css';
 // SERVICES
@@ -17,6 +18,18 @@ function Home() {
       profile_image: response.profileObj.imageUrl,
       email: response.profileObj.email,
       google_id: response.profileObj.googleId,
+      auth_type: 'google',
+    };
+    const res = await userService.signIn(payload);
+    dispatch(login(res.user));
+  };
+
+  const responseFacebook = async (response) => {
+    const payload = {
+      name: response.name,
+      profile_image: response.picture.data.url,
+      email: response.email,
+      auth_type: 'facebook',
     };
     const res = await userService.signIn(payload);
     dispatch(login(res.user));
@@ -58,6 +71,14 @@ function Home() {
             clientId="405646879728-34aukb2l8lsknikc11pprr5i53pt3lvo.apps.googleusercontent.com"
             buttonText="Sign In"
             onSuccess={responseGoogle}
+          />
+        </p>
+        <p>
+          <FacebookLogin
+            appId="392101635039578"
+            autoLoad={false}
+            fields="name,email,picture"
+            callback={responseFacebook}
           />
         </p>
       </Jumbotron>
