@@ -6,7 +6,7 @@ const gameSchema = new Schema({
   game_id: { type: Number, unique: true },
   sport_type: String,
   start_time: Date,
-  winner: String,
+  winner: Number,
   score_id: Number,
   home_team_id: Number,
   away_team_id: Number,
