@@ -17,25 +17,29 @@ function BotBet(props) {
     betService.getBetsByGameId(currentGame.game_id).then((data) => {
       const { bets } = data;
       let trailingAmount = 0;
+      let trailingCount = 0;
       let awayBetCount = 0;
       let homeBetCount = 0;
       let homeBetAmount = 0;
       let awayBetAmount = 0;
 
       bets.forEach((b) => {
-        trailingAmount += b.amount;
-        if (b.team_id === awayTeam.team_id) {
-          awayBetCount += 1;
-          awayBetAmount += b.amount;
-        } else if (b.team_id === homeTeam.team_id) {
-          homeBetCount += 1;
-          homeBetAmount += b.amount;
+        if (b.type == "bot") {  
+          trailingAmount += b.amount;
+          trailingCount += 1;
+          if (b.team_id === awayTeam.team_id) {
+            awayBetCount += 1;
+            awayBetAmount += b.amount;
+          } else if (b.team_id === homeTeam.team_id) {
+            homeBetCount += 1;
+            homeBetAmount += b.amount;
+          }
         }
       });
 
       setAwayBetStats({ total_amount: awayBetAmount, total_count: awayBetCount });
       setHomeBetStats({ total_amount: homeBetAmount, total_count: homeBetCount });
-      setBetStats({ total_amount: trailingAmount, total_count: bets.length });
+      setBetStats({ total_amount: trailingAmount, total_count: trailingCount });
     });
   });
 
