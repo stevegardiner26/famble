@@ -33,6 +33,7 @@ import Game from './game/Game';
 
 import gameService from '../services/gameService';
 import styles from './Dashboard.module.css';
+import BotBet from './BotBet';
 
 // import gameService from '../services/gameService';
 const CLIENT_ID = '405646879728-34aukb2l8lsknikc11pprr5i53pt3lvo.apps.googleusercontent.com';
@@ -152,6 +153,7 @@ function Dashboard(props) {
     // eslint-disable-next-line react/jsx-fragments
     <React.Fragment>
       <CssBaseline />
+      <BotBet />
       <Container maxWidth="md">
 
         <Typography component="div" style={{ overflowY: 'auto', backgroundColor: '#504343', height: '100vh' }}>

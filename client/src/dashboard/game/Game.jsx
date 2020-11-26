@@ -42,7 +42,7 @@ function Game({ info }) {
       <TableCell align="center">{start_time}</TableCell>
       <TableCell align="center">{status}</TableCell>
       <TableCell align="center">
-        <BetModal gameID={game_id} team1={{ name: `${homeTeamName}`, id: `${home_team_id}` }} team2={{ name: `${awayTeamName}`, id: `${away_team_id}` }} />
+        <BetModal gameID={game_id} team1={{ name: `${homeTeamName}`, id: `${home_team_id}` }} team2={{ name: `${awayTeamName}`, id: `${away_team_id}` }} type="default" />
       </TableCell>
     </TableRow>
   );
