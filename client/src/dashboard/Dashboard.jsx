@@ -153,7 +153,6 @@ function Dashboard(props) {
     // eslint-disable-next-line react/jsx-fragments
     <React.Fragment>
       <CssBaseline />
-      <BotBet />
       <Container maxWidth="md">
 
         <Typography component="div" style={{ overflowY: 'auto', backgroundColor: '#504343', height: '100vh' }}>
