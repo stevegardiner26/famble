@@ -23,7 +23,7 @@ export default {
       game_id,
       team_id,
       amount,
-      type
+      type,
     });
     return res.data || [];
   },
