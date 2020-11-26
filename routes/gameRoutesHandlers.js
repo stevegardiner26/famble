@@ -83,9 +83,25 @@ async function fetchWeeklyScores(req, res){
               bets.forEach(async (b) => {
                 if (b.team_id == winner_id) {
                   const user = await User.findById(b.user_id);
-                  await User.findByIdAndUpdate(b.user_id, {
-                      shreddit_balance: (user.shreddit_balance + (2 * b.amount))
-                  });
+                  if (b.type == "default") {
+                    await User.findByIdAndUpdate(b.user_id, {
+                        shreddit_balance: (user.shreddit_balance + (2 * b.amount))
+                    });
+                  } else if (b.type == "bot") {
+                    let winnings = b.amount;
+                    let chosen_odds = game.away_odds;
+                    if (game.away_team_id == winner_id) {
+                      chosen_odds = game.away_odds;
+                    } else if (game.home_team_id == winner_id) {
+                      chosen_odds = game.home_odds;
+                    }
+                    
+                    if (chosen_odds < 0) {
+                      winnings = b.amount * ((chosen_odds * -1) / 100) + b.amount;
+                    } else {
+                      winnings = b.amount * (chosen_odds / 100);
+                    }
+                  }
                 }
                 await Bet.findByIdAndDelete(b.id);          
               });
