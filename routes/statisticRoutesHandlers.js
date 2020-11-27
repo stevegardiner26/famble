@@ -1,34 +1,45 @@
 const Client = require('node-rest-client').Client;
 const mongoose = require('mongoose');
-const Stat = mongoose.model('stats');
-const Team = mongoose.model('teams');
 const client = new Client();
 
 // app.get('/api/stats/teams/:team_id')
 async function fetchTeamStats(req, res){
-    client.get("https://api.sportsdata.io/v3/nfl/scores/json/UpcomingSeason", {headers: {"Ocp-Apim-Subscription-Key": process.env['NFL_API_TOKEN']}}, function (year, response) {
-        client.get(`https://api.sportsdata.io/v3/nfl/scores/json/TeamSeasonStats/${year}`, {headers: {"Ocp-Apim-Subscription-Key": process.env['NFL_API_TOKEN']}}, function (data, response) {
-            data.forEach(async (stat) => {
-                let current_team = await Team.findOne({team_id: stat.Team});
-                if(!current_team){
-                    let statistics = {
-                        touchdowns: stat.Touchdowns,
-                        passing_attempts: stat.PassingAttempts,
-                        completion_percentage: stat.CompletionPercentage,
-                        passing_yards: stat.PassingYards,
-                        fumbles_forced: stat.FumblesForced,
-                        rushing_yards: stat.RushingYards,
-                        penalty_yards: stat.PenaltyYards,
-                        sacks: stat.Sacks,
-                    };
-                    await Stat.create(statistics);
-                }
-            });
+    let team_stats = {
+        wins: null,
+        losses: null,
+        touchdowns: null,
+        passing_attempts: null,
+        completion_percentage: null,
+        passing_yards: null,
+        fumbles_forced: null,
+        rushing_yards: null,
+        penalty_yards: null,
+        sacks: null,
+    };
+    await client.get("https://api.sportsdata.io/v3/nfl/scores/json/UpcomingSeason", {headers: {"Ocp-Apim-Subscription-Key": process.env['NFL_API_TOKEN']}}, async function(year, response){
+        await client.get(`https://api.sportsdata.io/v3/nfl/scores/json/Standings/${year}`, {headers: {"Ocp-Apim-Subscription-Key": process.env['NFL_API_TOKEN']}}, function(data, response){
+            data = data.find(x => x.Team === req.params.team_id);
+            team_stats.wins = data.Wins;
+            team_stats.losses = data.Losses;
+        });  
+        await client.get(`https://api.sportsdata.io/v3/nfl/scores/json/TeamSeasonStats/${year}`, {headers: {"Ocp-Apim-Subscription-Key": process.env['NFL_API_TOKEN']}}, function(data, response){
+            data = data.find(x => x.Team === req.params.team_id);
+            team_stats.touchdowns = data.Touchdowns,
+            team_stats.passing_attempts = data.PassingAttempts,
+            team_stats.completion_percentage = data.CompletionPercentage
+            team_stats.passing_yards = data.PassingYards
+            team_stats.fumbles_forced = data.FumblesForced
+            team_stats.rushing_yards = data.RushingYards
+            team_stats.penalty_yards = data.PenaltyYards
+            team_stats.sacks = data.Sacks
+
+            // Returns a Team Statistic's
             return res.status(201).send({
-                message: "Imported All Team Stats!",
+                team_stats,
             });
-        });
+        }); 
     });
 }
+
 exports.client = client;
 exports.fetchTeamStats = fetchTeamStats;
