@@ -62,7 +62,6 @@ async function postBets(req, res){
   }
   const { team_id } =req.body;
   const team = await Team.find({team_id:team_id});
-  console.log(team);
   req.body.teamName = team[0].name;
   const bet = await Bet.create(req.body);
   await User.findByIdAndUpdate(req.body.user_id, {
