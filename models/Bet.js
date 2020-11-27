@@ -8,6 +8,7 @@ const betSchema = new Schema({
   game_id: String,
   team_id: String,
   name: String,
+  teamName: String,
   amount: Number,
   
 }, { timestamps: true });
