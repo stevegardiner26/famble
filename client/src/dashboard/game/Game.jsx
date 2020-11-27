@@ -31,7 +31,32 @@ function Game({ info }) {
     getHomeTeam(home_team_id);
     getAwayTeam(away_team_id);
   });
+  function LinkStatus() {
+    if (status !== 'Final' && status !== 'F/OT') {
+      return (
+        <Link to={{
+          pathname: `/betpage/${game_id}`,
+          state: {
+            gameID: `${game_id}`,
+            homeTeamID: `${home_team_id}`,
+            awayTeamID: `${away_team_id}`,
+            homeTeam: `${homeTeamName}`,
+            awayTeam: `${awayTeamName}`,
+          },
+        }}
+        >
+          Place a Bet!
 
+        </Link>
+      );
+    }
+
+    return (
+      <span>
+        Can no longer place bets on this game
+      </span>
+    );
+  }
   return (
     <TableRow key={game_id}>
       <TableCell align="center">
@@ -50,20 +75,7 @@ function Game({ info }) {
           team2={{ name: `${awayTeamName}`, id: `${away_team_id}` }}
         />
         */}
-        <Link to={{
-          pathname: `/betpage/${game_id}`,
-          state: {
-            gameID: `${game_id}`,
-            homeTeamID: `${home_team_id}`,
-            awayTeamID: `${away_team_id}`,
-            homeTeam: `${homeTeamName}`,
-            awayTeam: `${awayTeamName}`,
-          },
-        }}
-        >
-          Place a Bet!
-
-        </Link>
+        <LinkStatus />
       </TableCell>
     </TableRow>
   );
