@@ -179,7 +179,12 @@ export default function BetPage(props) {
               <Grid item xs={6}>
 
                 <Paper className={classes.paper}>
-                  <FullWidthTabs homeTeamID={homeTeamID} awayTeamID={awayTeamID} />
+                  <FullWidthTabs
+                    homeTeamName={homeTeamName}
+                    awayTeamName={awayTeam}
+                    homeTeamID={homeTeamID}
+                    awayTeamID={awayTeamID}
+                  />
 
                 </Paper>
               </Grid>

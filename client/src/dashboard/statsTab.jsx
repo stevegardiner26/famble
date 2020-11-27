@@ -62,6 +62,8 @@ const useStyles = makeStyles((theme) => ({
 export default function SimpleTabs(props) {
   const { homeTeamID } = props;
   const { awayTeamID } = props;
+  const { homeTeamName } = props;
+  const { awayTeamName } = props;
   const [homeStats, setHomeStat] = useState([]);
   const [awayStats, setAwayStat] = useState([]);
   const classes = useStyles();
@@ -94,11 +96,11 @@ export default function SimpleTabs(props) {
         <Table className={classes.table} aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell align="right">{homeTeamID}</TableCell>
+              <TableCell align="right">{homeTeamName}</TableCell>
               <TableCell align="right" />
               <TableCell align="center">Team Stats</TableCell>
               <TableCell align="right" />
-              <TableCell align="left">{awayTeamID}</TableCell>
+              <TableCell align="left">{awayTeamName}</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -115,11 +117,11 @@ export default function SimpleTabs(props) {
         <Table className={classes.table} aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell align="right">{homeTeamID}</TableCell>
+              <TableCell align="right">{homeTeamName}</TableCell>
               <TableCell align="right" />
               <TableCell align="center">Team Stats</TableCell>
               <TableCell align="right" />
-              <TableCell align="left">{awayTeamID}</TableCell>
+              <TableCell align="left">{awayTeamName}</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
