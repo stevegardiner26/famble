@@ -1,6 +1,8 @@
 .page{
     height: 100vh;
     box-sizing: border-box;
+    padding-Top: 15px; 
+    padding-Bottom: 10px;
 }
 
 .profile_info{
@@ -10,7 +12,7 @@
 
 .root{
     width: 100%;
-    max-width: 30ch;
+    max-width: 40ch;
     max-height: 90px; 
     background-color: #cfe8fc;
     border-radius: 25px;
