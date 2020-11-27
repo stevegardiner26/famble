@@ -113,7 +113,7 @@ function Profile() {
   });
 
   return (
-    <div className={styles.page} style={{ paddingTop: '15px', paddingBottom: '10px' }}>
+    <div className={styles.page}>
       <div className={styles.profile_info}>
         <List className={styles.root}>
           <ListItem>
@@ -136,7 +136,7 @@ function Profile() {
               <TableCell align="center">Team/Bot:</TableCell>
               <TableCell align="center">Amount Bet:</TableCell>
               <TableCell align="center">Game Status:</TableCell>
-              <TableCell align="center" />
+              {/* <TableCell align="center" /> */}
             </TableRow>
           </TableHead>
           <TableBody>

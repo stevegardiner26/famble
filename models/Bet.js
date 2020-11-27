@@ -10,7 +10,8 @@ const betSchema = new Schema({
   name: String,
   teamName: String,
   amount: Number,
-  
+  active: {type: Boolean, default: true},
+  type: String, // Ideally this value is either "default" or "bot"
 }, { timestamps: true });
 
 mongoose.model('bets', betSchema);
