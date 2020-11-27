@@ -19,11 +19,8 @@ import LastPageIcon from '@material-ui/icons/LastPage';
 import { GoogleLogout } from 'react-google-login';
 import { selectUser, logout } from '../store/slices/userSlice';
 import Game from './game/Game';
-
 import gameService from '../services/gameService';
-import styles from './Dashboard.module.css';
 
-// import gameService from '../services/gameService';
 const CLIENT_ID = '405646879728-34aukb2l8lsknikc11pprr5i53pt3lvo.apps.googleusercontent.com';
 const useStyles = makeStyles((theme) => ({
   root: {
