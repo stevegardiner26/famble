@@ -113,7 +113,7 @@ function Profile() {
   });
 
   return (
-    <div className={styles.page} style={{ paddingTop: '15px', paddingBottom: '10px' }}>
+    <div className={styles.page}>
       <div className={styles.profile_info}>
         <List className={styles.root}>
           <ListItem>
