@@ -3,9 +3,12 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const betSchema = new Schema({
+  
   user_id: String,
   game_id: String,
   team_id: String,
+  name: String,
+  teamName: String,
   amount: Number,
   active: {type: Boolean, default: true},
   type: String, // Ideally this value is either "default" or "bot"

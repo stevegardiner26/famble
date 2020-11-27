@@ -1,3 +1,5 @@
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable guard-for-in */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
 /* eslint-disable no-underscore-dangle */
@@ -21,6 +23,7 @@ import styles from './BetModal.module.css';
 import betService from '../services/betService';
 import { selectUser } from '../store/slices/userSlice';
 import gameService from '../services/gameService';
+import FullWidthTabs from './statsTab';
 
 const useStyles = makeStyles({
   root: {
@@ -55,11 +58,12 @@ export default function BetPage(props) {
   const [valid, setValid] = useState(false);
 
   const userID = user._id;
-
+  const fullName = user.name;
+  const { balance } = user;
   useEffect(() => {
     if (valid) {
       const setBet = async () => {
-        const res = await betService.createBet(userID, gameID, teamID, amount);
+        const res = await betService.createBet(userID, gameID, teamID, amount, fullName);
         if (res === []) {
           alert('Could not place bet at this time. Try again later.');
         } else {
@@ -71,14 +75,14 @@ export default function BetPage(props) {
       };
       setBet();
     }
-  }, [valid, userID, gameID, teamID, amount]);
+  }, [valid, userID, gameID, teamID, amount, fullName]);
   const changeTeamID = (teamSelectedID) => {
     setTeamID(teamSelectedID);
   };
 
   const changeBet = (event) => {
     const betAmount = event.target.value;
-    if (betAmount <= 0) {
+    if (betAmount <= 0 || amount > balance) {
       alert('Please enter a valid bet amount');
       event.target.value = null;
     } else {
@@ -87,14 +91,14 @@ export default function BetPage(props) {
   };
 
   const handleBet = () => {
-    if (amount !== null) {
+    if (amount !== null || amount > balance) {
       if (teamID !== null) {
         setValid(true);
       } else {
         alert('Please select a team');
       }
     } else {
-      alert('Please enter a bet amount');
+      alert('Please enter a valid bet amount');
     }
   };
   const getHomeLogo = async (id) => {
@@ -106,13 +110,29 @@ export default function BetPage(props) {
   const getBetsForGame = async (id) => {
     await betService.getBetsByGameId(id).then(setBets);
   };
+  function BetCount() {
+    const homeCount = bets.filter((obj) => obj.team_id === homeTeamID).length;
+
+    const awayCount = bets.filter((obj) => obj.team_id === awayTeamID).length;
+    return (
+      <Paper className={classes.paper}>
+        {`Bets placed on the ${homeTeamName}: ${homeCount}`}
+        <br />
+        {`
+       Bets placed on the ${awayTeam}: ${awayCount}`}
+
+      </Paper>
+    );
+  }
   useEffect(() => {
     getHomeLogo(homeTeamID);
     getAwayLogo(awayTeamID);
+    getBetsForGame(gameID);
   });
+
   return (
     <CssBaseline>
-      <Container maxWidth="md">
+      <Container maxWidth="lg">
         <Typography component="div" style={{ backgroundColor: '#cfe8fc', height: '100vh' }}>
           <div className={classes.root}>
             <Grid container spacing={3}>
@@ -123,34 +143,52 @@ export default function BetPage(props) {
                       <Typography variant="h5" component="h2">
                         {`${homeTeamName} vs ${awayTeam}`}
                       </Typography>
-                      <img alt="" width="250px" src={`${homeLogo}`} />
-                      <img alt="" width="250px" src={`${awayLogo}`} />
+                      <img alt="" width="200px" src={`${homeLogo}`} />
+                      <img alt="" width="200px" src={`${awayLogo}`} />
                     </CardContent>
                   </Card>
                 </Paper>
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12} />
+              <Grid item xs={3}>
+
                 <Paper className={classes.paper}>
-                  {bets.map((row) => (
-                    <ListItem alignItems="flex-start">
-                      <ListItemText
-                        primary={row.user}
-                        secondary={(
-                          <>
-                            <Typography
-                              component="span"
-                              variant="body2"
-                              className={classes.inline}
-                              color="textPrimary"
-                            />
-                          </>
+                  <List style={{ overflow: 'auto', maxHeight: 300 }}>
+                    {bets.map((row) => (
+                      <ListItem alignItems="flex-start">
+                        <ListItemText
+                          primary={row.name}
+                          secondary={(
+                            <>
+                              <Typography
+                                component="span"
+                                variant="body2"
+                                className={classes.inline}
+                                color="textPrimary"
+                              >
+                                {`${row.amount} Shreddits on ${row.teamName}`}
+                              </Typography>
+                            </>
                        )}
-                      />
-                    </ListItem>
-                  ))}
+                        />
+                      </ListItem>
+                    ))}
+                  </List>
                 </Paper>
               </Grid>
               <Grid item xs={6}>
+
+                <Paper className={classes.paper}>
+                  <FullWidthTabs
+                    homeTeamName={homeTeamName}
+                    awayTeamName={awayTeam}
+                    homeTeamID={homeTeamID}
+                    awayTeamID={awayTeamID}
+                  />
+
+                </Paper>
+              </Grid>
+              <Grid item xs={3}>
 
                 <Paper className={classes.paper}>
                   <Form className={styles.bet_form}>
@@ -186,10 +224,12 @@ export default function BetPage(props) {
 
               </Grid>
               <Grid item xs={3}>
-                <Paper className={classes.paper}>xs=3</Paper>
+                <Paper className={classes.paper}>
+                  {`Total bets placed on this game: ${bets.length}`}
+                </Paper>
               </Grid>
               <Grid item xs={3}>
-                <Paper className={classes.paper}>xs=3</Paper>
+                <BetCount />
               </Grid>
               <Grid item xs={3}>
                 <Paper className={classes.paper}>xs=3</Paper>

@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const User = mongoose.model('users');
 const Bet = mongoose.model('bets');
 const Game = mongoose.model('games');
-
+const Team = mongoose.model('teams');
 // app.get('/api/get_bets', getBets);
 async function getBets(req, res){
     const bets = await Bet.find();
@@ -35,7 +35,7 @@ async function postBets(req, res){
   const bets = await Bet.find({game_id:game_id});  
   const user = await User.findById(req.body.user_id);
   for (i = 0; i < bets.length; i++){
-    if(bets[i].user_id === req.body.user_id){
+    if(bets[i].user_id === req.body.user_id && bets[i].team_id === req.body.team_id){
       if(req.body.amount > bets[i].amount){
         await Bet.findByIdAndUpdate(bets[i]._id,{
           amount: req.body.amount
@@ -53,7 +53,16 @@ async function postBets(req, res){
         });
       }
     }
+    else{
+      return res.status(500).send({
+        error: true,
+        msg: "You are trying to change the team you are betting on, you are locked in after placing your bet",
+      });
+    }
   }
+  const { team_id } =req.body;
+  const team = await Team.find({team_id:team_id});
+  req.body.teamName = team[0].name;
   const bet = await Bet.create(req.body);
   await User.findByIdAndUpdate(req.body.user_id, {
       shreddit_balance: user.shreddit_balance - req.body.amount

@@ -117,6 +117,8 @@ describe("POST /api/bets", function() {
   let mockFindByIdUpdate;
   let userResult;
   let mockFind;
+  let mockTeamFind;
+
   beforeEach((done) =>{
     userResult = {
       shreddit_balance: 10000,
@@ -126,14 +128,24 @@ describe("POST /api/bets", function() {
       google_id: "108376284041323611441"
     }
 
+    const fakeTeam = [{
+      name: "Arizona Cardinals",
+      team_id: 1,
+      key: "ARI",
+      conference: "NFC",
+      division: "West",
+      stadium_id: 29
+    },{}]
+
     game = {
       game_id: "17403",
-      home_team_id: 5,
+      home_team_id: 1,
     }
 
     mockCreate = sinon.stub(betModel, "create").callsFake((body) => {
       return body;
     })
+    mockTeamFind = sinon.stub(teamModel, "find").returns(fakeTeam);
     mockFind = sinon.stub(betModel, "find").returns(game);
     mockFindById = sinon.stub(userModel, "findById").returns(userResult);
     mockFindByIdUpdate = sinon.stub(userModel, "findByIdAndUpdate").returns();
@@ -141,6 +153,7 @@ describe("POST /api/bets", function() {
   })
 
   afterEach((done) => {
+    mockTeamFind.restore();
     mockCreate.restore();
     mockFindById.restore();
     mockFindByIdUpdate.restore();
@@ -154,8 +167,9 @@ describe("POST /api/bets", function() {
       body: {
         user_id: "5fb83983417ae836a4e2b170",
         game_id: "17403",
-        team_id: "5",
+        team_id: "1",
         amount: 1100,
+        name: "Jay"
       }
     });
     const mockResponse = httpMocks.createResponse({
@@ -168,8 +182,10 @@ describe("POST /api/bets", function() {
         bet: {
           user_id: "5fb83983417ae836a4e2b170",
           game_id: "17403",
-          team_id: "5",
+          team_id: "1",
+          teamName:"Arizona Cardinals",
           amount: 1100,
+          name: "Jay"
         }
       }
       try {
