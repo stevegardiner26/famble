@@ -11,6 +11,7 @@ import Dashboard from './dashboard/Dashboard';
 import Home from './home/Home';
 import './App.css';
 import BetPage from './dashboard/BetPage';
+import Profile from './profile/Profile';
 
 function App() {
   const user = useSelector(selectUser);
@@ -24,6 +25,9 @@ function App() {
           </Route>
           <Route exact path="/dashboard">
             {!user.name ? <Redirect to="/" /> : <Dashboard /> }
+          </Route>
+          <Route exact path="/profile">
+            <Profile />
           </Route>
           <Route
             path="/betpage/:id"
