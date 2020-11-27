@@ -13,11 +13,13 @@ import FirstPageIcon from '@material-ui/icons/FirstPage';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import LastPageIcon from '@material-ui/icons/LastPage';
-import { GoogleLogout } from 'react-google-login';
+// import { GoogleLogout } from 'react-google-login';
 import { Link } from 'react-router-dom';
 import { selectUser, logout } from '../store/slices/userSlice';
 import Game from './game/Game';
 import gameService from '../services/gameService';
+import Logout from '../components/Logout';
+import styles from './Dashboard.module.css';
 
 const CLIENT_ID = '405646879728-34aukb2l8lsknikc11pprr5i53pt3lvo.apps.googleusercontent.com';
 const useStyles = makeStyles((theme) => ({
@@ -137,23 +139,21 @@ function Dashboard(props) {
       <Container maxWidth="md">
 
         <Typography component="div" style={{ overflowY: 'auto', backgroundColor: 'rgb(80 42 44)', height: '100vh' }}>
-          <Link to="/profile">
-            <div style={{ paddingTop: '15px', paddingBottom: '10px' }}>
-              <List className={list.root}>
-                <ListItem>
-                  <ListItemAvatar>
-                    <Avatar alt="User" src={user.profile_image} />
-                  </ListItemAvatar>
-                  <ListItemText primary={user.name} secondary={`Balance: ${balance} Shreddits`} />
-                </ListItem>
-              </List>
-            </div>
-          </Link>
-          <GoogleLogout
-            clientId={CLIENT_ID}
-            buttonText="Logout"
-            onLogoutSuccess={handleLogout}
-          />
+          <div className={styles.profile_info}>
+            <Link to="/profile">
+              <div style={{ paddingTop: '15px', paddingBottom: '10px' }}>
+                <List className={list.root}>
+                  <ListItem>
+                    <ListItemAvatar>
+                      <Avatar alt="User" src={user.profile_image} />
+                    </ListItemAvatar>
+                    <ListItemText primary={user.name} secondary={`Balance: ${balance} Shreddits`} />
+                  </ListItem>
+                </List>
+              </div>
+            </Link>
+            <Logout />
+          </div>
           <br />
           <TableContainer style={{ marginTop: '10px' }} component={Paper}>
             <Table className={classes.table} aria-label="simple table">
