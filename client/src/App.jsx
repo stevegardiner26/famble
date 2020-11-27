@@ -27,8 +27,7 @@ function App() {
             {!user.name ? <Redirect to="/" /> : <Dashboard /> }
           </Route>
           <Route exact path="/profile">
-            {!user.name ? <Redirect to="/" /> : <Profile /> }
-            {/* <Profile /> */}
+            <Profile />
           </Route>
           <Route
             path="/betpage/:id"
