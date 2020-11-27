@@ -2,20 +2,44 @@ const Client = require('node-rest-client').Client;
 const mongoose = require('mongoose');
 const client = new Client();
 
-async function getStatsByTeamID(req, res) {
-    return res.status(200).send({
-        wins: 8,
-        losses: 8,
-        touchdowns: 2,
-        passing_attempts: 100,
-        completion_percentage: 100,
-        passing_yards: 100,
-        fumbles_forced: 100,
-        rushing_yards: 100,
-        penalty_yards: 100,
-        sacks: 100,
-    })
+// app.get('/api/stats/teams/:team_id')
+async function fetchTeamStats(req, res){
+    let team_stats = {
+        wins: null,
+        losses: null,
+        touchdowns: null,
+        passing_attempts: null,
+        completion_percentage: null,
+        passing_yards: null,
+        fumbles_forced: null,
+        rushing_yards: null,
+        penalty_yards: null,
+        sacks: null,
+    };
+    client.get("https://api.sportsdata.io/v3/nfl/scores/json/UpcomingSeason", {headers: {"Ocp-Apim-Subscription-Key": process.env['NFL_API_TOKEN']}}, async function(year, response){
+        client.get(`https://api.sportsdata.io/v3/nfl/scores/json/Standings/${year}`, { headers: { "Ocp-Apim-Subscription-Key": process.env['NFL_API_TOKEN'] } }, function (data, response) {
+            data = data.find(x => x.Team === req.params.team_id);
+            team_stats.wins = data.Wins;
+            team_stats.losses = data.Losses;
+        });  
+        client.get(`https://api.sportsdata.io/v3/nfl/scores/json/TeamSeasonStats/${year}`, { headers: { "Ocp-Apim-Subscription-Key": process.env['NFL_API_TOKEN'] } }, function (data, response) {
+            data = data.find(x => x.Team === req.params.team_id);
+            team_stats.touchdowns = data.Touchdowns,
+                team_stats.passing_attempts = data.PassingAttempts,
+                team_stats.completion_percentage = data.CompletionPercentage;
+            team_stats.passing_yards = data.PassingYards;
+            team_stats.fumbles_forced = data.FumblesForced;
+            team_stats.rushing_yards = data.RushingYards;
+            team_stats.penalty_yards = data.PenaltyYards;
+            team_stats.sacks = data.Sacks;
+
+            // Returns a Team Statistic's
+            return res.status(201).send({
+                team_stats,
+            });
+        }); 
+    });
 }
 
 exports.client = client;
-exports.getStatsByTeamID = getStatsByTeamID;
+exports.fetchTeamStats = fetchTeamStats;
