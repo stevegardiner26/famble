@@ -2,9 +2,7 @@
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-
 import { useSelector, useDispatch } from 'react-redux';
-
 import {
   CssBaseline, Typography, Container, TableContainer, Table, TableBody, TableCell,
   TableHead, List, ListItem, ListItemText, ListItemAvatar, TableRow, Paper, Avatar, IconButton,
@@ -13,10 +11,10 @@ import {
   from '@material-ui/core';
 import FirstPageIcon from '@material-ui/icons/FirstPage';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
-
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import LastPageIcon from '@material-ui/icons/LastPage';
 import { GoogleLogout } from 'react-google-login';
+import { Link } from 'react-router-dom';
 import { selectUser, logout } from '../store/slices/userSlice';
 import Game from './game/Game';
 import gameService from '../services/gameService';
@@ -138,17 +136,19 @@ function Dashboard(props) {
       <CssBaseline />
       <Container maxWidth="md">
 
-        <Typography component="div" style={{ overflowY: 'auto', backgroundColor: '#504343', height: '100vh' }}>
-          <div style={{ paddingTop: '15px', paddingBottom: '10px' }}>
-            <List className={list.root}>
-              <ListItem>
-                <ListItemAvatar>
-                  <Avatar alt="User" src={user.profile_image} />
-                </ListItemAvatar>
-                <ListItemText primary={user.name} secondary={`Balance: ${balance} Shreddits`} />
-              </ListItem>
-            </List>
-          </div>
+        <Typography component="div" style={{ overflowY: 'auto', backgroundColor: 'rgb(80 42 44)', height: '100vh' }}>
+          <Link to="/profile">
+            <div style={{ paddingTop: '15px', paddingBottom: '10px' }}>
+              <List className={list.root}>
+                <ListItem>
+                  <ListItemAvatar>
+                    <Avatar alt="User" src={user.profile_image} />
+                  </ListItemAvatar>
+                  <ListItemText primary={user.name} secondary={`Balance: ${balance} Shreddits`} />
+                </ListItem>
+              </List>
+            </div>
+          </Link>
           <GoogleLogout
             clientId={CLIENT_ID}
             buttonText="Logout"
