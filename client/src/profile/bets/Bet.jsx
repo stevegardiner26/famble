@@ -68,7 +68,7 @@ function Game({ info }) {
       <TableCell align="center">{teamName}</TableCell>
       <TableCell align="center">{amount}</TableCell>
       <TableCell align="center">{status}</TableCell>
-      <TableCell align="center">
+      {/* <TableCell align="center">
         <Link to={{
           pathname: `/betpage/${game_id}`,
           state: {
@@ -83,7 +83,7 @@ function Game({ info }) {
           Update/View Bet
 
         </Link>
-      </TableCell>
+      </TableCell> */}
     </TableRow>
   );
 }
