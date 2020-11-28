@@ -4,6 +4,9 @@ const Game = mongoose.model('games');
 const Bet = mongoose.model('bets');
 const User = mongoose.model('users');
 const client = new Client();
+const start = {
+  i: 142,
+}
 
 // app.get('/api/games', getGames) 
 async function getGames(req, res){
@@ -23,8 +26,7 @@ async function getCurrentWeekGames(req,res){
   var firstday = new Date(curr.setDate(curr.getDate() - curr.getDay()));
   const games = await Game.find();
   const currentWeekGames = [];
-  
-  for (i = 142; i < games.length; i++){
+  for (i = start.i; i < games.length; i++){
     if (((games[i].start_time -firstday)/86400000).toFixed() > 7){
       break;
     }
@@ -156,3 +158,4 @@ exports.fetchGames = fetchGames;
 exports.updateGameById = updateGameById;
 exports.deleteGameById = deleteGameById;
 exports.date_cache = date_cache;
+exports.start = start;

@@ -8,12 +8,14 @@ const { teamModel } = require('../models/Team');
 const { 
   getGames,
   getGameById,
+  getCurrentWeekGames,
   fetchWeeklyScores,
   fetchGames,
   updateGameById,
   deleteGameById,
   client,
-  date_cache  
+  date_cache,
+  start
 } = require('../routes/gameRoutesHandlers');
 
 describe("GET /api/games", function() {  
@@ -117,6 +119,98 @@ describe("GET /api/games/:id", function() {
     });
 
     getGameById(mockRequest, mockResponse);
+  });
+});
+
+describe("GET /api/current_week", function() {  
+  let mockFind;
+  let mockSetDate;
+  let mockStart;
+  let curr;
+  let fakeGame;
+
+  afterEach((done) => {
+    mockFind.restore();
+    mockSetDate.restore();
+    mockStart.restore();
+    done();
+  })
+
+  it("it should have status code 200 and return array of games", function(done) {
+    curr = new Date('2020-11-23T00:00:00.000Z');
+    fakeGame = [{
+      game_id: 17263,
+      sport_type: "NFL",
+      away_team_id: 13,
+      home_team_id: 16,
+      canceled: false,
+      status: "Final",
+      start_time: curr
+    }]
+    mockFind = sinon.stub(gameModel, "find").returns(fakeGame)
+    mockSetDate = sinon.useFakeTimers(curr);
+    mockStart = sinon.stub(start, "i").value(0);
+
+    const mockRequest = httpMocks.createRequest({
+      method: "GET",
+      url: "/api/current_week"
+    });
+    const mockResponse = httpMocks.createResponse({
+      eventEmitter: require('events').EventEmitter
+    });
+    
+    mockResponse.on('end', function() {
+      const expected = fakeGame;
+      try {
+        assert.strictEqual(mockResponse.statusCode, 200);
+        assert.deepStrictEqual(mockResponse._getData(), expected);
+        done();
+      }
+      catch (error){
+        done(error);
+      }
+    });
+
+    getCurrentWeekGames(mockRequest, mockResponse);
+  });
+
+  it("it should have status code 200 and return array of no games", function(done) {
+    curr = new Date('2020-11-23T00:00:00.000Z');
+    const start_time = new Date('2020-12-01T00:00:00.000Z') 
+    fakeGame = [{
+      game_id: 17263,
+      sport_type: "NFL",
+      away_team_id: 13,
+      home_team_id: 16,
+      canceled: false,
+      status: "Final",
+      start_time: start_time
+    }]
+    mockFind = sinon.stub(gameModel, "find").returns(fakeGame)
+    mockSetDate = sinon.useFakeTimers(curr);
+    mockStart = sinon.stub(start, "i").value(0);
+  
+    const mockRequest = httpMocks.createRequest({
+      method: "GET",
+      url: "/api/current_week"
+    });
+    const mockResponse = httpMocks.createResponse({
+      eventEmitter: require('events').EventEmitter
+    });
+    
+    mockResponse.on('end', function() {
+      const expected = [];
+      try {
+        assert.strictEqual(mockResponse.statusCode, 200);
+        assert.deepStrictEqual(mockResponse._getData(), expected);
+        done();
+      }
+      catch (error){
+        done(error);
+      }
+    });
+
+    getCurrentWeekGames(mockRequest, mockResponse);
   });
 });
 
