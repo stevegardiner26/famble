@@ -42,4 +42,4 @@ async function getStatsByTeamID(req, res){
 }
 
 exports.client = client;
-exports.fetchTeamStats = fetchTeamStats;
+exports.getStatsByTeamID = getStatsByTeamID;
