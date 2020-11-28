@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const client = new Client();
 
 // app.get('/api/stats/teams/:team_id')
-async function fetchTeamStats(req, res){
+async function getStatsByTeamID(req, res){
     let team_stats = {
         wins: null,
         losses: null,
