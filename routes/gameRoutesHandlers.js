@@ -120,7 +120,8 @@ function fetchGamesHelper(data, res) {
         status: game.Status
       };
       await Game.create(payload);
-    } else {
+    } 
+    else {
       let payload = {
         start_time: game.Date,          
         canceled: game.Canceled,
