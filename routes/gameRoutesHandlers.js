@@ -99,36 +99,37 @@ function fetchWeeklyScoresHelper(week, res) {
 // Ideally this is hit once a season to get the schedule
 // app.get('/api/fetch_games', fetchGames)
 async function fetchGames(req, res){
-  // Remove all games to prepare for the new game date
-
   client.get("https://api.sportsdata.io/v3/nfl/scores/json/UpcomingSeason", {headers: {"Ocp-Apim-Subscription-Key": process.env['NFL_API_TOKEN']}}, function (year, response) {
     client.get(`https://api.sportsdata.io/v3/nfl/scores/json/Schedules/${year}`, {headers: {"Ocp-Apim-Subscription-Key": process.env['NFL_API_TOKEN']}}, function (data, response) {
-      // parsed response body as js object
-      data.forEach(async (game) => {
-        let current_game = await Game.findOne({game_id: game.GlobalGameID});
-        if (!current_game) {
-          let payload = {
-            game_id: game.GlobalGameID,
-            sport_type: "NFL",
-            start_time: game.Date,
-            away_team_id: game.GlobalAwayTeamID,
-            home_team_id: game.GlobalHomeTeamID,
-            canceled: game.Canceled,
-            status: game.Status
-          };
-          await Game.create(payload);
-        } else {
-          let payload = {
-            start_time: game.Date,          
-            canceled: game.Canceled,
-            status: game.Status
-          };
-          await Game.findOneAndUpdate({game_id: game.GlobalGameID}, payload, {useFindAndModify: false});
-        }
-      });
+      fetchGamesHelper(data, res);
     });
-    return res.status(201).send({message: "Imported All Games!"});
   });
+}
+
+function fetchGamesHelper(data, res) {
+  data.forEach(async (game) => {
+    let current_game = await Game.findOne({game_id: game.GlobalGameID});
+    if (!current_game) {
+      let payload = {
+        game_id: game.GlobalGameID,
+        sport_type: "NFL",
+        start_time: game.Date,
+        away_team_id: game.GlobalAwayTeamID,
+        home_team_id: game.GlobalHomeTeamID,
+        canceled: game.Canceled,
+        status: game.Status
+      };
+      await Game.create(payload);
+    } else {
+      let payload = {
+        start_time: game.Date,          
+        canceled: game.Canceled,
+        status: game.Status
+      };
+      await Game.findOneAndUpdate({game_id: game.GlobalGameID}, payload, {useFindAndModify: false});
+    }
+  });
+  return res.status(201).send({message: "Imported All Games!"});
 }
 
 // app.put('/api/games/:id', updateGameById)
@@ -160,6 +161,7 @@ exports.getCurrentWeekGames = getCurrentWeekGames;
 exports.fetchWeeklyScores = fetchWeeklyScores;
 exports.fetchWeeklyScoresHelper = fetchWeeklyScoresHelper;
 exports.fetchGames = fetchGames;
+exports.fetchGamesHelper = fetchGamesHelper;
 exports.updateGameById = updateGameById;
 exports.deleteGameById = deleteGameById;
 exports.vars = vars;

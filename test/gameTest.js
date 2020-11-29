@@ -11,10 +11,9 @@ const {
   getCurrentWeekGames,
   fetchWeeklyScores,
   fetchWeeklyScoresHelper,
-  fetchGames,
+  fetchGamesHelper,
   updateGameById,
   deleteGameById,
-  client,
   vars
 } = require('../routes/gameRoutesHandlers');
 
@@ -383,52 +382,92 @@ describe("fetchWeeklyScoresHelper", function() {
   });
 });
 
-// fetchGames need to ask steven about separating that too
-// describe("GET /api/games", function() {  
-//   let mockFind;
-//   const fakeGame = {
-//     game_id: 17263,
-//     sport_type: "NFL",
-//     away_team_id: 13,
-//     home_team_id: 16,
-//     canceled: false,
-//     status: "Final"
-//   }
+describe("fetchGamesHelper", function() {  
+  let mockFind;
+  let mockCreate;
+  let mockFindOneUpdate;
+  const data = [{
+    AwayScore: 30,
+    HomeScore: 36,
+    GlobalHomeTeamID: 10,
+    GlobalAwayTeamID: 5,
+    GlobalGameID: 17420,
+    Canceled: false,
+    Status: "Final",
+    Date: "2020-09-10T20:20:00",
+    IsInProgress: false,
+    GameEndDateTime: "2020-09-24T23:24:45"
+  }];
+  const fakeGame = {
+    game_id: 17263,
+    sport_type: "NFL",
+    away_team_id: 13,
+    home_team_id: 16,
+    canceled: false,
+    status: "Final"
+  }
 
-//   beforeEach((done) =>{
-//     mockFind = sinon.stub(gameModel, "find").returns(fakeGame)
-//     done();
-//   })
+  beforeEach((done) =>{
+    mockCreate = sinon.stub(gameModel, "create").returns(null);
+    mockFindOneUpdate = sinon.stub(gameModel, "findOneAndUpdate").returns(null);
+    done();
+  })
 
-//   afterEach((done) => {
-//     mockFind.restore();
-//     done();
-//   })
+  afterEach((done) => {
+    mockFind.restore();
+    mockCreate.restore();
+    mockFindOneUpdate.restore();
+    done();
+  })
 
-//   it("it should have status code 200 and return result of Game.find", function(done) {
-//     const mockRequest = httpMocks.createRequest({
-//       method: "GET",
-//       url: "/api/games"
-//     });
-//     const mockResponse = httpMocks.createResponse({
-//       eventEmitter: require('events').EventEmitter
-//     });
+  it("it should have status code 201 and return success message", function(done) {
+    mockFind = sinon.stub(gameModel, "findOne").returns(fakeGame);
+
+    const mockResponse = httpMocks.createResponse({
+      eventEmitter: require('events').EventEmitter
+    });
     
-//     mockResponse.on('end', function() {
-//       const expected = fakeGame;
-//       try {
-//         assert.strictEqual(mockResponse.statusCode, 200);
-//         assert.deepStrictEqual(mockResponse._getData(), expected);
-//         done();
-//       }
-//       catch (error){
-//         done(error);
-//       }
-//     });
+    mockResponse.on('end', function() {
+      const expected = {
+        message: "Imported All Games!"
+      };
+      try {
+        assert.strictEqual(mockResponse.statusCode, 201);
+        assert.deepStrictEqual(mockResponse._getData(), expected);
+        done();
+      }
+      catch (error){
+        done(error);
+      }
+    });
 
-//     getGames(mockRequest, mockResponse);
-//   });
-// });
+    fetchGamesHelper(data, mockResponse);
+  });
+
+  it("it should have status code 201 and return success message", function(done) {
+    mockFind = sinon.stub(gameModel, "findOne").returns(null);
+
+    const mockResponse = httpMocks.createResponse({
+      eventEmitter: require('events').EventEmitter
+    });
+    
+    mockResponse.on('end', function() {
+      const expected = {
+        message: "Imported All Games!"
+      };
+      try {
+        assert.strictEqual(mockResponse.statusCode, 201);
+        assert.deepStrictEqual(mockResponse._getData(), expected);
+        done();
+      }
+      catch (error){
+        done(error);
+      }
+    });
+
+    fetchGamesHelper(data, mockResponse);
+  });
+});
 
 describe("PUT /api/games/:id", function() {  
   let mockFind;
