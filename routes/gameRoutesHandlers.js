@@ -4,8 +4,9 @@ const Game = mongoose.model('games');
 const Bet = mongoose.model('bets');
 const User = mongoose.model('users');
 const client = new Client();
-const start = {
+let vars = {
   i: 142,
+  date_cache: null
 }
 
 // app.get('/api/games', getGames) 
@@ -26,7 +27,7 @@ async function getCurrentWeekGames(req,res){
   var firstday = new Date(curr.setDate(curr.getDate() - curr.getDay()));
   const games = await Game.find();
   const currentWeekGames = [];
-  for (i = start.i; i < games.length; i++){
+  for (i = vars.i; i < games.length; i++){
     if (((games[i].start_time -firstday)/86400000).toFixed() > 7){
       break;
     }
@@ -37,13 +38,12 @@ async function getCurrentWeekGames(req,res){
   return res.status(200).send(currentWeekGames);
 }
 
-var date_cache = null;
 // app.get('/api/fetch_weekly_scores', fetchWeeklyScores) 
 async function fetchWeeklyScores(req, res){
   // Check and only allow this to execute the api call if it is 10 minutes past the last time it was called:
   let current_date = new Date();
-  if (date_cache != null) {
-    let date_cache_dif = new Date(date_cache.getTime() + 10*60000);
+  if (vars.date_cache != null) {
+    let date_cache_dif = new Date(vars.date_cache.getTime() + 10*60000);
     if (date_cache_dif > current_date) {
       return res.status(200).send({message: "Waiting to update week...", expire_time: date_cache_dif});
     }
@@ -51,44 +51,48 @@ async function fetchWeeklyScores(req, res){
   client.get("https://api.sportsdata.io/v3/nfl/scores/json/UpcomingSeason", {headers: {"Ocp-Apim-Subscription-Key": process.env['NFL_API_TOKEN']}}, function (year, response) {
     client.get("https://api.sportsdata.io/v3/nfl/scores/json/CurrentWeek", {headers: {"Ocp-Apim-Subscription-Key": process.env['NFL_API_TOKEN']}}, function (week, response) {
       client.get(`https://api.sportsdata.io/v3/nfl/scores/json/ScoresByWeek/${year}/${week}`, {headers: {"Ocp-Apim-Subscription-Key": process.env['NFL_API_TOKEN']}}, function (week, response) {
-        week.forEach(async (game) => {
-          let winner_id = null;
-          if (game.status == "Final") {          
-            if (game.away_score > game.home_score) {
-              winner_id = game.GlobalAwayTeamID;
-            } else {
-              winner_id = game.GlobalHomeTeamID;
-            }
-
-            let bets = Bet.find({game_id: game.GlobalGameID});
-            if (bets.length > 1) {
-              bets.forEach(async (b) => {
-                if (b.team_id == winner_id) {
-                  const user = await User.findById(b.user_id);
-                  await User.findByIdAndUpdate(b.user_id, {
-                      shreddit_balance: (user.shreddit_balance + (2 * b.amount))
-                  });
-                }
-                await Bet.findByIdAndUpdate(b.id, {active: false});          
-              });
-            }
-          }
-          let payload = {
-            canceled: game.Canceled,
-            status: game.Status,
-            away_score: game.AwayScore,
-            home_score: game.HomeScore,
-            winner: winner_id,
-            in_progress: game.IsInProgress,
-            end_time: game.GameEndDateTime
-          };
-          await Game.findOneAndUpdate({game_id: game.GlobalGameID}, payload, {useFindAndModify: false});
-        });
-        date_cache = new Date();
-        return res.status(200).send({message: "Updated This Weeks Games!"});
+        fetchWeeklyScoresHelper(week, res);
       });
     });
   });
+}
+
+function fetchWeeklyScoresHelper(week, res) {
+  week.forEach(async (game) => {
+    let winner_id = null;
+    if (game.Status == "Final") {          
+      if (game.AwayScore > game.HomeScore) {
+        winner_id = game.GlobalAwayTeamID;
+      } else {
+        winner_id = game.GlobalHomeTeamID;
+      }
+
+      let bets = Bet.find({game_id: game.GlobalGameID});
+      if (bets.length > 1) {
+        bets.forEach(async (b) => {
+          if (b.team_id == winner_id) {
+            const user = await User.findById(b.user_id);
+            await User.findByIdAndUpdate(b.user_id, {
+                shreddit_balance: (user.shreddit_balance + (2 * b.amount))
+            });
+          }
+          await Bet.findByIdAndUpdate(b.id, {active: false});          
+        });
+      }
+    }
+    let payload = {
+      canceled: game.Canceled,
+      status: game.Status,
+      away_score: game.AwayScore,
+      home_score: game.HomeScore,
+      winner: winner_id,
+      in_progress: game.IsInProgress,
+      end_time: game.GameEndDateTime
+    };
+    await Game.findOneAndUpdate({game_id: game.GlobalGameID}, payload, {useFindAndModify: false});
+  });
+  vars.date_cache = new Date();
+  return res.status(200).send({message: "Updated This Weeks Games!"});
 }
 
 // Fetch Games From API
@@ -154,8 +158,8 @@ exports.getGames = getGames;
 exports.getGameById = getGameById;
 exports.getCurrentWeekGames = getCurrentWeekGames;
 exports.fetchWeeklyScores = fetchWeeklyScores;
+exports.fetchWeeklyScoresHelper = fetchWeeklyScoresHelper;
 exports.fetchGames = fetchGames;
 exports.updateGameById = updateGameById;
 exports.deleteGameById = deleteGameById;
-exports.date_cache = date_cache;
-exports.start = start;
+exports.vars = vars;
