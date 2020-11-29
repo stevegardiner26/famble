@@ -6,7 +6,7 @@ const { getStatsByTeamID } = require('../routes/statisticRoutesHandlers');
 
 describe("GET /api/stats/teams/:team_id", function(){
     let mockFindByTeamId;
-    before((done) => {
+    beforeEach((done) => {
         mockFindByTeamId = sinon.stub(teamModel, "findById").callsFake((team_id) => {
             return ({
                 wins: 6,
