@@ -1,5 +1,6 @@
 var Client = require('node-rest-client').Client;
 var client = new Client();
+const { response } = require('express');
 const mongoose = require('mongoose');
 const Team = mongoose.model('teams');
 
@@ -27,26 +28,30 @@ async function fetchTeams(req, res){
         await Team.findByIdAndDelete(t.id);
     });
 
-    client.get(`https://api.sportsdata.io/v3/nfl/scores/json/Teams`, {headers: {"Ocp-Apim-Subscription-Key": process.env['NFL_API_TOKEN']}}, function (data, response) {
-        // parsed response body as js object
-        data.forEach(team => {
-            let payload = {
-                name: team.FullName,
-                team_id: team.TeamID,
-                key: team.Key,
-                conference: team.Conference,
-                division: team.Division,
-                stadium_id: team.StadiumID,
-                image_url:team.WikipediaLogoUrl
-            };
-            Team.create(payload);
-        });
-    });
+    client.get(`https://api.sportsdata.io/v3/nfl/scores/json/Teams`, {headers: {"Ocp-Apim-Subscription-Key": process.env['NFL_API_TOKEN']}}, fetchTeamsHelper);
     
     return res.status(201).send({message: "Imported All Teams!"});
+}
+
+function fetchTeamsHelper(data, response){
+    // parsed response body as js object
+    data.forEach(team => {
+        let payload = {
+            name: team.FullName,
+            team_id: team.TeamID,
+            key: team.Key,
+            conference: team.Conference,
+            division: team.Division,
+            stadium_id: team.StadiumID,
+            image_url:team.WikipediaLogoUrl
+        };
+        Team.create(payload);
+    });
+    return data;
 }
 
 exports.getTeams = getTeams;
 exports.getTeamById = getTeamById;
 exports.fetchTeams = fetchTeams;
 exports.client = client;
+exports.fetchTeamsHelper = fetchTeamsHelper;

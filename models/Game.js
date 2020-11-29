@@ -19,10 +19,3 @@ const gameSchema = new Schema({
 
 mongoose.model('games', gameSchema);
 exports.gameModel = mongoose.model('games', gameSchema);
-exports.registerGameModel = function() {
-    try {
-      mongoose.model('games', gameSchema);
-    } catch (error) {
-      // console.log(error)
-    }
-}
