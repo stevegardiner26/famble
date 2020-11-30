@@ -53,7 +53,7 @@ function BotBet(props) {
             {currentGame.status === 'Final' && homeTeam.team_id === currentGame.winner && (
               <p>Winner!</p>
             )}
-            <p>Team LOGO</p>
+            <img src={homeTeam.image_url} width="50" height="50" />
             <p>{homeTeam.name}</p>
             <p>11 - 0 - 12</p>
             {currentGame.home_odds < currentGame.away_odds && (
@@ -73,7 +73,7 @@ function BotBet(props) {
             {currentGame.status === 'Final' && awayTeam.team_id === currentGame.winner && (
               <p>Winner!</p>
             )}
-            <p>Team LOGO</p>
+            <img src={awayTeam.image_url} width="50" height="50" />
             <p>{awayTeam.name}</p>
             <p>11 - 0 - 12</p>
             {currentGame.away_odds < currentGame.home_odds && (
