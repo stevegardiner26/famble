@@ -8,6 +8,7 @@ import {
 import { useSelector } from 'react-redux';
 import { selectUser } from './store/slices/userSlice';
 import Dashboard from './dashboard/Dashboard';
+import BotBet from './dashboard/BotBet';
 import Home from './home/Home';
 import './App.css';
 
@@ -24,6 +25,13 @@ function App() {
           <Route exact path="/dashboard">
             {!user.name ? <Redirect to="/" /> : <Dashboard /> }
           </Route>
+          <Route
+            path="/bot-bet/:id"
+            render={(props) => (
+              // eslint-disable-next-line react/jsx-props-no-spreading
+              <BotBet {...props} />
+            )}
+          />
         </Switch>
       </Router>
     </div>
