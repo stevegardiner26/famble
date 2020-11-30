@@ -25,6 +25,7 @@ async function getStatsByTeamID(req, res){
         });  
         client.get(`https://api.sportsdata.io/v3/nfl/scores/json/TeamSeasonStats/${year}`, { headers: { "Ocp-Apim-Subscription-Key": process.env['NFL_API_TOKEN'] } }, function (data, response) {
             const team = data.find(x => x.TeamID == req.params.team_id); 
+            team_stats.touchdowns = team.Touchdowns;
             team_stats.passing_attempts = team.PassingAttempts;
             team_stats.completion_percentage = team.CompletionPercentage;
             team_stats.passing_yards = team.PassingYards;
