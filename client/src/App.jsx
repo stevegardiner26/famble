@@ -31,7 +31,7 @@ function App() {
             <Profile />
           </Route>
           <Route
-            path="/bot-bet/:id"
+            path="/betpage/bot-bet/:id"
             render={(props) => (
               // eslint-disable-next-line react/jsx-props-no-spreading
               <BotBet {...props} />
