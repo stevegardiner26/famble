@@ -116,3 +116,57 @@ describe("POST /api/users", function() {
     createUser(mockRequest, mockResponse);
   });
 });
+
+describe("POST /api/users", function() {  
+  let mockFindOne;
+  const fakeUser = {
+    shreddit_balance: 7770,
+    name: "Jay Rana",
+    profile_image: "https://lh3.googleusercontent.com/a-/AOh14Gg629IeUkf1lWpBcSqr7-m_pEhpvQI3CdAczWijeA=s96-c",
+    email: "jpr48@njit.edu",
+    google_id: "108376284041323611441",
+  }
+
+  beforeEach((done) =>{
+    mockFindOne = sinon.stub(userModel, "findOne").returns(fakeUser);
+    done();
+  })
+
+  afterEach((done) => {
+    mockFindOne.restore();
+    done();
+  })
+
+  it("it should have status code 201 and return since user exists", function(done) {
+    const mockRequest = httpMocks.createRequest({
+      method: "POST",
+      url: "/api/users",
+      body: {
+        name: "Jay Rana",
+        profile_image: "https://lh3.googleusercontent.com/a-/AOh14Gg629IeUkf1lWpBcSqr7-m_pEhpvQI3CdAczWijeA=s96-c",
+        email: "jpr48@njit.edu",
+        google_id: "108376284041323611441"
+      }
+    });
+    const mockResponse = httpMocks.createResponse({
+      eventEmitter: require('events').EventEmitter
+    });
+    
+    mockResponse.on('end', function() {
+      const expected = {
+        error: false,
+        user: fakeUser
+      }
+      try {
+        assert.strictEqual(mockResponse.statusCode, 201);
+        assert.deepStrictEqual(mockResponse._getData(), expected);
+        done();
+      }
+      catch (error){
+        done(error);
+      }
+    });
+
+    createUser(mockRequest, mockResponse);
+  });
+});

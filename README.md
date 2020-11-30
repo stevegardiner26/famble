@@ -72,9 +72,6 @@ In order for the login to work, follow these steps:
 3. Under `URIs`, paste your URL and remove everything after the `.com` or whatever the end of your domain is.
 4. Click `Save`
 
-### Testing
-
-
 ## Contact
 
 - Jay Rana - jpr48@njit.edu

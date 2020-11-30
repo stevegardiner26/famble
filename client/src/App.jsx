@@ -1,7 +1,7 @@
-/* eslint-disable no-underscore-dangle, no-unused-vars */
+/* eslint-disable no-underscore-dangle */
 // /client/src/App.jsx
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import {
   BrowserRouter as Router, Switch, Route, Redirect,
 } from 'react-router-dom';
@@ -11,6 +11,8 @@ import Dashboard from './dashboard/Dashboard';
 import BotBet from './dashboard/BotBet';
 import Home from './home/Home';
 import './App.css';
+import BetPage from './dashboard/BetPage';
+import Profile from './profile/Profile';
 
 function App() {
   const user = useSelector(selectUser);
@@ -26,10 +28,10 @@ function App() {
             {!user.name ? <Redirect to="/" /> : <Dashboard /> }
           </Route>
           <Route
-            path="/bot-bet/:id"
+            path="/betpage/:id"
             render={(props) => (
               // eslint-disable-next-line react/jsx-props-no-spreading
-              <BotBet {...props} />
+              <BetPage {...props} />
             )}
           />
         </Switch>

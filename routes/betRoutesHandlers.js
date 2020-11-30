@@ -1,9 +1,12 @@
 const mongoose = require('mongoose');
 const User = mongoose.model('users');
 const Bet = mongoose.model('bets');
-const Game = mongoose.model('games');
+const Team = mongoose.model('teams');
+const helpers = {
+  postBetsHelper
+}
 
-// app.get('/api/bets', getBets);
+// app.get('/api/get_bets', getBets);
 async function getBets(req, res){
     const bets = await Bet.find();
     return res.status(200).send(bets);
@@ -31,39 +34,66 @@ async function getBetsByGameID(req, res){
 
 // app.post('/api/bets', postBets);
 async function postBets(req, res){
-    const bet = await Bet.create(req.body);
-    const user = await User.findById(req.body.user_id);
-    await User.findByIdAndUpdate(req.body.user_id, {
-        shreddit_balance: user.shreddit_balance - req.body.amount
-    });
-    return res.status(201).send({
-      error: false,
-      bet,
-    });
-}
+  const { game_id } = req.body;
+  const body = req.body;
+  const bets = await Bet.find({game_id:game_id});  
+  const user = await User.findById(req.body.user_id);
+  const response = await helpers.postBetsHelper(body,bets,user);
 
-// app.put('/api/bets/:id', putBets);
-async function putBets(req, res) {
-    let bet = await Bet.findById(req.params.id);
-    const user = await User.findById(req.body.user_id);
-    if(req.body.updatedAmount > bet.amount){
-      await Bet.findByIdAndUpdate(req.params.id,{
-        amount: req.body.updatedAmount
-      });
-      await User.findByIdAndUpdate(req.body.user_id, {
-        shreddit_balance: user.shreddit_balance - (req.body.updatedAmount - bet.amount)
-      });
-      updatedBet = await Bet.findById(req.params.id);
-      return res.status(202).send({
-        error: false,
-        updatedBet,
-      });
-    }else{
-      return res.status(202).send({
-        error: true,
-        msg: "Could not update because the updated amount is the less than or equal to the current amount",
-      });
+  if (response){
+    return res.status(response.status).send(response.data);
+  }
+  const { team_id } = req.body;
+  const team = await Team.find({team_id:team_id});
+  req.body.teamName = team[0].name;
+  const bet = await Bet.create(req.body);
+  await User.findByIdAndUpdate(req.body.user_id, {
+      shreddit_balance: user.shreddit_balance - req.body.amount
+  });
+  return res.status(201).send({
+    error: false,
+    bet,
+  });
+};
+
+async function postBetsHelper(body, bets, user){
+  for (i = 0; i < bets.length; i++){
+    if(bets[i].user_id === body.user_id && bets[i].team_id === body.team_id){
+      if(body.amount > bets[i].amount){
+        await Bet.findByIdAndUpdate(bets[i]._id,{
+          amount: body.amount
+        });
+        await User.findByIdAndUpdate(body.user_id, {
+          shreddit_balance: user.shreddit_balance - (body.amount - bets[i].amount)
+        });
+        return {
+          status: 201,
+          data: {
+            error: false,
+          }
+        };
+        
+      } 
+      else{
+        return {
+          status: 500,
+          data: {
+            error: true,
+            msg: "Could not update because the updated amount is less than or equal to the current amount",
+          }
+        };
+      }
     }
+    else{
+      return {
+        status: 500,
+        data: {
+          error: true,
+          msg: "You are trying to change the team you are betting on, you are locked in after placing your bet",
+        }
+      };
+    }
+  }
 }
 
 // app.delete('/api/bets/:id', deleteBets);
@@ -79,6 +109,7 @@ async function deleteBets(req, res){
 exports.getBets = getBets;
 exports.getBetsByGameID = getBetsByGameID;
 exports.postBets = postBets;
-exports.putBets = putBets;
+exports.postBetsHelper = postBetsHelper;
+exports.helpers = helpers;
 exports.deleteBets = deleteBets;
 exports.getBetsByUserID = getBetsByUserID;

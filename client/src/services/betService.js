@@ -3,13 +3,13 @@ import axios from 'axios';
 // eslint-disable-next-line
 export default {
   getAll: async () => {
-    const res = await axios.get('/api/bets');
+    const res = await axios.get('/api/get_bets');
     return res.data || [];
   },
 
   getBetsByGameId: async (game_id) => {
-    const res = await axios.get(`/api/bets/games/${game_id}`);
-    return res.data || [];
+    const res = await axios.get(`/api/bets/${game_id}`);
+    return res.data.bets || [];
   },
 
   getBetsByUserId: async (user_id) => {
@@ -17,21 +17,14 @@ export default {
     return res.data || [];
   },
 
-  createBet: async (user_id, game_id, team_id, amount, type) => {
+  createBet: async (user_id, game_id, team_id, amount, name, type) => {
     const res = await axios.post('/api/bets', {
       user_id,
       game_id,
       team_id,
+      name,
       amount,
       type,
-    });
-    return res.data || [];
-  },
-
-  updateBet: async (id, user_id, updatedAmount) => {
-    const res = await axios.put(`/api/bets/${id}`, {
-      user_id,
-      updatedAmount,
     });
     return res.data || [];
   },

@@ -24,7 +24,7 @@ function BotBet(props) {
       let awayBetAmount = 0;
 
       bets.forEach((b) => {
-        if (b.type == "bot") {  
+        if (b.type === 'bot') {
           trailingAmount += b.amount;
           trailingCount += 1;
           if (b.team_id === awayTeam.team_id) {

@@ -2,19 +2,42 @@ const Client = require('node-rest-client').Client;
 const mongoose = require('mongoose');
 const client = new Client();
 
-async function getStatsByTeamID(req, res) {
-    return res.status(200).send({
-        wins: 8,
-        losses: 8,
-        touchdowns: 2,
-        passing_attempts: 100,
-        completion_percentage: 100,
-        passing_yards: 100,
-        fumbles_forced: 100,
-        rushing_yards: 100,
-        penalty_yards: 100,
-        sacks: 100,
-    })
+// app.get('/api/stats/teams/:team_id')
+async function getStatsByTeamID(req, res){
+    let team_stats = {
+        wins: null,
+        losses: null,
+        touchdowns: null,
+        passing_attempts: null,
+        completion_percentage: null,
+        passing_yards: null,
+        fumbles_forced: null,
+        rushing_yards: null,
+        penalty_yards: null,
+        sacks: null,
+    };
+    client.get("https://api.sportsdata.io/v3/nfl/scores/json/UpcomingSeason", {headers: {"Ocp-Apim-Subscription-Key": process.env['NFL_API_TOKEN']}}, async function(year, response){
+        client.get(`https://api.sportsdata.io/v3/nfl/scores/json/Standings/${year}`, { headers: { "Ocp-Apim-Subscription-Key": process.env['NFL_API_TOKEN'] } }, function (data, response) {
+            const team = data.find(x => x.TeamID == req.params.team_id);
+            team_stats.wins = team.Wins;
+            team_stats.losses = team.Losses;
+            team_stats.touchdowns = team.Touchdowns;
+        });  
+        client.get(`https://api.sportsdata.io/v3/nfl/scores/json/TeamSeasonStats/${year}`, { headers: { "Ocp-Apim-Subscription-Key": process.env['NFL_API_TOKEN'] } }, function (data, response) {
+            const team = data.find(x => x.TeamID == req.params.team_id); 
+            team_stats.touchdowns = team.Touchdowns;
+            team_stats.passing_attempts = team.PassingAttempts;
+            team_stats.completion_percentage = team.CompletionPercentage;
+            team_stats.passing_yards = team.PassingYards;
+            team_stats.fumbles_forced = team.FumblesForced;
+            team_stats.rushing_yards = team.RushingYards;
+            team_stats.penalty_yards = team.PenaltyYards;
+            team_stats.sacks = team.Sacks;
+
+            // Returns a Team Statistics
+            return res.status(201).send({team_stats});
+        }); 
+    });
 }
 
 exports.client = client;

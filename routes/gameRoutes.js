@@ -3,6 +3,7 @@ const {
   getGameById,
   fetchWeeklyScores,
   fetchGames,
+  getCurrentWeekGames,
   updateGameById,
   deleteGameById,
   fetchOddsByGame
@@ -13,7 +14,7 @@ module.exports = (app) => {
   app.get('/api/games', getGames);
   app.get('/api/games/:id', getGameById);
   app.get('/api/fetch_weekly_scores', fetchWeeklyScores);
-
+  app.get('/api/current_week',getCurrentWeekGames);
   // Fetch Games From API
   // Ideally this is hit once a season to get the schedule
   app.get('/api/fetch_games', fetchGames);
