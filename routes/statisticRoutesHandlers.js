@@ -18,25 +18,23 @@ async function getStatsByTeamID(req, res){
     };
     client.get("https://api.sportsdata.io/v3/nfl/scores/json/UpcomingSeason", {headers: {"Ocp-Apim-Subscription-Key": process.env['NFL_API_TOKEN']}}, async function(year, response){
         client.get(`https://api.sportsdata.io/v3/nfl/scores/json/Standings/${year}`, { headers: { "Ocp-Apim-Subscription-Key": process.env['NFL_API_TOKEN'] } }, function (data, response) {
-            data = data.find(x => x.Team === req.params.team_id);
-            team_stats.wins = data.Wins;
-            team_stats.losses = data.Losses;
+            const team = data.find(x => x.TeamID == req.params.team_id);
+            team_stats.wins = team.Wins;
+            team_stats.losses = team.Losses;
+            team_stats.touchdowns = team.Touchdowns;
         });  
         client.get(`https://api.sportsdata.io/v3/nfl/scores/json/TeamSeasonStats/${year}`, { headers: { "Ocp-Apim-Subscription-Key": process.env['NFL_API_TOKEN'] } }, function (data, response) {
-            data = data.find(x => x.Team === req.params.team_id);
-            team_stats.touchdowns = data.Touchdowns,
-                team_stats.passing_attempts = data.PassingAttempts,
-                team_stats.completion_percentage = data.CompletionPercentage;
-            team_stats.passing_yards = data.PassingYards;
-            team_stats.fumbles_forced = data.FumblesForced;
-            team_stats.rushing_yards = data.RushingYards;
-            team_stats.penalty_yards = data.PenaltyYards;
-            team_stats.sacks = data.Sacks;
+            const team = data.find(x => x.TeamID == req.params.team_id); 
+            team_stats.passing_attempts = team.PassingAttempts;
+            team_stats.completion_percentage = team.CompletionPercentage;
+            team_stats.passing_yards = team.PassingYards;
+            team_stats.fumbles_forced = team.FumblesForced;
+            team_stats.rushing_yards = team.RushingYards;
+            team_stats.penalty_yards = team.PenaltyYards;
+            team_stats.sacks = team.Sacks;
 
-            // Returns a Team Statistic's
-            return res.status(201).send({
-                team_stats,
-            });
+            // Returns a Team Statistics
+            return res.status(201).send({team_stats});
         }); 
     });
 }
