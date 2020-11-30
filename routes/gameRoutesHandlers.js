@@ -38,7 +38,6 @@ async function getCurrentWeekGames(req,res){
   return res.status(200).send(currentWeekGames);
 }
 
-<<<<<<< HEAD
 async function fetchOddsByGame(req, res) {
   const { id } = req.params;
   var game = await Game.findOne({ game_id: id });
@@ -77,8 +76,6 @@ async function fetchOddsByGame(req, res) {
 }
 
 var date_cache = null;
-=======
->>>>>>> master
 // app.get('/api/fetch_weekly_scores', fetchWeeklyScores) 
 async function fetchWeeklyScores(req, res){
   // Check and only allow this to execute the api call if it is 10 minutes past the last time it was called:
@@ -108,7 +105,6 @@ function fetchWeeklyScoresHelper(week, res) {
         winner_id = game.GlobalHomeTeamID;
       }
 
-<<<<<<< HEAD
             let bets = Bet.find({game_id: game.GlobalGameID});
             if (bets.length > 1) {
               bets.forEach(async (b) => {
@@ -136,22 +132,10 @@ function fetchWeeklyScoresHelper(week, res) {
                 }
                 await Bet.findByIdAndDelete(b.id);          
               });
-            }
-=======
-      let bets = Bet.find({game_id: game.GlobalGameID});
-      if (bets.length > 1) {
-        bets.forEach(async (b) => {
-          if (b.team_id == winner_id) {
-            const user = await User.findById(b.user_id);
-            await User.findByIdAndUpdate(b.user_id, {
-                shreddit_balance: (user.shreddit_balance + (2 * b.amount))
-            });
->>>>>>> master
-          }
-          await Bet.findByIdAndUpdate(b.id, {active: false});          
-        });
       }
-    }
+      await Bet.findByIdAndUpdate(b.id, {active: false});          
+    };
+      
     let payload = {
       canceled: game.Canceled,
       status: game.Status,
@@ -237,9 +221,5 @@ exports.fetchGames = fetchGames;
 exports.fetchGamesHelper = fetchGamesHelper;
 exports.updateGameById = updateGameById;
 exports.deleteGameById = deleteGameById;
-<<<<<<< HEAD
 exports.date_cache = date_cache;
 exports.fetchOddsByGame = fetchOddsByGame;
-=======
-exports.vars = vars;
->>>>>>> master
