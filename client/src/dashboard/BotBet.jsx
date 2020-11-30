@@ -1,3 +1,4 @@
+/* eslint-disable react/destructuring-assignment */
 /* eslint-disable max-len */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/jsx-one-expression-per-line */
@@ -11,10 +12,12 @@ function BotBet(props) {
   const [awayBetStats, setAwayBetStats] = useState({ total_amount: 0, total_count: 0, percent: 0 });
   const [homeBetStats, setHomeBetStats] = useState({ total_amount: 0, total_count: 0, percent: 0 });
 
-  const { currentGame, awayTeam, homeTeam } = props;
+  const {
+    gameID, awayTeam, homeTeam, homeTeamID, awayTeamID,
+  } = props.location.state;
 
   useEffect(() => {
-    betService.getBetsByGameId(currentGame.game_id).then((data) => {
+    betService.getBetsByGameId(gameID).then((data) => {
       const { bets } = data;
       let trailingAmount = 0;
       let trailingCount = 0;

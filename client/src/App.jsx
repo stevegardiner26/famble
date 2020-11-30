@@ -27,6 +27,16 @@ function App() {
           <Route exact path="/dashboard">
             {!user.name ? <Redirect to="/" /> : <Dashboard /> }
           </Route>
+          <Route exact path="/profile">
+            <Profile />
+          </Route>
+          <Route
+            path="/bot-bet/:id"
+            render={(props) => (
+              // eslint-disable-next-line react/jsx-props-no-spreading
+              <BotBet {...props} />
+            )}
+          />
           <Route
             path="/betpage/:id"
             render={(props) => (
