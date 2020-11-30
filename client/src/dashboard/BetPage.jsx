@@ -89,7 +89,24 @@ export default function BetPage(props) {
       setAmount(betAmount);
     }
   };
+  function BetLink() {
+    return (
+      <Link to={{
+        pathname: `/bot-bet/${gameID}`,
+        state: {
+          gameID: `${gameID}`,
+          homeTeamID: `${homeTeamID}`,
+          awayTeamID: `${awayTeamID}`,
+          homeTeam: `${homeTeamName}`,
+          awayTeam: `${awayTeamName}`,
+        },
+      }}
+      >
+        Place a Bet!
 
+      </Link>
+    );
+  }
   const handleBet = () => {
     if (amount !== null || amount > balance) {
       if (teamID !== null) {
@@ -232,7 +249,9 @@ export default function BetPage(props) {
                 <BetCount />
               </Grid>
               <Grid item xs={3}>
-                <Paper className={classes.paper}>xs=3</Paper>
+                <Paper className={classes.paper}>
+                  <BetLink />
+                </Paper>
               </Grid>
               <Grid item xs={3}>
                 <Paper className={classes.paper}>xs=3</Paper>
