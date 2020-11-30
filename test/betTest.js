@@ -183,14 +183,14 @@ describe("POST /api/bets", function() {
       google_id: "108376284041323611441"
     }
 
-    const fakeTeam = {
+    const fakeTeam = [{
       name: "Arizona Cardinals",
       team_id: 1,
       key: "ARI",
       conference: "NFC",
       division: "West",
       stadium_id: 29
-    }
+    }]
 
     game = {
       game_id: "17403",
@@ -241,7 +241,7 @@ describe("POST /api/bets", function() {
           user_id: "5fb83983417ae836a4e2b170",
           game_id: "17403",
           team_id: "1",
-          teamName:"Arizona Cardinals",
+          teamName: "Arizona Cardinals",
           amount: 1100,
           name: "Jay"
         }
