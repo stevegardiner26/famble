@@ -2,7 +2,7 @@ const httpMocks = require('node-mocks-http');
 const sinon = require('sinon');
 const assert = require('chai').assert;
 const { teamModel } = require('../models/Team');
-const { getTeams, getTeamById, fetchTeams, client } = require('../routes/teamRoutesHandlers');
+const { getTeams, getTeamById, fetchTeams, client, fetchTeamsHelper } = require('../routes/teamRoutesHandlers');
 
 describe("GET /api/teams", function() {  
   let mockFind;
@@ -114,7 +114,6 @@ describe("GET /api/fetch_teams", function() {
   let mockFind;
   let mockFindByIdAndDelete;
   let mockClientGet;
-  let mockCreate; 
   const fakeTeam = [{
     id: "5fb83990417ae836a4e2b171",
     name: "Arizona Cardinals",
@@ -129,12 +128,13 @@ describe("GET /api/fetch_teams", function() {
     mockFind = sinon.stub(teamModel, "find").returns(fakeTeam);
     mockFindByIdAndDelete = sinon.stub(teamModel, "findByIdAndDelete").returns(fakeTeam)
     mockClientGet = sinon.stub(client, "get").returns(fakeTeam)
-    mockClientGet = sinon.stub(teamModel, "create").returns(fakeTeam)
     done();
   })
 
   afterEach((done) => {
     mockFind.restore();
+    mockFindByIdAndDelete.restore();
+    mockClientGet.restore();
     done();
   })
 
@@ -161,4 +161,40 @@ describe("GET /api/fetch_teams", function() {
 
     fetchTeams(mockRequest, mockResponse);
   });
+});
+
+describe("fetchTeamsHelper", function() {  
+  let mockCreate; 
+
+  const expected = [{
+    FullName: "Arizona Cardinals",
+    TeamID: 1,
+    Key: "ARI",
+    Conference: "NFC",
+    Division: "West",
+    Stadium_id: 29,
+    WikipediaLogoUrl: "URL"
+  }]
+
+  beforeEach((done) =>{
+    mockCreate = sinon.stub(teamModel, "create").returns(expected)
+    done();
+  })
+
+  afterEach((done) => {
+    mockCreate.restore();
+    done();
+  })
+
+  it("it should create a Team document for each item in the data parameter", function(done) {
+      const response =  "";
+      const actual = fetchTeamsHelper(expected, response);
+      try {
+        assert.deepStrictEqual(actual, expected);
+        done();
+      }
+      catch (error){
+        done(error);
+      }
+    });
 });

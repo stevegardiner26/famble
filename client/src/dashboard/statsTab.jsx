@@ -73,10 +73,14 @@ export default function SimpleTabs(props) {
     setValue(newValue);
   };
   const getHomeStats = async (id) => {
-    await statService.getTeamStats(id).then(setHomeStat);
+    await statService.getTeamStats(id).then((response) => {
+      setHomeStat(response.team_stats);
+    });
   };
   const getAwayStats = async (id) => {
-    await statService.getTeamStats(id).then(setAwayStat);
+    await statService.getTeamStats(id).then((response) => {
+      setAwayStat(response.team_stats);
+    });
   };
   useEffect(() => {
     getHomeStats(homeTeamID);
