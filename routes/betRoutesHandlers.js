@@ -45,6 +45,13 @@ async function postBets(req, res){
   }
   const { team_id } = req.body;
   const team = await Team.find({team_id:team_id});
+  const game = await Game.find({game_id: game_id});
+  if (new Date(game.start_time) < new Date()) {
+    return res.status(500).send({
+      error: true,
+      message: 'The Game Has Already Started, the Bet Could Not be Placed.'
+    });
+  }
   req.body.teamName = team[0].name;
   const bet = await Bet.create(req.body);
   await User.findByIdAndUpdate(req.body.user_id, {
