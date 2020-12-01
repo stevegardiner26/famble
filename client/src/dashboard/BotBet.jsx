@@ -4,6 +4,7 @@
 /* eslint-disable react/jsx-one-expression-per-line */
 /* eslint-disable arrow-body-style */
 /* eslint-disable no-else-return */
+/* eslint-disable eqeqeq */
 import React, { useState, useEffect } from 'react';
 import Container from '@material-ui/core/Container';
 import BetModal from './BetModal';
@@ -79,10 +80,10 @@ function BotBet(props) {
         if (b.type === 'bot') {
           trailingAmount += b.amount;
           trailingCount += 1;
-          if (b.team_id === awayTeam.team_id) {
+          if (b.team_id == awayTeam.team_id) {
             awayBetCount += 1;
             awayBetAmount += b.amount;
-          } else if (b.team_id === homeTeam.team_id) {
+          } else if (b.team_id == homeTeam.team_id) {
             homeBetCount += 1;
             homeBetAmount += b.amount;
           }
