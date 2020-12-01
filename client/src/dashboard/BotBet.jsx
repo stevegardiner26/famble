@@ -66,10 +66,11 @@ function BotBet(props) {
         <div className="row">
           <div className="col-md">
             <strong>Home Team</strong>
+            <br />
             {currentGame.status === 'Final' && homeTeamID === currentGame.winner && (
               <p>Winner!</p>
             )}
-            <img src={`${homeTeamLogo}`} alt="" />
+            <img src={`${homeTeamLogo}`} alt="Home Team Logo" width="50" height="50" />
             <p>{homeTeam}</p>
             <p>11 - 0 - 12</p>
             {currentGame.home_odds < currentGame.away_odds && (
@@ -85,10 +86,12 @@ function BotBet(props) {
             <BetModal gameID={currentGame.id} team1={{ name: `${homeTeam}`, id: `${homeTeamID}` }} team2={{ name: `${awayTeam}`, id: `${awayTeamID}` }} type="bot" />
           </div>
           <div className="col-md">
-            <img src={`${awayTeamLogo}`} alt="" />
+            <strong>Away Team</strong>
+            <br />
             {currentGame.status === 'Final' && awayTeamID === currentGame.winner && (
               <p>Winner!</p>
             )}
+            <img src={awayTeamLogo} alt="Away Team Logo" width="50" height="50" />
             <p>{awayTeam}</p>
             <p>11 - 0 - 12</p>
             {currentGame.away_odds < currentGame.home_odds && (
