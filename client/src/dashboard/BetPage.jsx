@@ -63,7 +63,7 @@ export default function BetPage(props) {
   useEffect(() => {
     if (valid) {
       const setBet = async () => {
-        const res = await betService.createBet(userID, gameID, teamID, amount, fullName, "default");
+        const res = await betService.createBet(userID, gameID, teamID, amount, fullName, 'default');
         if (res === []) {
           alert('Could not place bet at this time. Try again later.');
         } else {
