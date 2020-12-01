@@ -6,19 +6,32 @@ import React, { useState, useEffect } from 'react';
 import Container from '@material-ui/core/Container';
 import BetModal from './BetModal';
 import betService from '../services/betService';
+import gameService from '../services/gameService';
 
 function BotBet(props) {
   const [betStats, setBetStats] = useState({ total_amount: 0, total_count: 0 });
   const [awayBetStats, setAwayBetStats] = useState({ total_amount: 0, total_count: 0, percent: 0 });
   const [homeBetStats, setHomeBetStats] = useState({ total_amount: 0, total_count: 0, percent: 0 });
-
+  const [currentGame, setCurrentGame] = useState({
+    home_odds: 0, away_odds: 0, status: '', id: 0, winner: 0, start_time: '',
+  });
   const {
     gameID, awayTeam, homeTeam, homeTeamID, awayTeamID,
+    homeTeamLogo, awayTeamLogo,
   } = props.location.state;
 
   useEffect(() => {
+    gameService.getGameById(gameID).then((game) => {
+      setCurrentGame({
+        home_odds: game.home_odds,
+        away_odds: game.away_odds,
+        status: game.status,
+        id: game.id,
+        winner: game.winner,
+        start_time: game.start_time,
+      });
+    });
     betService.getBetsByGameId(gameID).then((data) => {
-      const { bets } = data;
       let trailingAmount = 0;
       let trailingCount = 0;
       let awayBetCount = 0;
@@ -26,7 +39,7 @@ function BotBet(props) {
       let homeBetAmount = 0;
       let awayBetAmount = 0;
 
-      bets.forEach((b) => {
+      data.forEach((b) => {
         if (b.type === 'bot') {
           trailingAmount += b.amount;
           trailingCount += 1;
@@ -53,11 +66,11 @@ function BotBet(props) {
         <div className="row">
           <div className="col-md">
             <strong>Home Team</strong>
-            {currentGame.status === 'Final' && homeTeam.team_id === currentGame.winner && (
+            {currentGame.status === 'Final' && homeTeamID === currentGame.winner && (
               <p>Winner!</p>
             )}
-            <img src={homeTeam.image_url} width="50" height="50" />
-            <p>{homeTeam.name}</p>
+            <img src={`${homeTeamLogo}`} alt="Home Team Logo" width="50" height="50" />
+            <p>{homeTeam}</p>
             <p>11 - 0 - 12</p>
             {currentGame.home_odds < currentGame.away_odds && (
               <h3>The Bot&apos;s Pick!</h3>
@@ -69,15 +82,15 @@ function BotBet(props) {
             <span>{currentGame.start_time.toString()}</span>
             <br />
             <br />
-            <BetModal gameID={currentGame.id} team1={{ name: `${homeTeam.name}`, id: `${homeTeam.team_id}` }} team2={{ name: `${awayTeam.name}`, id: `${awayTeam.team_id}` }} type="bot" />
+            <BetModal gameID={currentGame.id} team1={{ name: `${homeTeam}`, id: `${homeTeamID}` }} team2={{ name: `${awayTeam}`, id: `${awayTeamID}` }} type="bot" />
           </div>
           <div className="col-md">
-            <strong>Away Team</strong>
-            {currentGame.status === 'Final' && awayTeam.team_id === currentGame.winner && (
+            <img src={`${awayTeamLogo}`} alt="" />
+            {currentGame.status === 'Final' && awayTeamID === currentGame.winner && (
               <p>Winner!</p>
             )}
-            <img src={awayTeam.image_url} width="50" height="50" />
-            <p>{awayTeam.name}</p>
+            <img src={awayTeamLogo} alt="Away Team Logo" width="50" height="50" />
+            <p>{awayTeam}</p>
             <p>11 - 0 - 12</p>
             {currentGame.away_odds < currentGame.home_odds && (
               <h3>The Bot&apos;s Pick!</h3>

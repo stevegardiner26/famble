@@ -56,7 +56,7 @@ export default function BetPage(props) {
   const [homeLogo, setHomeLogo] = useState('');
   const [awayLogo, setAwayLogo] = useState('');
   const [valid, setValid] = useState(false);
-
+  const info = useState(props.location.state.info);
   const userID = user._id;
   const fullName = user.name;
   const { balance } = user;
@@ -89,20 +89,22 @@ export default function BetPage(props) {
       setAmount(betAmount);
     }
   };
-  function BetLink() {
+  function BotLink() {
     return (
       <Link to={{
-        pathname: `/bot-bet/${gameID}`,
+        pathname: `/betpage/bot-bet/${gameID}`,
         state: {
           gameID: `${gameID}`,
           homeTeamID: `${homeTeamID}`,
           awayTeamID: `${awayTeamID}`,
           homeTeam: `${homeTeamName}`,
-          awayTeam: `${awayTeamName}`,
+          awayTeam: `${awayTeam}`,
+          homeTeamLogo: `${homeLogo}`,
+          awayTeamLogo: `${awayLogo}`,
         },
       }}
       >
-        Place a Bet!
+        Bet Against the Bot
 
       </Link>
     );
@@ -250,7 +252,7 @@ export default function BetPage(props) {
               </Grid>
               <Grid item xs={3}>
                 <Paper className={classes.paper}>
-                  <BetLink />
+                  <BotLink />
                 </Paper>
               </Grid>
               <Grid item xs={3}>
