@@ -26,7 +26,7 @@ async function getBetsByUserID(req, res){
 // app.get('/api/bets/:game_id', getBetsByGameID);
 async function getBetsByGameID(req, res){
     const { game_id } = req.params;
-    const bets = await Bet.find();
+    const bets = await Bet.find({game_id: game_id});
     return res.status(202).send({
         error: false,
         bets,
