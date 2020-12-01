@@ -33,7 +33,7 @@ function BetModal(props) {
   useEffect(() => {
     if (valid) {
       const setBet = async () => {
-        const res = await betService.createBet(userID, gameID, teamID, amount, type);
+        const res = await betService.createBet(userID, gameID, teamID, amount, user.name, type);
         if (res === []) {
           alert('Could not place bet at this time. Try again later.');
         } else {
