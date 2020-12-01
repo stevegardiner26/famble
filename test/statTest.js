@@ -1,7 +1,8 @@
+/* eslint-disable no-undef */
 const httpMocks = require('node-mocks-http');
 const sinon = require('sinon');
 const assert = require('chai').assert;
-const { teamModel } = require('../models/Team');
+const { statModel } = require('../models/Stat');
 const { getStatsByTeamIDStandings, getStatsByTeamIDTeamSeasonStats } = require('../routes/statisticRoutesHandlers');
 
 describe("getStatsByTeamIDStandings", function(){
@@ -27,14 +28,7 @@ describe("getStatsByTeamIDStandings", function(){
     })
 
     it("It should return statistics of a Team based on the Team ID", function(done){
-        const mockRequest = httpMocks.createRequest({
-            method: "GET",
-            url: "/api/stats/teams/1",
-            params:{
-                team_id: "1"
-            }
-        }); 
-        const result = getStatsByTeamIDStandings(data, team_stats, mockRequest);  
+        const result = getStatsByTeamIDStandings(data, team_stats);  
         const expected = {
             wins: 10,
             losses: 30
@@ -62,7 +56,8 @@ describe("getStatsByTeamIDTeamSeasonStats", function(){
         TeamID: 1
     }]
     let mockFind;
-    let team_stats = {
+    let mockCreate;
+    let teamStats = {
         touchdowns: null,
         passing_attempts: null,
         completion_percentage: null,
@@ -75,28 +70,23 @@ describe("getStatsByTeamIDTeamSeasonStats", function(){
 
     beforeEach((done) => {
         mockFind = sinon.stub(data, "find").returns(data[0]);
+        mockCreate = sinon.stub(statModel, "create").returns(null);
         done();
     })
 
     afterEach((done) => {
         mockFind.restore();
+        mockCreate.restore();
         done();
     })
 
     it("It should return statistics of a Team based on the Team ID", function(done){
-        const mockRequest = httpMocks.createRequest({
-            method: "GET",
-            url: "/api/stats/teams/1",
-            params:{
-                team_id: "1"
-            }
-        });
         const mockResponse = httpMocks.createResponse({
             eventEmitter: require('events').EventEmitter
           });
           
         mockResponse.on('end', function() {
-            team_stats = {
+            teamStats = {
                 touchdowns: 0,
                 passing_attempts: 0,
                 completion_percentage: 0,
@@ -106,7 +96,7 @@ describe("getStatsByTeamIDTeamSeasonStats", function(){
                 penalty_yards: 0,
                 sacks: 0  
             }
-            const expected = {team_stats};
+            const expected = {teamStats};
             try {
               assert.strictEqual(mockResponse.statusCode, 201);
               assert.deepStrictEqual(mockResponse._getData(), expected);
@@ -117,6 +107,6 @@ describe("getStatsByTeamIDTeamSeasonStats", function(){
             }
         }); 
         
-        getStatsByTeamIDTeamSeasonStats(data, team_stats, mockRequest, mockResponse);  
+        getStatsByTeamIDTeamSeasonStats(data, teamStats, mockResponse);  
     });
 })
