@@ -89,25 +89,6 @@ export default function BetPage(props) {
       setAmount(betAmount);
     }
   };
-  function BotLink() {
-    return (
-      <Link to={{
-        pathname: `/betpage/bot-bet/${gameID}`,
-        state: {
-          gameID: `${gameID}`,
-          homeTeamID: `${homeTeamID}`,
-          awayTeamID: `${awayTeamID}`,
-          homeTeam: `${homeTeamName}`,
-          awayTeam: `${awayTeam}`,
-          homeTeamLogo: `${homeLogo}`,
-          awayTeamLogo: `${awayLogo}`,
-        },
-      }}
-      >
-        Bet Against the Bot
-      </Link>
-    );
-  }
   const handleBet = () => {
     if (amount !== null || amount > balance) {
       if (teamID !== null) {
@@ -251,7 +232,9 @@ export default function BetPage(props) {
               </Grid>
               <Grid item xs={3}>
                 <Paper className={classes.paper}>
-                  <BotLink />
+                  <Link to={{ pathname: `/betpage/bot-bet/${gameID}` }}>
+                    Bet Against the Bot
+                  </Link>
                 </Paper>
               </Grid>
               <Grid item xs={3}>
