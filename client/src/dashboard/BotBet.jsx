@@ -57,7 +57,7 @@ function BotBet(props) {
       setHomeBetStats({ total_amount: homeBetAmount, total_count: homeBetCount });
       setBetStats({ total_amount: trailingAmount, total_count: trailingCount });
     });
-  });
+  }, []);
 
   return (
     <div>
