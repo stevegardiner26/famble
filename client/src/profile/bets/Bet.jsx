@@ -60,7 +60,34 @@ function Game({ info }) {
     return function cleanup() {
       mounted = false;
     };
-  });
+  }, []);
+
+  function LinkStatus() {
+    if (status !== 'Final' && status !== 'F/OT') {
+      return (
+        <Link to={{
+          pathname: `/betpage/${game_id}`,
+          state: {
+            gameID: `${game_id}`,
+            homeTeamID: `${homeTeamID}`,
+            awayTeamID: `${awayTeamID}`,
+            homeTeam: `${homeTeamName}`,
+            awayTeam: `${awayTeamName}`,
+          },
+        }}
+        >
+          Update Bet
+
+        </Link>
+      );
+    }
+
+    return (
+      <span>
+        Can no longer update bet
+      </span>
+    );
+  }
 
   return (
     <TableRow key={game_id}>
@@ -68,8 +95,8 @@ function Game({ info }) {
       <TableCell align="center">{teamName}</TableCell>
       <TableCell align="center">{amount}</TableCell>
       <TableCell align="center">{status}</TableCell>
-      {/* <TableCell align="center">
-        <Link to={{
+      <TableCell align="center">
+        {/* <Link to={{
           pathname: `/betpage/${game_id}`,
           state: {
             gameID: `${game_id}`,
@@ -82,8 +109,9 @@ function Game({ info }) {
         >
           Update/View Bet
 
-        </Link>
-      </TableCell> */}
+        </Link> */}
+        <LinkStatus />
+      </TableCell>
     </TableRow>
   );
 }

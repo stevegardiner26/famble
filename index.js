@@ -9,6 +9,7 @@ require('./models/Game');
 require('./models/User');
 require('./models/Bet');
 require('./models/Team');
+require('./models/Stat');
 
 const app = express();
 
