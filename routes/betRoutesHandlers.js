@@ -58,40 +58,42 @@ async function postBets(req, res){
 
 async function postBetsHelper(body, bets, user){
   for (let i = 0; i < bets.length; i++){
-    if(bets[i].user_id === body.user_id && bets[i].team_id === body.team_id){
-      if(body.amount > bets[i].amount){
-        await Bet.findByIdAndUpdate(bets[i]._id,{
-          amount: body.amount
-        });
-        await User.findByIdAndUpdate(body.user_id, {
-          shreddit_balance: user.shreddit_balance - (body.amount - bets[i].amount)
-        });
-        return {
-          status: 201,
-          data: {
-            error: false,
-          }
-        };
-        
-      } 
+    if(bets[i].user_id === body.user_id){
+      if(bets[i].team_id === body.team_id){
+        if(body.amount > bets[i].amount){
+          await Bet.findByIdAndUpdate(bets[i]._id,{
+            amount: body.amount
+          });
+          await User.findByIdAndUpdate(body.user_id, {
+            shreddit_balance: user.shreddit_balance - (body.amount - bets[i].amount)
+          });
+          return {
+            status: 201,
+            data: {
+              error: false,
+            }
+          };
+          
+        } 
+        else{
+          return {
+            status: 500,
+            data: {
+              error: true,
+              msg: "Could not update because the updated amount is less than or equal to the current amount",
+            }
+          };
+        }
+      }
       else{
         return {
           status: 500,
           data: {
             error: true,
-            msg: "Could not update because the updated amount is less than or equal to the current amount",
+            msg: "You are trying to change the team you are betting on, you are locked in after placing your bet",
           }
         };
       }
-    }
-    else{
-      return {
-        status: 500,
-        data: {
-          error: true,
-          msg: "You are trying to change the team you are betting on, you are locked in after placing your bet",
-        }
-      };
     }
   }
 }
