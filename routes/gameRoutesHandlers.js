@@ -105,33 +105,33 @@ function fetchWeeklyScoresHelper(week, res) {
         winner_id = game.GlobalHomeTeamID;
       }
 
-            let bets = Bet.find({game_id: game.GlobalGameID});
-            if (bets.length > 1) {
-              bets.forEach((b) => {
-                if (b.team_id == winner_id) {
-                  const user = User.findById(b.user_id);
-                  if (b.type == "default") {
-                    User.findByIdAndUpdate(b.user_id, {
-                        shreddit_balance: (user.shreddit_balance + (2 * b.amount))
-                    });
-                  } else if (b.type == "bot") {
-                    let winnings = b.amount;
-                    let chosen_odds = game.away_odds;
-                    if (game.away_team_id == winner_id) {
-                      chosen_odds = game.away_odds;
-                    } else if (game.home_team_id == winner_id) {
-                      chosen_odds = game.home_odds;
-                    }
-                    
-                    if (chosen_odds < 0) {
-                      winnings = b.amount * ((chosen_odds * -1) / 100) + b.amount;
-                    } else {
-                      winnings = b.amount * (chosen_odds / 100);
-                    }
-                  }
-                }
-                Bet.findByIdAndUpdate(b.id, {active: false});
+      let bets = Bet.find({game_id: game.GlobalGameID});
+      if (bets.length > 1) {
+        bets.forEach((b) => {
+          if (b.team_id == winner_id) {
+            const user = User.findById(b.user_id);
+            if (b.type == "default") {
+              User.findByIdAndUpdate(b.user_id, {
+                  shreddit_balance: (user.shreddit_balance + (2 * b.amount))
               });
+            } else if (b.type == "bot") {
+              let winnings = b.amount;
+              let chosen_odds = game.away_odds;
+              if (game.away_team_id == winner_id) {
+                chosen_odds = game.away_odds;
+              } else if (game.home_team_id == winner_id) {
+                chosen_odds = game.home_odds;
+              }
+              
+              if (chosen_odds < 0) {
+                winnings = b.amount * ((chosen_odds * -1) / 100) + b.amount;
+              } else {
+                winnings = b.amount * (chosen_odds / 100);
+              }
+            }
+          }
+          Bet.findByIdAndUpdate(b.id, {active: false});
+        });
       }
     };
       
