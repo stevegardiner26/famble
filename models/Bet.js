@@ -5,7 +5,7 @@ const { Schema } = mongoose;
 const betSchema = new Schema({
   user_id: String,
   game_id: String,
-  team_id: Number,
+  team_id: String,
   name: String,
   teamName: String,
   amount: Number,
