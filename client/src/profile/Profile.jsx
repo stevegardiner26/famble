@@ -110,7 +110,7 @@ function Profile() {
     return function cleanup() {
       mounted = false;
     };
-  });
+  }, []);
 
   return (
     <div className={styles.page}>
@@ -136,7 +136,7 @@ function Profile() {
               <TableCell align="center">Team/Bot:</TableCell>
               <TableCell align="center">Amount Bet:</TableCell>
               <TableCell align="center">Game Status:</TableCell>
-              {/* <TableCell align="center" /> */}
+              <TableCell align="center" />
             </TableRow>
           </TableHead>
           <TableBody>
