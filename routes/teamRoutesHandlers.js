@@ -1,6 +1,5 @@
 var Client = require('node-rest-client').Client;
 var client = new Client();
-const { response } = require('express');
 const mongoose = require('mongoose');
 const Team = mongoose.model('teams');
 
@@ -33,7 +32,7 @@ async function fetchTeams(req, res){
     return res.status(201).send({message: "Imported All Teams!"});
 }
 
-function fetchTeamsHelper(data, response){
+function fetchTeamsHelper(data){
     // parsed response body as js object
     data.forEach(team => {
         let payload = {
