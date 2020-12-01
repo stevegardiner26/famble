@@ -24,7 +24,7 @@ function BotBet(props) {
   });
 
   useEffect(() => {
-    gameService.getGameById(props.match.params.id).then((game) => {
+    gameService.getGameById(props.match.params.id).then(async (game) => {
       setCurrentGame({
         home_odds: game.home_odds,
         away_odds: game.away_odds,
@@ -34,22 +34,25 @@ function BotBet(props) {
         start_time: game.start_time,
       });
 
-      teamService.getTeamById(game.away_team_id).then((team) => {
+      teamService.getTeamById(game.away_team_id).then((away) => {
         setAwayTeam({
-          name: team[0].name,
-          image_url: team[0].image_url,
-          team_id: team[0].team_id,
+          name: away[0].name,
+          image_url: away[0].image_url,
+          team_id: away[0].team_id,
         });
       });
 
-      teamService.getTeamById(game.home_team_id).then((team) => {
+      teamService.getTeamById(game.home_team_id).then((home) => {
         setHomeTeam({
-          name: team[0].name,
-          image_url: team[0].image_url,
-          team_id: team[0].team_id,
+          name: home[0].name,
+          image_url: home[0].image_url,
+          team_id: home[0].team_id,
         });
       });
     });
+  }, []);
+
+  useEffect(() => {
     betService.getBetsByGameId(props.match.params.id).then((data) => {
       let trailingAmount = 0;
       let trailingCount = 0;
@@ -76,7 +79,7 @@ function BotBet(props) {
       setHomeBetStats({ total_amount: homeBetAmount, total_count: homeBetCount });
       setBetStats({ total_amount: trailingAmount, total_count: trailingCount });
     });
-  }, []);
+  }, [awayTeam, homeTeam]);
 
   return (
     <div>

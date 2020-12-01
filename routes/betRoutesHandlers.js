@@ -26,9 +26,7 @@ async function getBetsByUserID(req, res){
 // app.get('/api/bets/:game_id', getBetsByGameID);
 async function getBetsByGameID(req, res){
     const { game_id } = req.params;
-    console.log(game_id)
     const bets = await Bet.find();
-    console.log(bets);
     return res.status(202).send({
         error: false,
         bets,
@@ -55,6 +53,7 @@ async function postBets(req, res){
       message: 'The Game Has Already Started, the Bet Could Not be Placed.'
     });
   }
+
   req.body.teamName = team[0].name;
   req.body.game_id = game_id;
   const bet = await Bet.create(req.body);
