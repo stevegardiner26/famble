@@ -1,5 +1,4 @@
 const Client = require('node-rest-client').Client;
-const mongoose = require('mongoose');
 const client = new Client();
 
 // app.get('/api/stats/teams/:team_id')
@@ -16,11 +15,11 @@ async function getStatsByTeamID(req, res){
         penalty_yards: null,
         sacks: null,
     };
-    client.get("https://api.sportsdata.io/v3/nfl/scores/json/UpcomingSeason", {headers: {"Ocp-Apim-Subscription-Key": process.env['NFL_API_TOKEN']}}, async function(year, response){
-        client.get(`https://api.sportsdata.io/v3/nfl/scores/json/Standings/${year}`, { headers: { "Ocp-Apim-Subscription-Key": process.env['NFL_API_TOKEN'] } }, function (data, response) {
+    client.get("https://api.sportsdata.io/v3/nfl/scores/json/UpcomingSeason", {headers: {"Ocp-Apim-Subscription-Key": process.env['NFL_API_TOKEN']}}, async function(year){
+        client.get(`https://api.sportsdata.io/v3/nfl/scores/json/Standings/${year}`, { headers: { "Ocp-Apim-Subscription-Key": process.env['NFL_API_TOKEN'] } }, function (data) {
             team_stats = getStatsByTeamIDStandings(data, team_stats, req);
         });  
-        client.get(`https://api.sportsdata.io/v3/nfl/scores/json/TeamSeasonStats/${year}`, { headers: { "Ocp-Apim-Subscription-Key": process.env['NFL_API_TOKEN'] } }, function (data, response) {
+        client.get(`https://api.sportsdata.io/v3/nfl/scores/json/TeamSeasonStats/${year}`, { headers: { "Ocp-Apim-Subscription-Key": process.env['NFL_API_TOKEN'] } }, function (data) {
             getStatsByTeamIDTeamSeasonStats(data, team_stats, req, res);   
         }); 
     });

@@ -54,10 +54,10 @@ async function postBets(req, res){
     error: false,
     bet,
   });
-};
+}
 
 async function postBetsHelper(body, bets, user){
-  for (i = 0; i < bets.length; i++){
+  for (let i = 0; i < bets.length; i++){
     if(bets[i].user_id === body.user_id && bets[i].team_id === body.team_id){
       if(body.amount > bets[i].amount){
         await Bet.findByIdAndUpdate(bets[i]._id,{
