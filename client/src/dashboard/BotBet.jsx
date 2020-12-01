@@ -2,6 +2,8 @@
 /* eslint-disable max-len */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/jsx-one-expression-per-line */
+/* eslint-disable arrow-body-style */
+/* eslint-disable no-else-return */
 import React, { useState, useEffect } from 'react';
 import Container from '@material-ui/core/Container';
 import BetModal from './BetModal';
@@ -14,8 +16,10 @@ function BotBet(props) {
   const [awayBetStats, setAwayBetStats] = useState({ total_amount: 0, total_count: 0, percent: 0 });
   const [homeBetStats, setHomeBetStats] = useState({ total_amount: 0, total_count: 0, percent: 0 });
   const [currentGame, setCurrentGame] = useState({
-    home_odds: 0, away_odds: 0, status: '', id: 0, winner: 0, start_time: '',
+    status: '', id: 0, winner: 0, start_time: '',
   });
+  const [awayOdds, setAwayOdds] = useState();
+  const [homeOdds, setHomeOdds] = useState();
   const [awayTeam, setAwayTeam] = useState({
     name: 'Away Team', image_url: 'placeholder', team_id: 0,
   });
@@ -33,6 +37,16 @@ function BotBet(props) {
         winner: game.winner,
         start_time: game.start_time,
       });
+
+      if (!game.home_odds || !game.away_odds) {
+        gameService.getGameOdds(game.game_id).then((data) => {
+          setAwayOdds(data.away_odds);
+          setHomeOdds(data.home_odds);
+        });
+      } else {
+        setHomeOdds(game.home_odds);
+        setAwayOdds(game.away_odds);
+      }
 
       teamService.getTeamById(game.away_team_id).then((away) => {
         setAwayTeam({
@@ -95,14 +109,16 @@ function BotBet(props) {
             <img src={`${homeTeam.image_url}`} alt="Home Team Logo" width="50" height="50" />
             <p>{homeTeam.name}</p>
             <p>11 - 0 - 12</p>
-            {currentGame.home_odds < currentGame.away_odds && (
+            {homeOdds < awayOdds && (
               <h3>The Bot&apos;s Pick!</h3>
             )}
           </div>
           <div className="col-md">
             <p>Bot Image</p>
             <h1>VS</h1>
-            <span>{currentGame.start_time.toString()}</span>
+            <span>{new Date(currentGame.start_time).toLocaleDateString()}</span>
+            <br />
+            <span>{new Date(currentGame.start_time).toLocaleTimeString()}</span>
             <br />
             <br />
             <BetModal gameID={currentGame.id} team1={{ name: `${homeTeam.name}`, id: `${homeTeam.team_id}` }} team2={{ name: `${awayTeam.name}`, id: `${awayTeam.team_id}` }} type="bot" />
@@ -116,7 +132,7 @@ function BotBet(props) {
             <img src={awayTeam.image_url} alt="Away Team Logo" width="50" height="50" />
             <p>{awayTeam.name}</p>
             <p>11 - 0 - 12</p>
-            {currentGame.away_odds < currentGame.home_odds && (
+            {awayOdds < homeOdds && (
               <h3>The Bot&apos;s Pick!</h3>
             )}
           </div>

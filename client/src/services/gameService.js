@@ -25,4 +25,8 @@ export default {
     const res = await axios.get(`/api/games/${id}`);
     return res.data || [];
   },
+  getGameOdds: async (id) => {
+    const res = await axios.get(`/api/games/odds/${id}`);
+    return res.data || {};
+  },
 };
