@@ -10,6 +10,8 @@ require('./models/Bet');
 require('./models/Team');
 
 const app = express();
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
 
 mongoose.Promise = global.Promise;
 mongoose.connect(process.env.MONGODB_URI || `mongodb://localhost:27017/node-react-starter`, {useNewUrlParser: true, useUnifiedTopology: true}, function () {
@@ -25,6 +27,8 @@ require('./routes/teamRoutes')(app);
 require('./routes/betRoutes')(app);
 require('./routes/statisticRoutes')(app);
 
+require('./routes/messageRoutes')(io);
+
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static('client/build'));
 
@@ -35,7 +39,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
+http.listen(PORT, () => {
   console.log(`app running on port ${PORT}`);
 });
 
