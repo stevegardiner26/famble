@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const User = mongoose.model('users');
 const Bet = mongoose.model('bets');
 const Team = mongoose.model('teams');
+const Game = mongoose.model('games');
 const helpers = {
   postBetsHelper
 }
