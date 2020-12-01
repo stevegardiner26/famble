@@ -107,11 +107,11 @@ function fetchWeeklyScoresHelper(week, res) {
 
             let bets = Bet.find({game_id: game.GlobalGameID});
             if (bets.length > 1) {
-              bets.forEach(async (b) => {
+              bets.forEach((b) => {
                 if (b.team_id == winner_id) {
-                  const user = await User.findById(b.user_id);
+                  const user = User.findById(b.user_id);
                   if (b.type == "default") {
-                    await User.findByIdAndUpdate(b.user_id, {
+                    User.findByIdAndUpdate(b.user_id, {
                         shreddit_balance: (user.shreddit_balance + (2 * b.amount))
                     });
                   } else if (b.type == "bot") {
@@ -130,10 +130,9 @@ function fetchWeeklyScoresHelper(week, res) {
                     }
                   }
                 }
-                await Bet.findByIdAndDelete(b.id);          
+                Bet.findByIdAndUpdate(b.id, {active: false});
               });
       }
-      await Bet.findByIdAndUpdate(b.id, {active: false});          
     };
       
     let payload = {

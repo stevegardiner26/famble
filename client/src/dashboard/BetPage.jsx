@@ -56,7 +56,7 @@ export default function BetPage(props) {
   const [homeLogo, setHomeLogo] = useState('');
   const [awayLogo, setAwayLogo] = useState('');
   const [valid, setValid] = useState(false);
-  const info = useState(props.location.state.info);
+
   const userID = user._id;
   const fullName = user.name;
   const { balance } = user;
@@ -105,7 +105,6 @@ export default function BetPage(props) {
       }}
       >
         Bet Against the Bot
-
       </Link>
     );
   }
