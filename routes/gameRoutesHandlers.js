@@ -44,6 +44,7 @@ async function fetchOddsByGame(req, res) {
   
   if (!game.home_odds || !game.away_odds) {
     await client.get(`https://api.sportsdata.io/v3/nfl/odds/json/GameOddsLineMovement/${game.score_id}`, {headers: {"Ocp-Apim-Subscription-Key": process.env['NFL_API_TOKEN']}}, async function (data, response) {
+      
       var away_odds = data[0].PregameOdds[0].AwayMoneyLine;
       var home_odds = data[0].PregameOdds[0].HomeMoneyLine;
 
@@ -172,7 +173,8 @@ function fetchGamesHelper(data, res) {
         away_team_id: game.GlobalAwayTeamID,
         home_team_id: game.GlobalHomeTeamID,
         canceled: game.Canceled,
-        status: game.Status
+        status: game.Status,
+        score_id: game.ScoreID,
       };
       await Game.create(payload);
     } 
@@ -180,7 +182,8 @@ function fetchGamesHelper(data, res) {
       let payload = {
         start_time: game.Date,          
         canceled: game.Canceled,
-        status: game.Status
+        status: game.Status,
+        score_id: game.ScoreID,
       };
       await Game.findOneAndUpdate({game_id: game.GlobalGameID}, payload, {useFindAndModify: false});
     }
@@ -192,7 +195,7 @@ function fetchGamesHelper(data, res) {
 async function updateGameById(req, res){
   const { id } = req.params;
 
-  const game = await Game.findByIdAndUpdate(id, req.body);
+  const game = await Game.findOneAndUpdate({game_id: id}, req.body);
 
   return res.status(202).send({
     error: false, 
