@@ -29,7 +29,7 @@ function BotBet(props) {
         home_odds: game.home_odds,
         away_odds: game.away_odds,
         status: game.status,
-        id: game.id,
+        id: game.game_id,
         winner: game.winner,
         start_time: game.start_time,
       });

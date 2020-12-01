@@ -26,7 +26,9 @@ async function getBetsByUserID(req, res){
 // app.get('/api/bets/:game_id', getBetsByGameID);
 async function getBetsByGameID(req, res){
     const { game_id } = req.params;
-    const bets = await Bet.find({game_id: game_id});
+    console.log(game_id)
+    const bets = await Bet.find();
+    console.log(bets);
     return res.status(202).send({
         error: false,
         bets,
@@ -37,7 +39,7 @@ async function getBetsByGameID(req, res){
 async function postBets(req, res){
   const { game_id } = req.body;
   const body = req.body;
-  const bets = await Bet.find({game_id:game_id});  
+  const bets = await Bet.find({game_id: game_id});  
   const user = await User.findById(req.body.user_id);
   const response = await helpers.postBetsHelper(body,bets,user);
 
@@ -54,6 +56,7 @@ async function postBets(req, res){
     });
   }
   req.body.teamName = team[0].name;
+  req.body.game_id = game_id;
   const bet = await Bet.create(req.body);
   await User.findByIdAndUpdate(req.body.user_id, {
       shreddit_balance: user.shreddit_balance - req.body.amount

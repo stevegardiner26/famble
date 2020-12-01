@@ -2,7 +2,8 @@ const {
   getBets, 
   getBetsByGameID, 
   postBets, 
-  getBetsByUserID, 
+  getBetsByUserID,
+  deleteBets,
 } = require('./betRoutesHandlers');
 
 module.exports = (app) => {
@@ -15,5 +16,5 @@ module.exports = (app) => {
   app.post('/api/bets', postBets);
 
   // Delete
-  // app.delete('/api/bets/:id', deleteBets);
+  app.delete('/api/bets/:id', deleteBets);
 };
