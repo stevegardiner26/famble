@@ -163,7 +163,7 @@ export default function BetPage(props) {
     getHomeLogo(homeTeamID);
     getAwayLogo(awayTeamID);
     getBetsForGame(gameID);
-  });
+  }, []);
 
   return (
     <CssBaseline>
