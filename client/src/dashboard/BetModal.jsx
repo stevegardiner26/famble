@@ -100,7 +100,7 @@ function BetModal(props) {
               <FormGroup check>
                 <Col sm={4}>
                   <Label check>
-                    <Input onClick={() => changeTeamID(team2ID)} type="radio" name="team2" />
+                    <Input onClick={() => changeTeamID(team2ID)} type="radio" name="team1" />
                     {team2Name}
                   </Label>
                 </Col>
