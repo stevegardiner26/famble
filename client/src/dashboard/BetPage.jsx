@@ -127,8 +127,6 @@ export default function BetPage(props) {
     getHomeLogo(homeTeamID);
     getAwayLogo(awayTeamID);
     getBetsForGame(gameID);
-    // eslint-disable-next-line no-console
-    console.log(gameID);
   }, []);
 
   return (
