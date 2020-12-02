@@ -55,6 +55,7 @@ export default function BetPage(props) {
   const [gameID] = useState(props.location.state.gameID);
   const [homeLogo, setHomeLogo] = useState('');
   const [awayLogo, setAwayLogo] = useState('');
+  const [previousBet, setPrev] = useState(false);
   const [valid, setValid] = useState(false);
 
   const userID = user._id;
@@ -75,7 +76,7 @@ export default function BetPage(props) {
       };
       setBet();
     }
-  }, [valid, userID, gameID, teamID, amount, fullName, 'default']);
+  }, [valid, userID, gameID, teamID, amount, fullName]);
   const changeTeamID = (teamSelectedID) => {
     setTeamID(teamSelectedID);
   };
@@ -169,6 +170,7 @@ export default function BetPage(props) {
 
     );
   }
+
   function DisplayCurrentBet() {
     let teamName = 'this game.';
     let betAmount = 'no';
@@ -181,6 +183,8 @@ export default function BetPage(props) {
         if (row.user_id === userID) {
           betAmount = row.amount;
           teamName = row.teamName;
+          setTeamID(row.team_id);
+          setPrev(true);
         }
       });
       return (
@@ -207,8 +211,10 @@ export default function BetPage(props) {
   useEffect(() => {
     getHomeLogo(homeTeamID);
     getAwayLogo(awayTeamID);
-    getBetsForGame(gameID);
   }, []);
+  useEffect(() => {
+    getBetsForGame(gameID);
+  }, [valid]);
 
   return (
     <CssBaseline>
@@ -280,18 +286,18 @@ export default function BetPage(props) {
                         <Input type="number" name="betAmount" id="betAmount" onChange={changeBet} placeholder="Enter Bet Amount" />
                       </Col>
                     </FormGroup>
-                    <FormGroup tag="fieldset" row>
+                    <FormGroup id="selectTeam" tag="fieldset" row>
                       <Label sm={4}>Select a Team:</Label>
                       <FormGroup check>
                         <Col sm={2}>
                           <Label check>
-                            <Input onClick={() => changeTeamID(homeTeamID)} type="radio" name="team" />
+                            <Input onClick={() => changeTeamID(homeTeamID)} type="radio" name="team" disabled={previousBet} />
                             {homeTeamName}
                           </Label>
                         </Col>
                         <Col sm={2}>
                           <Label check>
-                            <Input onClick={() => changeTeamID(awayTeamID)} type="radio" name="team" />
+                            <Input onClick={() => changeTeamID(awayTeamID)} type="radio" name="team" disabled={previousBet} />
                             {awayTeam}
                           </Label>
                         </Col>
