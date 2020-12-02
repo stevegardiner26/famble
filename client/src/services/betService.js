@@ -17,13 +17,14 @@ export default {
     return res.data || [];
   },
 
-  createBet: async (user_id, game_id, team_id, amount, name) => {
+  createBet: async (user_id, game_id, team_id, amount, name, type) => {
     const res = await axios.post('/api/bets', {
       user_id,
       game_id,
       team_id,
-      name,
       amount,
+      name,
+      type,
     });
     return res.data || [];
   },

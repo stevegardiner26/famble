@@ -8,6 +8,7 @@ import {
 import { useSelector } from 'react-redux';
 import { selectUser } from './store/slices/userSlice';
 import Dashboard from './dashboard/Dashboard';
+import BotBet from './dashboard/BotBet';
 import Home from './home/Home';
 import './App.css';
 import BetPage from './dashboard/BetPage';
@@ -29,6 +30,13 @@ function App() {
           <Route exact path="/profile">
             <Profile />
           </Route>
+          <Route
+            path="/betpage/bot-bet/:id"
+            render={(props) => (
+              // eslint-disable-next-line react/jsx-props-no-spreading
+              <BotBet {...props} />
+            )}
+          />
           <Route
             path="/betpage/:id"
             render={(props) => (

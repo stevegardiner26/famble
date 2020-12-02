@@ -63,7 +63,7 @@ export default function BetPage(props) {
   useEffect(() => {
     if (valid) {
       const setBet = async () => {
-        const res = await betService.createBet(userID, gameID, teamID, amount, fullName);
+        const res = await betService.createBet(userID, gameID, teamID, amount, fullName, 'default');
         if (res === []) {
           alert('Could not place bet at this time. Try again later.');
         } else {
@@ -89,7 +89,6 @@ export default function BetPage(props) {
       setAmount(betAmount);
     }
   };
-
   const handleBet = () => {
     if (amount !== null || amount > balance) {
       if (teamID !== null) {
@@ -268,7 +267,11 @@ export default function BetPage(props) {
                 <BetCount />
               </Grid>
               <Grid item xs={3}>
-                <Paper className={classes.paper}>xs=3</Paper>
+                <Paper className={classes.paper}>
+                  <Link to={{ pathname: `/betpage/bot-bet/${gameID}` }}>
+                    Bet Against the Bot
+                  </Link>
+                </Paper>
               </Grid>
               <Grid item xs={3}>
                 <Paper className={classes.paper}>xs=3</Paper>

@@ -42,6 +42,7 @@ function Game({ info }) {
             awayTeamID: `${away_team_id}`,
             homeTeam: `${homeTeamName}`,
             awayTeam: `${awayTeamName}`,
+
           },
         }}
         >

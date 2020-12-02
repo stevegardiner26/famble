@@ -1,9 +1,11 @@
+/* eslint-disable no-undef */
 const httpMocks = require('node-mocks-http');
 const sinon = require('sinon');
 const assert = require('chai').assert;
 const { betModel } = require('../models/Bet');
 const { userModel } = require('../models/User');
 const { teamModel } = require('../models/Team');
+const { gameModel } = require('../models/Game');
 const { getBets, getBetsByGameID, postBets, getBetsByUserID, deleteBets, helpers, postBetsHelper } = require('../routes/betRoutesHandlers');
 
 describe("GET /api/bets", function() {  
@@ -173,6 +175,19 @@ describe("POST /api/bets", function() {
   let mockFind;
   let mockTeamFind;
   let mockResponse;
+  let mockFindGame;
+  let mockSetDate;
+  let curr = new Date('2020-11-23T00:00:00.000Z');
+  const start_time = new Date('2020-12-22T00:00:00.000Z') 
+  let fakeGame = [{
+    game_id: 17263,
+    sport_type: "NFL",
+    away_team_id: 13,
+    home_team_id: 16,
+    canceled: false,
+    status: "Final",
+    start_time: start_time
+  }]
 
   beforeEach((done) =>{
     userResult = {
@@ -196,6 +211,8 @@ describe("POST /api/bets", function() {
       game_id: "17403",
       home_team_id: 1,
     }
+    mockFindGame = sinon.stub(gameModel, "find").returns(fakeGame)
+    mockSetDate = sinon.useFakeTimers(curr);
     mockResponse = sinon.stub(helpers,"postBetsHelper").returns(null);
     mockCreate = sinon.stub(betModel, "create").callsFake((body) => {
       return body;
@@ -215,6 +232,8 @@ describe("POST /api/bets", function() {
     mockFindById.restore();
     mockFindByIdUpdate.restore();
     mockResponse.restore();
+    mockFindGame.restore();
+    mockSetDate.restore();
     done();
   })
 

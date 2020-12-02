@@ -6,10 +6,10 @@ import React, { useEffect, useState } from 'react';
 import {
   Col, Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input,
 } from 'reactstrap';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import styles from './BetModal.module.css';
 import betService from '../services/betService';
-import { selectUser } from '../store/slices/userSlice';
+import { selectUser, updateShreddits } from '../store/slices/userSlice';
 
 function BetModal(props) {
   const user = useSelector(selectUser);
@@ -18,7 +18,9 @@ function BetModal(props) {
   const [amount, setAmount] = useState(null);
   const [valid, setValid] = useState(false);
 
-  const { gameID, team1, team2 } = props;
+  const {
+    gameID, team1, team2, type,
+  } = props;
   const team1Name = team1.name;
   const team1ID = team1.id;
   const team2Name = team2.name;
@@ -26,15 +28,19 @@ function BetModal(props) {
 
   const userID = user._id;
 
+  const dispatch = useDispatch();
+
   const toggle = () => setModal(!modal);
 
   useEffect(() => {
     if (valid) {
       const setBet = async () => {
-        const res = await betService.createBet(userID, gameID, teamID, amount);
+        const res = await betService.createBet(userID, gameID, teamID, amount, user.name, type);
         if (res === []) {
           alert('Could not place bet at this time. Try again later.');
         } else {
+          props.finishedBettingHandler();
+          dispatch(updateShreddits(amount));
           alert('Bet placed successfully!');
           setValid(false);
           setModal(!modal);
@@ -42,7 +48,7 @@ function BetModal(props) {
       };
       setBet();
     }
-  }, [valid, userID, gameID, teamID, amount]);
+  }, [valid, userID, gameID, teamID, amount, type]);
 
   const changeTeamID = (teamSelectedID) => {
     setTeamID(teamSelectedID);
@@ -98,7 +104,7 @@ function BetModal(props) {
               <FormGroup check>
                 <Col sm={4}>
                   <Label check>
-                    <Input onClick={() => changeTeamID(team2ID)} type="radio" name="team2" />
+                    <Input onClick={() => changeTeamID(team2ID)} type="radio" name="team1" />
                     {team2Name}
                   </Label>
                 </Col>

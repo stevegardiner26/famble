@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const User = mongoose.model('users');
 const Bet = mongoose.model('bets');
 const Team = mongoose.model('teams');
+const Game = mongoose.model('games');
 const helpers = {
   postBetsHelper
 }
@@ -36,7 +37,7 @@ async function getBetsByGameID(req, res){
 async function postBets(req, res){
   const { game_id } = req.body;
   const body = req.body;
-  const bets = await Bet.find({game_id:game_id});  
+  const bets = await Bet.find({game_id: game_id, user_id: req.body.user_id});
   const user = await User.findById(req.body.user_id);
   const response = await helpers.postBetsHelper(body,bets,user);
 
@@ -45,7 +46,16 @@ async function postBets(req, res){
   }
   const { team_id } = req.body;
   const team = await Team.find({team_id:team_id});
+  const game = await Game.find({game_id: game_id});
+  if (new Date(game[0].start_time) < new Date()) {
+    return res.status(500).send({
+      error: true,
+      message: 'The Game Has Already Started, the Bet Could Not be Placed.'
+    });
+  }
+
   req.body.teamName = team[0].name;
+  req.body.game_id = game_id;
   const bet = await Bet.create(req.body);
   await User.findByIdAndUpdate(req.body.user_id, {
       shreddit_balance: user.shreddit_balance - req.body.amount

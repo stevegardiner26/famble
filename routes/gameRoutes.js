@@ -5,7 +5,8 @@ const {
   fetchGames,
   getCurrentWeekGames,
   updateGameById,
-  deleteGameById  
+  deleteGameById,
+  fetchOddsByGame
 } = require('./gameRoutesHandlers');
 
 module.exports = (app) => {
@@ -17,6 +18,9 @@ module.exports = (app) => {
   // Fetch Games From API
   // Ideally this is hit once a season to get the schedule
   app.get('/api/fetch_games', fetchGames);
+
+  // Get Odds for Game
+  app.get('/api/games/odds/:id', fetchOddsByGame);
 
   // Update
   app.put('/api/games/:id', updateGameById);

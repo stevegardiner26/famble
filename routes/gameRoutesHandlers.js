@@ -27,8 +27,9 @@ async function getCurrentWeekGames(req,res){
   var firstday = new Date(curr.setDate(curr.getDate() - curr.getDay()));
   const games = await Game.find();
   const currentWeekGames = [];
+
   for (let i = vars.i; i < games.length; i++){
-    if (((games[i].start_time -firstday)/86400000).toFixed() > 7){
+    if (((games[i].start_time -firstday)/86400000).toFixed() > 14){
       break;
     }
     if (games[i].start_time >= firstday){
@@ -38,6 +39,45 @@ async function getCurrentWeekGames(req,res){
   return res.status(200).send(currentWeekGames);
 }
 
+async function fetchOddsByGame(req, res) {
+  const { id } = req.params;
+  var game = await Game.findOne({ game_id: id });
+  
+  if (!game.home_odds || !game.away_odds) {
+    await client.get(`https://api.sportsdata.io/v3/nfl/odds/json/GameOddsLineMovement/${game.score_id}`, {headers: {"Ocp-Apim-Subscription-Key": process.env['NFL_API_TOKEN']}}, async function (data, response) {
+      
+      var away_odds = data[0].PregameOdds[0].AwayMoneyLine;
+      var home_odds = data[0].PregameOdds[0].HomeMoneyLine;
+
+      var index = 1;
+      while (away_odds == null && home_odds == null) {
+        away_odds = data[0].PregameOdds[index].AwayMoneyLine;
+        home_odds = data[0].PregameOdds[index].HomeMoneyLine;
+        index++;
+      }
+
+      let payload = {
+        away_odds: away_odds,
+        home_odds: home_odds,
+      }
+        
+      await Game.findOneAndUpdate({game_id: id}, payload, {useFindAndModify: false});
+      return res.status(200).send({
+        error: false,
+        away_team_odds: away_odds,
+        home_team_odds: home_odds,
+      })
+    });
+  } else {
+    return res.status(200).send({
+      error: false,
+      away_team_odds: game.away_odds,
+      home_team_odds: game.home_odds,
+    })
+  }
+}
+
+var date_cache = null;
 // app.get('/api/fetch_weekly_scores', fetchWeeklyScores) 
 async function fetchWeeklyScores(req, res){
   // Check and only allow this to execute the api call if it is 10 minutes past the last time it was called:
@@ -69,17 +109,34 @@ function fetchWeeklyScoresHelper(week, res) {
 
       let bets = Bet.find({game_id: game.GlobalGameID});
       if (bets.length > 1) {
-        bets.forEach(async (b) => {
+        bets.forEach((b) => {
           if (b.team_id == winner_id) {
-            const user = await User.findById(b.user_id);
-            await User.findByIdAndUpdate(b.user_id, {
-                shreddit_balance: (user.shreddit_balance + (2 * b.amount))
-            });
+            const user = User.findById(b.user_id);
+            if (b.type == "default") {
+              User.findByIdAndUpdate(b.user_id, {
+                  shreddit_balance: (user.shreddit_balance + (2 * b.amount))
+              });
+            } else if (b.type == "bot") {
+              let winnings = b.amount;
+              let chosen_odds = game.away_odds;
+              if (game.away_team_id == winner_id) {
+                chosen_odds = game.away_odds;
+              } else if (game.home_team_id == winner_id) {
+                chosen_odds = game.home_odds;
+              }
+              
+              if (chosen_odds < 0) {
+                winnings = b.amount * ((chosen_odds * -1) / 100);
+              } else {
+                winnings = b.amount * (chosen_odds / 100) + b.amount;
+              }
+            }
           }
-          await Bet.findByIdAndUpdate(b.id, {active: false});          
+          Bet.findByIdAndUpdate(b.id, {active: false});
         });
       }
-    }
+    };
+      
     let payload = {
       canceled: game.Canceled,
       status: game.Status,
@@ -117,7 +174,8 @@ function fetchGamesHelper(data, res) {
         away_team_id: game.GlobalAwayTeamID,
         home_team_id: game.GlobalHomeTeamID,
         canceled: game.Canceled,
-        status: game.Status
+        status: game.Status,
+        score_id: game.ScoreID,
       };
       await Game.create(payload);
     } 
@@ -125,7 +183,8 @@ function fetchGamesHelper(data, res) {
       let payload = {
         start_time: game.Date,          
         canceled: game.Canceled,
-        status: game.Status
+        status: game.Status,
+        score_id: game.ScoreID,
       };
       await Game.findOneAndUpdate({game_id: game.GlobalGameID}, payload, {useFindAndModify: false});
     }
@@ -137,7 +196,7 @@ function fetchGamesHelper(data, res) {
 async function updateGameById(req, res){
   const { id } = req.params;
 
-  const game = await Game.findByIdAndUpdate(id, req.body);
+  const game = await Game.findOneAndUpdate({game_id: id}, req.body);
 
   return res.status(202).send({
     error: false, 
@@ -166,3 +225,4 @@ exports.fetchGamesHelper = fetchGamesHelper;
 exports.updateGameById = updateGameById;
 exports.deleteGameById = deleteGameById;
 exports.vars = vars;
+exports.fetchOddsByGame = fetchOddsByGame;
