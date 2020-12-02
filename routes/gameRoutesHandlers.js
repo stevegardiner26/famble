@@ -125,9 +125,9 @@ function fetchWeeklyScoresHelper(week, res) {
               }
               
               if (chosen_odds < 0) {
-                winnings = b.amount * ((chosen_odds * -1) / 100) + b.amount;
+                winnings = b.amount * ((chosen_odds * -1) / 100);
               } else {
-                winnings = b.amount * (chosen_odds / 100);
+                winnings = b.amount * (chosen_odds / 100) + b.amount;
               }
             }
           }
