@@ -9,7 +9,8 @@ import {
 import { useSelector } from 'react-redux';
 import styles from './BetModal.module.css';
 import betService from '../services/betService';
-import { selectUser } from '../store/slices/userSlice';
+import { selectUser, update_shreddits } from '../store/slices/userSlice';
+import { useDispatch } from 'react-redux';
 
 function BetModal(props) {
   const user = useSelector(selectUser);
@@ -28,6 +29,8 @@ function BetModal(props) {
 
   const userID = user._id;
 
+  const dispatch = useDispatch();
+
   const toggle = () => setModal(!modal);
 
   useEffect(() => {
@@ -38,6 +41,7 @@ function BetModal(props) {
           alert('Could not place bet at this time. Try again later.');
         } else {
           props.finishedBettingHandler();
+          dispatch(update_shreddits(amount));
           alert('Bet placed successfully!');
           setValid(false);
           setModal(!modal);
