@@ -37,7 +37,7 @@ async function getBetsByGameID(req, res){
 async function postBets(req, res){
   const { game_id } = req.body;
   const body = req.body;
-  const bets = await Bet.find({game_id: game_id});  
+  const bets = await Bet.find({game_id: game_id, user_id: req.body.user_id});
   const user = await User.findById(req.body.user_id);
   const response = await helpers.postBetsHelper(body,bets,user);
 
