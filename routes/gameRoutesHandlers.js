@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 const Client = require('node-rest-client').Client;
 const mongoose = require('mongoose');
 const Game = mongoose.model('games');
@@ -76,8 +77,6 @@ async function fetchOddsByGame(req, res) {
     })
   }
 }
-
-var date_cache = null;
 // app.get('/api/fetch_weekly_scores', fetchWeeklyScores) 
 async function fetchWeeklyScores(req, res){
   // Check and only allow this to execute the api call if it is 10 minutes past the last time it was called:
@@ -135,7 +134,7 @@ function fetchWeeklyScoresHelper(week, res) {
           Bet.findByIdAndUpdate(b.id, {active: false});
         });
       }
-    };
+    }
       
     let payload = {
       canceled: game.Canceled,

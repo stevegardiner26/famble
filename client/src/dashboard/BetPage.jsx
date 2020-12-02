@@ -75,7 +75,7 @@ export default function BetPage(props) {
       };
       setBet();
     }
-  }, [valid, userID, gameID, teamID, amount, fullName]);
+  }, [valid, userID, gameID, teamID, amount, fullName, 'default']);
   const changeTeamID = (teamSelectedID) => {
     setTeamID(teamSelectedID);
   };
@@ -107,56 +107,98 @@ export default function BetPage(props) {
     await gameService.getLogo(id).then(setAwayLogo);
   };
   const getBetsForGame = async (id) => {
-    await betService.getBetsByGameId(id).then(setBets);
+    await betService.getRegBets(id).then((response) => {
+      setBets(response.bets);
+    });
+    // eslint-disable-next-line no-console
+    console.log(bets.bets);
   };
   function BetCount() {
-    const homeCount = bets.filter((obj) => obj.team_id === homeTeamID).length;
+    if (bets.length > 0) {
+      const homeCount = bets.filter((obj) => obj.team_id === homeTeamID).length;
 
-    const awayCount = bets.filter((obj) => obj.team_id === awayTeamID).length;
-    return (
-      <Paper className={classes.paper}>
-        {`Bets placed on the ${homeTeamName}: ${homeCount}`}
-        <br />
-        {`
+      const awayCount = bets.filter((obj) => obj.team_id === awayTeamID).length;
+      return (
+        <Paper className={classes.paper}>
+          {`Bets placed on the ${homeTeamName}: ${homeCount}`}
+          <br />
+          {`
        Bets placed on the ${awayTeam}: ${awayCount}`}
 
+        </Paper>
+      );
+    }
+    return (
+      <Paper className={classes.paper}>
+        <br />
+        No bets have been placed yet
+
       </Paper>
+    );
+  }
+  function DisplayBets() {
+    if (bets.length > 0) {
+      return (
+        bets.map((row) => (
+          <ListItem alignItems="flex-start">
+            <ListItemText
+              primary={row.name}
+              secondary={(
+                <>
+                  <Typography
+                    component="span"
+                    variant="body2"
+                    className={classes.inline}
+                    color="textPrimary"
+                  >
+                    {`${row.amount} Shreddits on ${row.teamName}`}
+                  </Typography>
+                </>
+       )}
+            />
+          </ListItem>
+        ))
+      );
+    }
+    return (
+      <p>No bets have been placed yet</p>
+
     );
   }
   function DisplayCurrentBet() {
     let teamName = 'this game.';
     let betAmount = 'no';
-    if (bets.length === 0) {
-      return (<p>No bets have been placed</p>);
-    }
+    if (bets.length > 0) {
+      // eslint-disable-next-line consistent-return
 
-    // eslint-disable-next-line consistent-return
-    bets.forEach((row) => {
+      bets.forEach((row) => {
       // eslint-disable-next-line no-console
 
-      if (row.user_id === userID) {
-        betAmount = row.amount;
-        teamName = row.teamName;
-      }
-    });
-    return (
-      <ListItem alignItems="flex-start">
-        <ListItemText
-          secondary={(
-            <>
-              <Typography
-                component="span"
-                variant="body2"
-                className={classes.inline}
-                color="textPrimary"
-              >
-                {`You currently have ${betAmount} shreddits on ${teamName}`}
-              </Typography>
-            </>
+        if (row.user_id === userID) {
+          betAmount = row.amount;
+          teamName = row.teamName;
+        }
+      });
+      return (
+        <ListItem alignItems="flex-start">
+          <ListItemText
+            secondary={(
+              <>
+                <Typography
+                  component="span"
+                  variant="body2"
+                  className={classes.inline}
+                  color="textPrimary"
+                >
+                  {`You currently have ${betAmount} shreddits on ${teamName}`}
+                </Typography>
+              </>
     )}
-        />
-      </ListItem>
-    );
+          />
+        </ListItem>
+      );
+    }
+    return (<p>No bets have been placed</p>);
   }
   useEffect(() => {
     getHomeLogo(homeTeamID);
@@ -188,25 +230,7 @@ export default function BetPage(props) {
 
                 <Paper className={classes.paper}>
                   <List style={{ overflow: 'auto', maxHeight: 300 }}>
-                    {bets.map((row) => (
-                      <ListItem alignItems="flex-start">
-                        <ListItemText
-                          primary={row.name}
-                          secondary={(
-                            <>
-                              <Typography
-                                component="span"
-                                variant="body2"
-                                className={classes.inline}
-                                color="textPrimary"
-                              >
-                                {`${row.amount} Shreddits on ${row.teamName}`}
-                              </Typography>
-                            </>
-                       )}
-                        />
-                      </ListItem>
-                    ))}
+                    <DisplayBets />
                   </List>
                 </Paper>
               </Grid>
