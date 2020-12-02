@@ -224,4 +224,5 @@ exports.fetchGamesHelper = fetchGamesHelper;
 exports.updateGameById = updateGameById;
 exports.deleteGameById = deleteGameById;
 exports.date_cache = date_cache;
+exports.vars = vars;
 exports.fetchOddsByGame = fetchOddsByGame;
