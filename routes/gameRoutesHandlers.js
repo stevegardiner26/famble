@@ -27,6 +27,7 @@ async function getCurrentWeekGames(req,res){
   var firstday = new Date(curr.setDate(curr.getDate() - curr.getDay()));
   const games = await Game.find();
   const currentWeekGames = [];
+
   for (i = vars.i; i < games.length; i++){
     if (((games[i].start_time -firstday)/86400000).toFixed() > 14){
       break;
@@ -87,9 +88,9 @@ async function fetchWeeklyScores(req, res){
       return res.status(200).send({message: "Waiting to update week...", expire_time: date_cache_dif});
     }
   }
-  client.get("https://api.sportsdata.io/v3/nfl/scores/json/UpcomingSeason", {headers: {"Ocp-Apim-Subscription-Key": process.env['NFL_API_TOKEN']}}, function (year, response) {
-    client.get("https://api.sportsdata.io/v3/nfl/scores/json/CurrentWeek", {headers: {"Ocp-Apim-Subscription-Key": process.env['NFL_API_TOKEN']}}, function (week, response) {
-      client.get(`https://api.sportsdata.io/v3/nfl/scores/json/ScoresByWeek/${year}/${week}`, {headers: {"Ocp-Apim-Subscription-Key": process.env['NFL_API_TOKEN']}}, function (week, response) {
+  client.get("https://api.sportsdata.io/v3/nfl/scores/json/UpcomingSeason", {headers: {"Ocp-Apim-Subscription-Key": process.env['NFL_API_TOKEN']}}, function (year) {
+    client.get("https://api.sportsdata.io/v3/nfl/scores/json/CurrentWeek", {headers: {"Ocp-Apim-Subscription-Key": process.env['NFL_API_TOKEN']}}, function (week) {
+      client.get(`https://api.sportsdata.io/v3/nfl/scores/json/ScoresByWeek/${year}/${week}`, {headers: {"Ocp-Apim-Subscription-Key": process.env['NFL_API_TOKEN']}}, function (week) {
         fetchWeeklyScoresHelper(week, res);
       });
     });
@@ -155,8 +156,8 @@ function fetchWeeklyScoresHelper(week, res) {
 // Ideally this is hit once a season to get the schedule
 // app.get('/api/fetch_games', fetchGames)
 async function fetchGames(req, res){
-  client.get("https://api.sportsdata.io/v3/nfl/scores/json/UpcomingSeason", {headers: {"Ocp-Apim-Subscription-Key": process.env['NFL_API_TOKEN']}}, function (year, response) {
-    client.get(`https://api.sportsdata.io/v3/nfl/scores/json/Schedules/${year}`, {headers: {"Ocp-Apim-Subscription-Key": process.env['NFL_API_TOKEN']}}, function (data, response) {
+  client.get("https://api.sportsdata.io/v3/nfl/scores/json/UpcomingSeason", {headers: {"Ocp-Apim-Subscription-Key": process.env['NFL_API_TOKEN']}}, function (year) {
+    client.get(`https://api.sportsdata.io/v3/nfl/scores/json/Schedules/${year}`, {headers: {"Ocp-Apim-Subscription-Key": process.env['NFL_API_TOKEN']}}, function (data) {
       fetchGamesHelper(data, res);
     });
   });

@@ -123,6 +123,41 @@ export default function BetPage(props) {
       </Paper>
     );
   }
+  function DisplayCurrentBet() {
+    let teamName = 'this game.';
+    let betAmount = 'no';
+    if (bets.length === 0) {
+      return (<p>No bets have been placed</p>);
+    }
+
+    // eslint-disable-next-line consistent-return
+    bets.forEach((row) => {
+      // eslint-disable-next-line no-console
+
+      if (row.user_id === userID) {
+        betAmount = row.amount;
+        teamName = row.teamName;
+      }
+    });
+    return (
+      <ListItem alignItems="flex-start">
+        <ListItemText
+          secondary={(
+            <>
+              <Typography
+                component="span"
+                variant="body2"
+                className={classes.inline}
+                color="textPrimary"
+              >
+                {`You currently have ${betAmount} shreddits on ${teamName}`}
+              </Typography>
+            </>
+    )}
+        />
+      </ListItem>
+    );
+  }
   useEffect(() => {
     getHomeLogo(homeTeamID);
     getAwayLogo(awayTeamID);
@@ -142,8 +177,8 @@ export default function BetPage(props) {
                       <Typography variant="h5" component="h2">
                         {`${homeTeamName} vs ${awayTeam}`}
                       </Typography>
-                      <img alt="" width="200px" src={`${homeLogo}`} />
-                      <img alt="" width="200px" src={`${awayLogo}`} />
+                      <img alt="" height="100px" src={`${homeLogo}`} />
+                      <img alt="" height="100px" src={`${awayLogo}`} />
                     </CardContent>
                   </Card>
                 </Paper>
@@ -175,7 +210,7 @@ export default function BetPage(props) {
                   </List>
                 </Paper>
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={5}>
 
                 <Paper className={classes.paper}>
                   <FullWidthTabs
@@ -187,9 +222,10 @@ export default function BetPage(props) {
 
                 </Paper>
               </Grid>
-              <Grid item xs={3}>
+              <Grid item xs={4}>
 
                 <Paper className={classes.paper}>
+                  <DisplayCurrentBet />
                   <Form className={styles.bet_form}>
                     <FormGroup row>
                       <Label for="betAmount" sm={3}>Bet Amount:</Label>

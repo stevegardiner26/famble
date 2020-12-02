@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
@@ -8,6 +9,7 @@ require('./models/Game');
 require('./models/User');
 require('./models/Bet');
 require('./models/Team');
+require('./models/Stat');
 
 const app = express();
 
