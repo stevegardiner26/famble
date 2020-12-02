@@ -32,7 +32,15 @@ async function getBetsByGameID(req, res){
         bets,
     });
 }
-
+//app.get('/api/bets/getRegBets/:game_id);
+async function getRegBets(req, res){
+  const { game_id } = req.params;
+  const bets = await Bet.find({game_id: game_id, type: "default"});
+  return res.status(202).send({
+      error: false,
+      bets,
+  });
+}
 // app.post('/api/bets', postBets);
 async function postBets(req, res){
   const { game_id } = req.body;
@@ -125,3 +133,4 @@ exports.postBetsHelper = postBetsHelper;
 exports.helpers = helpers;
 exports.deleteBets = deleteBets;
 exports.getBetsByUserID = getBetsByUserID;
+exports.getRegBets = getRegBets;
