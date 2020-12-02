@@ -37,6 +37,7 @@ function BetModal(props) {
         if (res === []) {
           alert('Could not place bet at this time. Try again later.');
         } else {
+          props.finishedBettingHandler();
           alert('Bet placed successfully!');
           setValid(false);
           setModal(!modal);

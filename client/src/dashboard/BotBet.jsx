@@ -28,6 +28,35 @@ function BotBet(props) {
     name: 'Home Team', image_url: 'placeholder', team_id: 0,
   });
 
+  function executeBet() {
+    betService.getBetsByGameId(props.match.params.id).then((data) => {
+      let trailingAmount = 0;
+      let trailingCount = 0;
+      let awayBetCount = 0;
+      let homeBetCount = 0;
+      let homeBetAmount = 0;
+      let awayBetAmount = 0;
+
+      data.forEach((b) => {
+        if (b.type === 'bot') {
+          trailingAmount += b.amount;
+          trailingCount += 1;
+          if (b.team_id == awayTeam.team_id) {
+            awayBetCount += 1;
+            awayBetAmount += b.amount;
+          } else if (b.team_id == homeTeam.team_id) {
+            homeBetCount += 1;
+            homeBetAmount += b.amount;
+          }
+        }
+      });
+
+      setAwayBetStats({ total_amount: awayBetAmount, total_count: awayBetCount });
+      setHomeBetStats({ total_amount: homeBetAmount, total_count: homeBetCount });
+      setBetStats({ total_amount: trailingAmount, total_count: trailingCount });
+    });
+  }
+
   useEffect(() => {
     gameService.getGameById(props.match.params.id).then(async (game) => {
       setCurrentGame({
@@ -68,32 +97,7 @@ function BotBet(props) {
   }, []);
 
   useEffect(() => {
-    betService.getBetsByGameId(props.match.params.id).then((data) => {
-      let trailingAmount = 0;
-      let trailingCount = 0;
-      let awayBetCount = 0;
-      let homeBetCount = 0;
-      let homeBetAmount = 0;
-      let awayBetAmount = 0;
-
-      data.forEach((b) => {
-        if (b.type === 'bot') {
-          trailingAmount += b.amount;
-          trailingCount += 1;
-          if (b.team_id == awayTeam.team_id) {
-            awayBetCount += 1;
-            awayBetAmount += b.amount;
-          } else if (b.team_id == homeTeam.team_id) {
-            homeBetCount += 1;
-            homeBetAmount += b.amount;
-          }
-        }
-      });
-
-      setAwayBetStats({ total_amount: awayBetAmount, total_count: awayBetCount });
-      setHomeBetStats({ total_amount: homeBetAmount, total_count: homeBetCount });
-      setBetStats({ total_amount: trailingAmount, total_count: trailingCount });
-    });
+    executeBet();
   }, [awayTeam, homeTeam]);
 
   return (
@@ -122,7 +126,7 @@ function BotBet(props) {
             <span>{new Date(currentGame.start_time).toLocaleTimeString()}</span>
             <br />
             <br />
-            <BetModal gameID={currentGame.id} team1={{ name: `${homeTeam.name}`, id: `${homeTeam.team_id}` }} team2={{ name: `${awayTeam.name}`, id: `${awayTeam.team_id}` }} type="bot" />
+            <BetModal finishedBettingHandler={executeBet} gameID={currentGame.id} team1={{ name: `${homeTeam.name}`, id: `${homeTeam.team_id}` }} team2={{ name: `${awayTeam.name}`, id: `${awayTeam.team_id}` }} type="bot" />
           </div>
           <div className="col-md">
             <strong>Away Team</strong>
