@@ -1,10 +1,10 @@
+/* eslint-disable no-undef */
 const httpMocks = require('node-mocks-http');
 const sinon = require('sinon');
 const assert = require('chai').assert;
 const { betModel } = require('../models/Bet');
 const { userModel } = require('../models/User');
 const { gameModel } = require('../models/Game');
-const { teamModel } = require('../models/Team');
 const { 
   getGames,
   getGameById,
@@ -175,7 +175,7 @@ describe("GET /api/current_week", function() {
 
   it("it should have status code 200 and return array of no games", function(done) {
     curr = new Date('2020-11-23T00:00:00.000Z');
-    const start_time = new Date('2020-12-01T00:00:00.000Z') 
+    const start_time = new Date('2020-12-22T00:00:00.000Z') 
     fakeGame = [{
       game_id: 17263,
       sport_type: "NFL",
@@ -481,9 +481,9 @@ describe("PUT /api/games/:id", function() {
   }
 
   beforeEach((done) =>{
-    mockFind = sinon.stub(gameModel, "findByIdAndUpdate").callsFake((id, body) => {
+    mockFind = sinon.stub(gameModel, "findOneAndUpdate").callsFake((id, body) => {
       return ({
-        game_id: id,
+        game_id: id.game_id,
         ...body
       })
     })

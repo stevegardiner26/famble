@@ -28,7 +28,7 @@ async function getCurrentWeekGames(req,res){
   const games = await Game.find();
   const currentWeekGames = [];
 
-  for (i = vars.i; i < games.length; i++){
+  for (let i = vars.i; i < games.length; i++){
     if (((games[i].start_time -firstday)/86400000).toFixed() > 14){
       break;
     }
