@@ -20,7 +20,6 @@ import Game from './game/Game';
 import gameService from '../services/gameService';
 import Logout from '../components/Logout';
 import styles from './Dashboard.module.css';
-import BotBet from './BotBet';
 
 const CLIENT_ID = '405646879728-34aukb2l8lsknikc11pprr5i53pt3lvo.apps.googleusercontent.com';
 const useStyles = makeStyles((theme) => ({

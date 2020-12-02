@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-/* eslint-disable no-unused-vars, no-param-reassign, no-underscore-dangle */
+/* eslint-disable no-unused-vars, no-param-reassign, no-underscore-dangle, prefer-const */
 import { createSlice } from '@reduxjs/toolkit';
 
 export const userSlice = createSlice({
@@ -25,15 +25,15 @@ export const userSlice = createSlice({
       state.current_user = {};
     },
     updateShreddits: (state, action) => {
-      let amount = action.payload;
-      let temp_state = state.current_user;
-      temp_state.shreddit_balance -= amount;
-      state.current_user = temp_state;
-    }
+      const amount = action.payload;
+      let tempState = state.current_user;
+      tempState.shreddit_balance -= amount;
+      state.current_user = tempState;
+    },
   },
 });
 
-export const { login, logout, update_shreddits } = userSlice.actions;
+export const { login, logout, updateShreddits } = userSlice.actions;
 
 // The function below is called a thunk and allows us to perform async logic. It
 // can be dispatched like a regular action: `dispatch(incrementAsync(10))`. This
