@@ -6,11 +6,10 @@ import React, { useEffect, useState } from 'react';
 import {
   Col, Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input,
 } from 'reactstrap';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import styles from './BetModal.module.css';
 import betService from '../services/betService';
-import { selectUser, update_shreddits } from '../store/slices/userSlice';
-import { useDispatch } from 'react-redux';
+import { selectUser, updateShreddits } from '../store/slices/userSlice';
 
 function BetModal(props) {
   const user = useSelector(selectUser);
@@ -41,7 +40,7 @@ function BetModal(props) {
           alert('Could not place bet at this time. Try again later.');
         } else {
           props.finishedBettingHandler();
-          dispatch(update_shreddits(amount));
+          dispatch(updateShreddits(amount));
           alert('Bet placed successfully!');
           setValid(false);
           setModal(!modal);

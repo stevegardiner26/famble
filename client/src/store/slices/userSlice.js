@@ -24,10 +24,10 @@ export const userSlice = createSlice({
       }
       state.current_user = {};
     },
-    update_shreddits: (state, action) => {
+    updateShreddits: (state, action) => {
       let amount = action.payload;
       let temp_state = state.current_user;
-      temp_state['shreddit_balance'] -= parseInt(amount);
+      temp_state.shreddit_balance -= amount;
       state.current_user = temp_state;
     }
   },
