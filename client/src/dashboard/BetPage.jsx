@@ -59,7 +59,7 @@ export default function BetPage(props) {
 
   const userID = user._id;
   const fullName = user.name;
-  const { balance } = user;
+  const balance = user.shreddit_balance;
   useEffect(() => {
     if (valid) {
       const setBet = async () => {
@@ -81,6 +81,8 @@ export default function BetPage(props) {
   };
 
   const changeBet = (event) => {
+    // eslint-disable-next-line no-console
+    console.log(balance);
     const betAmount = event.target.value;
     if (betAmount <= 0 || amount > balance) {
       alert('Please enter a valid bet amount');
@@ -90,7 +92,9 @@ export default function BetPage(props) {
     }
   };
   const handleBet = () => {
-    if (amount !== null || amount > balance) {
+    // eslint-disable-next-line no-console
+    console.log(balance);
+    if (amount !== null && amount < balance) {
       if (teamID !== null) {
         setValid(true);
       } else {
@@ -216,11 +220,30 @@ export default function BetPage(props) {
                 <Paper className={classes.paper}>
                   <Card variant="outlined">
                     <CardContent>
-                      <Typography variant="h5" component="h2">
-                        {`${homeTeamName} vs ${awayTeam}`}
-                      </Typography>
-                      <img alt="" height="100px" src={`${homeLogo}`} />
-                      <img alt="" height="100px" src={`${awayLogo}`} />
+                      <Container maxWidth="md" style={{ background: 'white', textAlign: 'center' }}>
+
+                        <div className="row">
+                          <div className="col-md">
+                            <strong>Home Team</strong>
+                            <br />
+
+                            <img src={`${homeLogo}`} alt="Home Team Logo" width="50" height="50" />
+                            <p>{homeTeamName}</p>
+
+                          </div>
+                          <div className="col-md" style={{ marginTop: '50px' }}>
+
+                            <h1>VS</h1>
+                          </div>
+                          <div className="col-md">
+                            <strong>Away Team</strong>
+                            <br />
+
+                            <img src={awayLogo} alt="Away Team Logo" width="50" height="50" />
+                            <p>{awayTeam}</p>
+                          </div>
+                        </div>
+                      </Container>
                     </CardContent>
                   </Card>
                 </Paper>
