@@ -3,7 +3,7 @@ const httpMocks = require('node-mocks-http');
 const sinon = require('sinon');
 const assert = require('chai').assert;
 const { statModel } = require('../models/Stat');
-const { getStatsByTeamIDStandings, getStatsByTeamIDTeamSeasonStats } = require('../routes/statisticRoutesHandlers');
+const { getStatsByTeamIDStandings, getStatsByTeamIDTeamSeasonStats, getStatsByTeamID, client } = require('../routes/statisticRoutesHandlers');
 
 describe("getStatsByTeamIDStandings", function(){
     const data = [{
@@ -108,5 +108,86 @@ describe("getStatsByTeamIDTeamSeasonStats", function(){
         }); 
         
         getStatsByTeamIDTeamSeasonStats(data, teamStats, mockResponse);  
+    });
+})
+
+describe("GET /api/stats/teams/:team_id", function(){
+    let mockFind;
+    let mockClient;
+    let teamStats = {
+        team_id: 28,
+        wins: 10,
+        losses: 0,
+        touchdowns: 3,
+        passing_attempts: 105,
+        completion_percentage: 18.3,
+        passing_yards: 670,
+        fumbles_forced: 1,
+        rushing_yards: 279,
+        penalty_yards: 125,
+        sacks: 10
+    }
+
+    beforeEach((done) => {
+        mockClient = sinon.stub(client,"get").returns(null);
+        done();
+    })
+
+    afterEach((done) => {
+        mockFind.restore();
+        mockClient.restore();
+        done();
+    })
+
+    it("It should return statistics of a Team based on the Team ID", function(done){
+        mockFind = sinon.stub(statModel, "findOne").returns(teamStats);
+        const mockRequest = httpMocks.createRequest({
+            method: "GET",
+            url: "/api/stats/teams/28",
+            params: {
+                team_id: "28"
+            }
+        });
+        const mockResponse = httpMocks.createResponse({
+            eventEmitter: require('events').EventEmitter
+        });
+          
+        mockResponse.on('end', function() {
+            const expected = {teamStats};
+            try {
+              assert.strictEqual(mockResponse.statusCode, 201);
+              assert.deepStrictEqual(mockResponse._getData(), expected);
+              done();
+            }
+            catch (error){
+              done(error);
+            }
+        }); 
+        
+        getStatsByTeamID(mockRequest, mockResponse);  
+    });
+
+    it("Should return nothing", function(done){
+        mockFind = sinon.stub(statModel, "findOne").returns(null);
+        const mockRequest = httpMocks.createRequest({
+            method: "GET",
+            url: "/api/stats/teams/28",
+            params: {
+                team_id: "28"
+            }
+        });
+        const mockResponse = httpMocks.createResponse({
+            eventEmitter: require('events').EventEmitter
+        });
+
+        const result = getStatsByTeamID(mockRequest, mockResponse);
+          
+        try {
+            assert.equal(result,result);
+            done();
+        }
+        catch (error){
+            done(error);
+        }
     });
 })

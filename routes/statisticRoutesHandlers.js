@@ -31,9 +31,9 @@ async function getStatsByTeamID(req, res){
             client.get(`https://api.sportsdata.io/v3/nfl/scores/json/TeamSeasonStats/${year}`, { headers: { "Ocp-Apim-Subscription-Key": process.env['NFL_API_TOKEN'] } }, async function (data) {
                 await getStatsByTeamIDTeamSeasonStats(data, team_stats, res);   
             }); 
-        }); 
+        });    
     }
-    
+    return;
 }
 
 function getStatsByTeamIDStandings(data, team_stats){
