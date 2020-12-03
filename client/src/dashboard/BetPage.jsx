@@ -24,6 +24,7 @@ import betService from '../services/betService';
 import { selectUser } from '../store/slices/userSlice';
 import gameService from '../services/gameService';
 import FullWidthTabs from './statsTab';
+import NavBar from '../components/NavBar';
 
 const useStyles = makeStyles({
   root: {
@@ -162,123 +163,124 @@ export default function BetPage(props) {
     getHomeLogo(homeTeamID);
     getAwayLogo(awayTeamID);
     getBetsForGame(gameID);
-  }, []);
+  }, [homeTeamID, awayTeamID, gameID]);
 
   return (
     <CssBaseline>
+      <NavBar pageName="Place A Bet" />
       <Container maxWidth="lg">
-        <Typography component="div" style={{ backgroundColor: '#cfe8fc', height: '100vh' }}>
-          <div className={classes.root}>
-            <Grid container spacing={3}>
-              <Grid item xs={12}>
-                <Paper className={classes.paper}>
-                  <Card variant="outlined">
-                    <CardContent>
-                      <Typography variant="h5" component="h2">
-                        {`${homeTeamName} vs ${awayTeam}`}
-                      </Typography>
-                      <img alt="" height="100px" src={`${homeLogo}`} />
-                      <img alt="" height="100px" src={`${awayLogo}`} />
-                    </CardContent>
-                  </Card>
-                </Paper>
-              </Grid>
-              <Grid item xs={12} />
-              <Grid item xs={3}>
+        {/* <Typography component="div" style={{ backgroundColor: '#cfe8fc', height: '100vh' }}> */}
+        <div className={classes.root}>
+          <Grid container spacing={3}>
+            <Grid item xs={12}>
+              <Paper className={classes.paper}>
+                <Card variant="outlined">
+                  <CardContent>
+                    <Typography variant="h5" component="h2">
+                      {`${homeTeamName} vs ${awayTeam}`}
+                    </Typography>
+                    <img alt="" height="100px" src={`${homeLogo}`} />
+                    <img alt="" height="100px" src={`${awayLogo}`} />
+                  </CardContent>
+                </Card>
+              </Paper>
+            </Grid>
+            <Grid item xs={12} />
+            <Grid item xs={3}>
 
-                <Paper className={classes.paper}>
-                  <List style={{ overflow: 'auto', maxHeight: 300 }}>
-                    {bets.map((row) => (
-                      <ListItem alignItems="flex-start">
-                        <ListItemText
-                          primary={row.name}
-                          secondary={(
-                            <>
-                              <Typography
-                                component="span"
-                                variant="body2"
-                                className={classes.inline}
-                                color="textPrimary"
-                              >
-                                {`${row.amount} Shreddits on ${row.teamName}`}
-                              </Typography>
-                            </>
-                       )}
-                        />
-                      </ListItem>
-                    ))}
-                  </List>
-                </Paper>
-              </Grid>
-              <Grid item xs={5}>
+              <Paper className={classes.paper}>
+                <List style={{ overflow: 'auto', maxHeight: 300 }}>
+                  {bets.map((row) => (
+                    <ListItem alignItems="flex-start">
+                      <ListItemText
+                        primary={row.name}
+                        secondary={(
+                          <>
+                            <Typography
+                              component="span"
+                              variant="body2"
+                              className={classes.inline}
+                              color="textPrimary"
+                            >
+                              {`${row.amount} Shreddits on ${row.teamName}`}
+                            </Typography>
+                          </>
+                      )}
+                      />
+                    </ListItem>
+                  ))}
+                </List>
+              </Paper>
+            </Grid>
+            <Grid item xs={5}>
 
-                <Paper className={classes.paper}>
-                  <FullWidthTabs
-                    homeTeamName={homeTeamName}
-                    awayTeamName={awayTeam}
-                    homeTeamID={homeTeamID}
-                    awayTeamID={awayTeamID}
-                  />
+              <Paper className={classes.paper}>
+                <FullWidthTabs
+                  homeTeamName={homeTeamName}
+                  awayTeamName={awayTeam}
+                  homeTeamID={homeTeamID}
+                  awayTeamID={awayTeamID}
+                />
 
-                </Paper>
-              </Grid>
-              <Grid item xs={4}>
+              </Paper>
+            </Grid>
+            <Grid item xs={4}>
 
-                <Paper className={classes.paper}>
-                  <DisplayCurrentBet />
-                  <Form className={styles.bet_form}>
-                    <FormGroup row>
-                      <Label for="betAmount" sm={3}>Bet Amount:</Label>
-                      <Col sm={9}>
-                        <Input type="number" name="betAmount" id="betAmount" onChange={changeBet} placeholder="Enter Bet Amount" />
+              <Paper className={classes.paper}>
+                <DisplayCurrentBet />
+                <Form className={styles.bet_form}>
+                  <FormGroup row>
+                    <Label for="betAmount" sm={3}>Bet Amount:</Label>
+                    <Col sm={9}>
+                      <Input type="number" name="betAmount" id="betAmount" onChange={changeBet} placeholder="Enter Bet Amount" />
+                    </Col>
+                  </FormGroup>
+                  <FormGroup tag="fieldset" row>
+                    <Label sm={4}>Select a Team:</Label>
+                    <FormGroup check>
+                      <Col sm={2}>
+                        <Label check>
+                          <Input onClick={() => changeTeamID(homeTeamID)} type="radio" name="team" />
+                          {homeTeamName}
+                        </Label>
+                      </Col>
+                      <Col sm={2}>
+                        <Label check>
+                          <Input onClick={() => changeTeamID(awayTeamID)} type="radio" name="team" />
+                          {awayTeam}
+                        </Label>
                       </Col>
                     </FormGroup>
-                    <FormGroup tag="fieldset" row>
-                      <Label sm={4}>Select a Team:</Label>
-                      <FormGroup check>
-                        <Col sm={2}>
-                          <Label check>
-                            <Input onClick={() => changeTeamID(homeTeamID)} type="radio" name="team" />
-                            {homeTeamName}
-                          </Label>
-                        </Col>
-                        <Col sm={2}>
-                          <Label check>
-                            <Input onClick={() => changeTeamID(awayTeamID)} type="radio" name="team" />
-                            {awayTeam}
-                          </Label>
-                        </Col>
-                      </FormGroup>
-                    </FormGroup>
-                  </Form>
-                  <Button color="primary" style={{ margin: '10px' }} onClick={handleBet}>Submit Bet</Button>
-                  <Link to="/dashboard">
-                    <Button color="secondary">Cancel</Button>
-                  </Link>
-                </Paper>
+                  </FormGroup>
+                </Form>
+                <Button color="primary" style={{ margin: '10px' }} onClick={handleBet}>Submit Bet</Button>
+                <Link to="/dashboard">
+                  <Button color="secondary">Cancel</Button>
+                </Link>
+              </Paper>
 
-              </Grid>
-              <Grid item xs={3}>
-                <Paper className={classes.paper}>
-                  {`Total bets placed on this game: ${bets.length}`}
-                </Paper>
-              </Grid>
-              <Grid item xs={3}>
-                <BetCount />
-              </Grid>
-              <Grid item xs={3}>
-                <Paper className={classes.paper}>
-                  <Link to={{ pathname: `/betpage/bot-bet/${gameID}` }}>
-                    Bet Against the Bot
-                  </Link>
-                </Paper>
-              </Grid>
-              <Grid item xs={3}>
-                <Paper className={classes.paper}>xs=3</Paper>
-              </Grid>
             </Grid>
-          </div>
-        </Typography>
+            <Grid item xs={3}>
+              <Paper className={classes.paper}>
+                {`Total bets placed on this game: ${bets.length}`}
+              </Paper>
+            </Grid>
+            <Grid item xs={3}>
+              <BetCount />
+            </Grid>
+            <Grid item xs={3}>
+              <Paper className={classes.paper}>
+                <Link to={{ pathname: `/betpage/bot-bet/${gameID}` }}>
+                  Bet Against the Bot
+                </Link>
+              </Paper>
+            </Grid>
+            <Grid item xs={3}>
+              <Paper className={classes.paper}>xs=3</Paper>
+            </Grid>
+          </Grid>
+        </div>
+        {/* </Typography> */}
       </Container>
     </CssBaseline>
   );
