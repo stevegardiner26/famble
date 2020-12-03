@@ -81,8 +81,8 @@ function TablePaginationActions(props) {
 function Profile() {
   const user = useSelector(selectUser);
   const [bets, setBets] = useState([]);
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(9);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(9);
   const userID = user._id;
 
   const handleChangePage = (event, newPage) => {
@@ -104,7 +104,7 @@ function Profile() {
 
   useEffect(() => {
     getBet();
-  }, []);
+  }, [userID]);
 
   return (
     <>

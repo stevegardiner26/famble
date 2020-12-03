@@ -46,16 +46,13 @@ function NavBar(props) {
 
   const handleProfile = () => (setRedirect(true));
 
-  if (redirect) {
-    return (<Redirect to="/profile" />);
-  }
-
   const handleClose = () => {
     setAnchorEl(null);
   };
 
   return (
     <div className={classes.root}>
+      {(redirect) ? <Redirect to="/profile" /> : null}
       <AppBar position="static">
         <Toolbar>
           <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
