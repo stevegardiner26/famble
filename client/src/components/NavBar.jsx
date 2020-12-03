@@ -77,7 +77,12 @@ function NavBar(props) {
     setDrawer(!drawer);
   };
 
-  const numberWithCommas = (x) => x.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',');
+  const numberWithCommas = (x) => {
+    if (x) {
+      return x.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',');
+    }
+    return null;
+  };
 
   const list = (
     <div
