@@ -1,0 +1,39 @@
+.page{
+    box-sizing: border-box;
+    padding-Top: 15px; 
+    padding-Bottom: 10px;
+}
+
+.profile_info{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.root{
+    width: 100%;
+    max-width: 40ch;
+    max-height: 90px; 
+    background-color: #cfe8fc;
+    border-radius: 25px;
+    margin-left: 50px !important;
+}
+
+.button{
+    color: red;
+}
+
+.table {
+    min-width: 650px;
+}
+
+.tableContainer{
+    margin-top: 30px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 80% !important;
+}
+
+.title{
+    font-weight: bold !important;
+    font-size: 25px !important;
+}
