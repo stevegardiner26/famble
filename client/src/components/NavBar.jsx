@@ -9,7 +9,16 @@ import {
   MenuItem,
   Menu,
   ListItemAvatar,
+  List,
+  ListItem,
+  ListItemText,
+  Divider,
+  ListItemIcon,
+  Drawer,
 } from '@material-ui/core';
+import {
+  Dashboard, AccountBox, Assessment, ExitToApp,
+} from '@material-ui/icons';
 import MenuIcon from '@material-ui/icons/Menu';
 import { useDispatch, useSelector } from 'react-redux';
 import { Redirect } from 'react-router-dom';
@@ -25,6 +34,12 @@ const useStyles = makeStyles((theme) => ({
   title: {
     flexGrow: 1,
   },
+  MuiIconButtonRoot: {
+    borderRadius: '0%',
+  },
+  list: {
+    width: 250,
+  },
 }));
 
 function NavBar(props) {
@@ -32,10 +47,12 @@ function NavBar(props) {
   const dispatch = useDispatch();
   const [redirectProfile, setRedirectProf] = useState(false);
   const [redirectHome, setRedirectHome] = useState(false);
+  const [redirectDash, setRedirectDash] = useState(false);
   const { pageName } = props;
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
+  const [drawer, setDrawer] = useState(false);
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -47,19 +64,72 @@ function NavBar(props) {
   };
 
   const handleProfile = () => (setRedirectProf(true));
+  const handleDash = () => (setRedirectDash(true));
 
   const handleClose = () => {
     setAnchorEl(null);
   };
 
+  const toggleDrawer = (event) => {
+    if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+      return;
+    }
+    setDrawer(!drawer);
+  };
+
+  const list = (
+    <div
+      className={classes.list}
+      role="presentation"
+      onClick={toggleDrawer}
+      onKeyDown={toggleDrawer}
+    >
+      <List>
+        <ListItem button key="Dashboard" onClick={handleDash}>
+          <ListItemIcon><Dashboard /></ListItemIcon>
+          <ListItemText primary="Dashboard" />
+        </ListItem>
+        <ListItem button key="Leaderboard">
+          <ListItemIcon><Assessment /></ListItemIcon>
+          <ListItemText primary="Leaderboard" />
+        </ListItem>
+      </List>
+      <Divider />
+      <List>
+        <ListItem button key="Profile" onClick={handleProfile}>
+          <ListItemIcon><AccountBox /></ListItemIcon>
+          <ListItemText primary="Profile" />
+        </ListItem>
+        <ListItem button key="Logout" onClick={handleLogout}>
+          <ListItemIcon><ExitToApp /></ListItemIcon>
+          <ListItemText primary="Logout" />
+        </ListItem>
+      </List>
+    </div>
+  );
+
   return (
     <div className={classes.root}>
       {(redirectProfile) ? <Redirect to="/profile" /> : null}
       {(redirectHome) ? <Redirect to="/" /> : null}
+      {(redirectDash) ? <Redirect to="/dashboard" /> : null}
       <AppBar position="static">
         <Toolbar>
-          <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
+          <IconButton
+            edge="start"
+            className={classes.menuButton}
+            color="inherit"
+            aria-label="menu"
+            onClick={toggleDrawer}
+          >
             <MenuIcon />
+            <Drawer
+              anchor="left"
+              open={drawer}
+              onClose={toggleDrawer}
+            >
+              {list}
+            </Drawer>
           </IconButton>
           <Typography variant="h6" className={classes.title}>
             {pageName}
@@ -71,6 +141,7 @@ function NavBar(props) {
               aria-haspopup="true"
               onClick={handleMenu}
               color="inherit"
+              className={classes.MuiIconButtonRoot}
             >
               <ListItemAvatar>
                 <div className="MuiAvatar-root MuiAvatar-circle">
