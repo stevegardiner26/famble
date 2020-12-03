@@ -10,22 +10,26 @@ import {
 import gameService from '../../services/gameService';
 
 function Game({ info }) {
-  const [teamName, setTeamName] = useState('');
-  const [homeTeamID, setHomeTeamID] = useState('');
-  const [awayTeamID, setAwayTeamID] = useState('');
-  const [homeTeamName, setHome] = useState('');
-  const [awayTeamName, setAway] = useState('');
-  const [status, setStatus] = useState('');
+  const [teamName, setTeamName] = useState(null);
+  const [homeTeamID, setHomeTeamID] = useState(null);
+  const [awayTeamID, setAwayTeamID] = useState(null);
+  const [homeTeamName, setHome] = useState(null);
+  const [awayTeamName, setAway] = useState(null);
+  const [status, setStatus] = useState(null);
   const { game_id } = info;
   const { team_id } = info;
   const { updatedAt } = info;
   const { amount } = info;
 
   const getHomeTeam = async (id) => {
-    const res = await gameService.getTeam(id).then(setHome);
+    const res = await gameService.getTeam(id).then((response) => {
+      setHome(response);
+    });
   };
   const getAwayTeam = async (id) => {
-    const res = await gameService.getTeam(id).then(setAway);
+    const res = await gameService.getTeam(id).then((response) => {
+      setAway(response);
+    });
   };
 
   const getTeamName = async (id) => {
@@ -41,47 +45,41 @@ function Game({ info }) {
   };
 
   useEffect(() => {
-    let mounted = true;
-    if (mounted) {
+    getTeamName(team_id);
+    getGame(game_id);
+    if (homeTeamID) {
       getHomeTeam(homeTeamID);
+    }
+    if (awayTeamID) {
       getAwayTeam(awayTeamID);
     }
-    return function cleanup() {
-      mounted = false;
-    };
-  }, [homeTeamID, awayTeamID]);
-
-  useEffect(() => {
-    let mounted = true;
-    if (mounted) {
-      getTeamName(team_id);
-      getGame(game_id);
-    }
-    return function cleanup() {
-      mounted = false;
-    };
-  }, []);
+  }, [homeTeamID, awayTeamID, team_id, game_id]);
 
   function LinkStatus() {
     if (status !== 'Final' && status !== 'F/OT') {
+      if (homeTeamName && awayTeamName) {
+        return (
+          <Link to={{
+            pathname: `/betpage/${game_id}`,
+            state: {
+              gameID: `${game_id}`,
+              homeTeamID: `${homeTeamID}`,
+              awayTeamID: `${awayTeamID}`,
+              homeTeam: `${homeTeamName}`,
+              awayTeam: `${awayTeamName}`,
+            },
+          }}
+          >
+            Update Bet
+          </Link>
+        );
+      }
       return (
-        <Link to={{
-          pathname: `/betpage/${game_id}`,
-          state: {
-            gameID: `${game_id}`,
-            homeTeamID: `${homeTeamID}`,
-            awayTeamID: `${awayTeamID}`,
-            homeTeam: `${homeTeamName}`,
-            awayTeam: `${awayTeamName}`,
-          },
-        }}
-        >
-          Update Bet
-
-        </Link>
+        <span>
+          Loading...
+        </span>
       );
     }
-
     return (
       <span>
         Can no longer update bet
