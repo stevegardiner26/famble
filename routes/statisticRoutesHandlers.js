@@ -5,7 +5,7 @@ const Stat = mongoose.model('stats');
 
 // app.get('/api/stats/teams/:team_id')
 async function getStatsByTeamID(req, res){
-    const team_id = parseInt(req.params.team_id);
+    const team_id = parseInt(req.params.team_id, 10);
     let team_stats = {
         team_id: team_id, 
         wins: null,
@@ -31,9 +31,9 @@ async function getStatsByTeamID(req, res){
             client.get(`https://api.sportsdata.io/v3/nfl/scores/json/TeamSeasonStats/${year}`, { headers: { "Ocp-Apim-Subscription-Key": process.env['NFL_API_TOKEN'] } }, async function (data) {
                 await getStatsByTeamIDTeamSeasonStats(data, team_stats, res);   
             }); 
-        }); 
+        });    
     }
-    
+    return;
 }
 
 function getStatsByTeamIDStandings(data, team_stats){
