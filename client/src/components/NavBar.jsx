@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
@@ -8,10 +9,8 @@ import {
   MenuItem,
   Menu,
   ListItemAvatar,
-  Avatar,
 } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
-import AccountCircle from '@material-ui/icons/AccountCircle';
 import { useDispatch, useSelector } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { logout, selectUser } from '../store/slices/userSlice';
@@ -73,11 +72,11 @@ function NavBar(props) {
               onClick={handleMenu}
               color="inherit"
             >
-              {(user.name) ? (
-                <ListItemAvatar>
-                  <Avatar alt="User" src={user.profile_image} />
-                </ListItemAvatar>
-              ) : <AccountCircle />}
+              <ListItemAvatar>
+                <div className="MuiAvatar-root MuiAvatar-circle">
+                  <img alt="User" src={user.profile_image} className="MuiAvatar-img" referrerPolicy="no-referrer" />
+                </div>
+              </ListItemAvatar>
               <h6 style={{ paddingTop: '6px' }}>
                 {user.name}
                 <br />
@@ -91,6 +90,7 @@ function NavBar(props) {
                 vertical: 'bottom',
                 horizontal: 'right',
               }}
+              getContentAnchorEl={null}
               keepMounted
               transformOrigin={{
                 vertical: 'bottom',
