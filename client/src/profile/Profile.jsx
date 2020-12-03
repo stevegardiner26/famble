@@ -129,7 +129,7 @@ function Profile() {
                 ? bets.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 : bets
               ).map((row) => (
-                <Bet info={row} />
+                <Bet key={row.game_id} info={row} />
               ))}
             </TableBody>
             <TableFooter>
