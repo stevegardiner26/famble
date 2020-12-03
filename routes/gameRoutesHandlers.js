@@ -126,10 +126,10 @@ function fetchWeeklyScoresHelper(week, res) {
               let winnings;
               let chosen_odds;
 
-              if (game.away_team_id == winner_id) {
+              if (gameDB.away_team_id == winner_id) {
                 chosen_odds = gameDB.away_odds;
               } 
-              else if (game.home_team_id == winner_id) {
+              else if (gameDB.home_team_id == winner_id) {
                 chosen_odds = gameDB.home_odds;
               }
               if (chosen_odds < 0) {
