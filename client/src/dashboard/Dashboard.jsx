@@ -128,7 +128,7 @@ function Dashboard() {
                 ? games.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 : games
               ).map((row) => (
-                <Game info={row} />
+                <Game key={row.game_id} info={row} />
               ))}
 
             </TableBody>
