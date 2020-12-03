@@ -26,6 +26,7 @@ function Game({ info }) {
   const { start_time } = info;
   const { game_id } = info;
   const { status } = info;
+  const localDate = new Date(start_time);
 
   useEffect(() => {
     getHomeTeam(home_team_id);
@@ -66,7 +67,7 @@ function Game({ info }) {
       <TableCell align="center">
         {awayTeamName}
       </TableCell>
-      <TableCell align="center">{start_time}</TableCell>
+      <TableCell align="center">{`${localDate.toLocaleDateString()} ${localDate.toLocaleTimeString()}`}</TableCell>
       <TableCell align="center">{status}</TableCell>
       <TableCell align="center">
         {/*
