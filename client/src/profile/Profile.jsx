@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
   TableContainer, Table, TableBody, TableCell,
-  TableHead, List, ListItem, ListItemText, ListItemAvatar, TableRow, Paper, Avatar, IconButton,
+  TableHead, TableRow, Paper, IconButton,
   TableFooter, TablePagination,
 }
   from '@material-ui/core';
@@ -15,8 +15,8 @@ import LastPageIcon from '@material-ui/icons/LastPage';
 import styles from './Profile.module.css';
 import betService from '../services/betService';
 import { selectUser } from '../store/slices/userSlice';
-import Logout from '../components/Logout';
 import Bet from './bets/Bet';
+import NavBar from '../components/NavBar';
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -103,71 +103,57 @@ function Profile() {
   };
 
   useEffect(() => {
-    let mounted = true;
-    if (mounted) {
-      getBet();
-    }
-    return function cleanup() {
-      mounted = false;
-    };
+    getBet();
   }, []);
 
   return (
-    <div className={styles.page}>
-      <div className={styles.profile_info}>
-        <List className={styles.root}>
-          <ListItem>
-            <ListItemAvatar>
-              <Avatar src={user.profile_image} />
-            </ListItemAvatar>
-            <ListItemText primary={user.name} secondary={`Balance: ${user.shreddit_balance} Shreddits`} />
-          </ListItem>
-        </List>
-        <Logout />
+    <>
+      <NavBar pageName="Your Profile" />
+      <div className={styles.page}>
+        <TableContainer className={styles.tableContainer} component={Paper}>
+          <Table className={styles.table} aria-label="simple table">
+            <TableHead>
+              <TableRow>
+                <TableCell className={styles.title} align="center" colSpan={5}>Bet History</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell align="center">Date Placed:</TableCell>
+                <TableCell align="center">Team/Bot:</TableCell>
+                <TableCell align="center">Amount Bet:</TableCell>
+                <TableCell align="center">Game Status:</TableCell>
+                <TableCell align="center" />
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {(rowsPerPage > 0
+                ? bets.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                : bets
+              ).map((row) => (
+                <Bet info={row} />
+              ))}
+            </TableBody>
+            <TableFooter>
+              <TableRow>
+                <TablePagination
+                  rowsPerPageOptions={[9, 10, 25]}
+                  colSpan={3}
+                  count={bets.length}
+                  rowsPerPage={rowsPerPage}
+                  page={page}
+                  SelectProps={{
+                    inputProps: { 'aria-label': 'rows per page' },
+                    native: true,
+                  }}
+                  onChangePage={handleChangePage}
+                  onChangeRowsPerPage={handleChangeRowsPerPage}
+                  ActionsComponent={TablePaginationActions}
+                />
+              </TableRow>
+            </TableFooter>
+          </Table>
+        </TableContainer>
       </div>
-      <TableContainer className={styles.tableContainer} component={Paper}>
-        <Table className={styles.table} aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              <TableCell className={styles.title} align="center" colSpan={5}>Bet History</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell align="center">Date Placed:</TableCell>
-              <TableCell align="center">Team/Bot:</TableCell>
-              <TableCell align="center">Amount Bet:</TableCell>
-              <TableCell align="center">Game Status:</TableCell>
-              <TableCell align="center" />
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {(rowsPerPage > 0
-              ? bets.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              : bets
-            ).map((row) => (
-              <Bet info={row} />
-            ))}
-          </TableBody>
-          <TableFooter>
-            <TableRow>
-              <TablePagination
-                rowsPerPageOptions={[9, 10, 25]}
-                colSpan={3}
-                count={bets.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                SelectProps={{
-                  inputProps: { 'aria-label': 'rows per page' },
-                  native: true,
-                }}
-                onChangePage={handleChangePage}
-                onChangeRowsPerPage={handleChangeRowsPerPage}
-                ActionsComponent={TablePaginationActions}
-              />
-            </TableRow>
-          </TableFooter>
-        </Table>
-      </TableContainer>
-    </div>
+    </>
   );
 }
 
