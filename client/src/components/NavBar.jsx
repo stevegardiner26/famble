@@ -113,7 +113,7 @@ function NavBar(props) {
       {(redirectProfile) ? <Redirect to="/profile" /> : null}
       {(redirectHome) ? <Redirect to="/" /> : null}
       {(redirectDash) ? <Redirect to="/dashboard" /> : null}
-      <AppBar position="static">
+      <AppBar style={{ backgroundColor: '#000' }} position="static">
         <Toolbar>
           <IconButton
             edge="start"
