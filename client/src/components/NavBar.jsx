@@ -30,7 +30,8 @@ const useStyles = makeStyles((theme) => ({
 function NavBar(props) {
   const user = useSelector(selectUser);
   const dispatch = useDispatch();
-  const [redirect, setRedirect] = useState(false);
+  const [redirectProfile, setRedirectProf] = useState(false);
+  const [redirectHome, setRedirectHome] = useState(false);
   const { pageName } = props;
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
@@ -42,9 +43,10 @@ function NavBar(props) {
 
   const handleLogout = () => {
     dispatch(logout());
+    setRedirectHome(true);
   };
 
-  const handleProfile = () => (setRedirect(true));
+  const handleProfile = () => (setRedirectProf(true));
 
   const handleClose = () => {
     setAnchorEl(null);
@@ -52,7 +54,8 @@ function NavBar(props) {
 
   return (
     <div className={classes.root}>
-      {(redirect) ? <Redirect to="/profile" /> : null}
+      {(redirectProfile) ? <Redirect to="/profile" /> : null}
+      {(redirectHome) ? <Redirect to="/" /> : null}
       <AppBar position="static">
         <Toolbar>
           <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
