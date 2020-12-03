@@ -11,7 +11,7 @@ export default {
     return res.data || [];
   },
   getUsers: async () => {
-    const res = await axios.get('/api/users/');
+    const res = await axios.get('/api/users');
     return res.data || [];
   },
 };
