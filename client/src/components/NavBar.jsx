@@ -48,6 +48,7 @@ function NavBar(props) {
   const [redirectProfile, setRedirectProf] = useState(false);
   const [redirectHome, setRedirectHome] = useState(false);
   const [redirectDash, setRedirectDash] = useState(false);
+  const [redirectLead, setRedirectLead] = useState(false);
   const { pageName } = props;
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
@@ -65,6 +66,7 @@ function NavBar(props) {
 
   const handleProfile = () => (setRedirectProf(true));
   const handleDash = () => (setRedirectDash(true));
+  const handleLead = () => (setRedirectLead(true));
 
   const handleClose = () => {
     setAnchorEl(null);
@@ -96,7 +98,7 @@ function NavBar(props) {
           <ListItemIcon><Dashboard /></ListItemIcon>
           <ListItemText primary="Dashboard" />
         </ListItem>
-        <ListItem button key="Leaderboard">
+        <ListItem button key="Leaderboard" onClick={handleLead}>
           <ListItemIcon><Assessment /></ListItemIcon>
           <ListItemText primary="Leaderboard" />
         </ListItem>
@@ -120,6 +122,7 @@ function NavBar(props) {
       {(redirectProfile) ? <Redirect to="/profile" /> : null}
       {(redirectHome) ? <Redirect to="/" /> : null}
       {(redirectDash) ? <Redirect to="/dashboard" /> : null}
+      {(redirectLead) ? <Redirect to="/leaderboard" /> : null}
       <AppBar style={{ backgroundColor: '#000' }} position="static">
         <Toolbar>
           <IconButton
