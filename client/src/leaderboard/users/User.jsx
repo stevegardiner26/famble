@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-import { TableCell, TableRow } from '@material-ui/core/TableCell';
+import { TableCell, TableRow } from '@material-ui/core';
 import React, { useState, useEffect } from 'react';
 
 function User(props) {
