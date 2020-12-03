@@ -77,6 +77,8 @@ function NavBar(props) {
     setDrawer(!drawer);
   };
 
+  const numberWithCommas = (x) => x.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',');
+
   const list = (
     <div
       className={classes.list}
@@ -151,7 +153,7 @@ function NavBar(props) {
               <h6 style={{ paddingTop: '6px' }}>
                 {user.name}
                 <br />
-                {`${user.shreddit_balance} Shredits`}
+                {`${numberWithCommas(user.shreddit_balance)} Shredits`}
               </h6>
             </IconButton>
             <Menu
