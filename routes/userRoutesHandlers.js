@@ -4,9 +4,15 @@ const User = mongoose.model('users');
 
 // app.get(`/api/users/:id`, getUserById)
 async function getUserById(req, res){
-    const {id} = req.params;
-    let user = await User.findById(id);
-    return res.status(200).send(user);
+  const {id} = req.params;
+  let user = await User.findById(id);
+  return res.status(200).send(user);
+}
+
+// app.get(`/api/users`, getUsers);
+async function getUsers(req, res){
+  let users = await User.find().sort({shreddit_balance: -1});
+  return res.status(200).send(users);
 }
 
 // app.post(`/api/users`, createUser) 
@@ -21,5 +27,7 @@ async function createUser(req, res){
   });
 }
 
+
+exports.getUsers = getUsers;
 exports.getUserById = getUserById;
 exports.createUser = createUser;
