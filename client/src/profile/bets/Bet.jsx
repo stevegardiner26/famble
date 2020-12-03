@@ -20,6 +20,7 @@ function Game({ info }) {
   const { team_id } = info;
   const { updatedAt } = info;
   const { amount } = info;
+  const localDate = new Date(updatedAt);
 
   const getHomeTeam = async (id) => {
     const res = await gameService.getTeam(id).then((response) => {
@@ -89,7 +90,7 @@ function Game({ info }) {
 
   return (
     <TableRow key={game_id}>
-      <TableCell align="center">{updatedAt}</TableCell>
+      <TableCell align="center">{`${localDate.toLocaleDateString()} ${localDate.toLocaleTimeString()}`}</TableCell>
       <TableCell align="center">{teamName}</TableCell>
       <TableCell align="center">{amount}</TableCell>
       <TableCell align="center">{status}</TableCell>
