@@ -104,11 +104,18 @@ async function fetchWeeklyScores(req, res){
 function fetchWeeklyScoresHelper(week, res) {
   week.forEach(async (game) => {
     let winner_id = null;
-    if (game.Status == "Final") {          
+    if (game.Status == "Final") {
+      
+      let gameDB = Game.findOne({game_id: game.GlobalGameID}); 
+      let chosen_odds;         
+      
       if (game.AwayScore > game.HomeScore) {
         winner_id = game.GlobalAwayTeamID;
-      } else {
+        chosen_odds = gameDB.away_odds;
+      } 
+      else {
         winner_id = game.GlobalHomeTeamID;
+        chosen_odds = gameDB.home_odds;
       }
 
       let bets = Bet.find({game_id: game.GlobalGameID});
@@ -122,16 +129,7 @@ function fetchWeeklyScoresHelper(week, res) {
               });
             } 
             else if (b.type == "bot") {
-              let gameDB = Game.find({game_id: game.GlobalGameID});
               let winnings;
-              let chosen_odds;
-
-              if (gameDB.away_team_id == winner_id) {
-                chosen_odds = gameDB.away_odds;
-              } 
-              else if (gameDB.home_team_id == winner_id) {
-                chosen_odds = gameDB.home_odds;
-              }
               if (chosen_odds < 0) {
                 winnings = b.amount * ((chosen_odds * -1) / 100);
               } 
