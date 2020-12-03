@@ -5,7 +5,7 @@ const Stat = mongoose.model('stats');
 
 // app.get('/api/stats/teams/:team_id')
 async function getStatsByTeamID(req, res){
-    const team_id = parseInt(req.params.team_id);
+    const team_id = parseInt(req.params.team_id, 10);
     let team_stats = {
         team_id: team_id, 
         wins: null,
