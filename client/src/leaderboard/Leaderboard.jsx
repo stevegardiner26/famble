@@ -1,10 +1,9 @@
 /* eslint-disable no-underscore-dangle */
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
 import {
   TableContainer, Table, TableBody, TableCell,
   TableHead, TableRow, Paper, IconButton,
-  TableFooter, TablePagination,
+  TableFooter, TablePagination, ListItemAvatar,
 }
   from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
@@ -12,11 +11,12 @@ import FirstPageIcon from '@material-ui/icons/FirstPage';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import LastPageIcon from '@material-ui/icons/LastPage';
+import { useSelector } from 'react-redux';
 import styles from './Leaderboard.module.css';
 import userService from '../services/userService';
-import { selectUser } from '../store/slices/userSlice';
 import User from './users/User';
 import NavBar from '../components/NavBar';
+import { selectUser } from '../store/slices/userSlice';
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -83,8 +83,7 @@ function Leaderboard() {
   const [users, setUsers] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(9);
-  const [currUser, setCurrUser] = useState();
-  const userID = user._id;
+  const [currRank, setCurrRank] = useState(null);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -96,24 +95,35 @@ function Leaderboard() {
   };
 
   const getUsers = async () => {
-    await userService.getUsers().then((res) => {
-      if (res !== []) {
-        console.log(res);
-        setUsers(res);
-      }
-    });
+    userService.getUsers().then((res) => setUsers(res));
   };
-
+  // eslint-disable-next-line arrow-body-style
   const mapFunction = (row, index) => {
-    if (row._id === userID) {
-      setCurrUser({ ...row, rank: index });
-    }
-    return (<User key={row._id} info={row} index={index} />);
+    const rank = index + 1;
+    return (<User key={row._id} info={row} index={rank} setCurrRank={setCurrRank} />);
   };
 
   useEffect(() => {
     getUsers();
-  }, [userID]);
+  }, []);
+
+  let currTable = null;
+  if (currRank) {
+    currTable = (
+      <TableRow className={styles.currUser}>
+        <TableCell className={styles.currUserProps} align="center">{currRank}</TableCell>
+        <TableCell className={styles.currUserProps} align="center">
+          <ListItemAvatar>
+            <div style={{ marginLeft: 'auto', marginRight: 'auto' }} className="MuiAvatar-root MuiAvatar-circle">
+              <img alt="User" src={user.profile_image} className="MuiAvatar-img" referrerPolicy="no-referrer" />
+            </div>
+          </ListItemAvatar>
+        </TableCell>
+        <TableCell className={styles.currUserProps} align="center">{user.name}</TableCell>
+        <TableCell className={styles.currUserProps} align="center">{user.shreddit_balance}</TableCell>
+      </TableRow>
+    );
+  }
 
   return (
     <>
@@ -123,20 +133,12 @@ function Leaderboard() {
           <Table className={styles.table} aria-label="simple table">
             <TableHead>
               <TableRow>
-                <TableCell className={styles.title} align="center" colSpan={5}>Bet History</TableCell>
-              </TableRow>
-              <TableRow>
                 <TableCell align="center">Rank:</TableCell>
-                <TableCell align="center" />
+                <TableCell align="center">Profile Image:</TableCell>
                 <TableCell align="center">User:</TableCell>
                 <TableCell align="center">Total Shredits:</TableCell>
               </TableRow>
-              <TableRow>
-                <TableCell align="center">{currUser.rank}</TableCell>
-                <TableCell align="center">Profile image</TableCell>
-                <TableCell align="center">{currUser.name}</TableCell>
-                <TableCell align="center">{currUser.shreddit_balance}</TableCell>
-              </TableRow>
+              {currTable}
             </TableHead>
             <TableBody>
               {(rowsPerPage > 0
