@@ -3,8 +3,6 @@
 /* eslint-disable react/prop-types */
 import { TableCell, TableRow, ListItemAvatar } from '@material-ui/core';
 import React from 'react';
-import { useSelector } from 'react-redux';
-import { selectUser } from '../../store/slices/userSlice';
 
 function User(props) {
   const { info } = props;
@@ -12,13 +10,6 @@ function User(props) {
   const { name } = info;
   const { profile_image } = info;
   const { shreddit_balance } = info;
-  const { _id } = info;
-  const user = useSelector(selectUser);
-  const userID = user._id;
-
-  if (_id === userID) {
-    props.setCurrRank(index);
-  }
 
   return (
     <TableRow>
