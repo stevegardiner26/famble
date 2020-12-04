@@ -10,8 +10,8 @@ export default {
     const res = await axios.post('/api/users', payload);
     return res.data || [];
   },
-  getUsers: async () => {
-    const res = await axios.get('/api/users');
+  getUsers: async (id) => {
+    const res = await axios.get(`/api/users/rank/${id}`);
     return res.data || [];
   },
 };

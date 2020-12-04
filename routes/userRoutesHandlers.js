@@ -9,10 +9,17 @@ async function getUserById(req, res){
   return res.status(200).send(user);
 }
 
-// app.get(`/api/users`, getUsers);
+// app.get(`/api/users/rank/:id`, getUsers)
 async function getUsers(req, res){
+  const {id} = req.params;
   let users = await User.find().sort({shreddit_balance: -1});
-  return res.status(200).send(users);
+  let rank;
+  users.forEach((user, index) => {
+    if (user.id === id){
+      rank = index + 1;
+      return res.status(200).send({users, rank});
+    }
+  });
 }
 
 // app.post(`/api/users`, createUser) 
