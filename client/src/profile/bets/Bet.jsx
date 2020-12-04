@@ -9,7 +9,7 @@ import {
 } from 'react-router-dom';
 import gameService from '../../services/gameService';
 
-function Game({ info }) {
+function Bet({ info }) {
   const [teamName, setTeamName] = useState(null);
   const [homeTeamID, setHomeTeamID] = useState(null);
   const [awayTeamID, setAwayTeamID] = useState(null);
@@ -100,4 +100,4 @@ function Game({ info }) {
     </TableRow>
   );
 }
-export default Game;
+export default Bet;
