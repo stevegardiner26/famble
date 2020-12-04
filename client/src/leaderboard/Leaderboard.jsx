@@ -94,9 +94,13 @@ function Leaderboard() {
     setPage(0);
   };
 
-  const getUsers = async () => {
-    userService.getUsers().then((res) => setUsers(res));
+  const getUsers = async (id) => {
+    await userService.getUsers(id).then((res) => {
+      setUsers(res.users);
+      setCurrRank(res.rank);
+    });
   };
+
   // eslint-disable-next-line arrow-body-style
   const mapFunction = (row, index) => {
     const rank = index + 1;
@@ -104,8 +108,8 @@ function Leaderboard() {
   };
 
   useEffect(() => {
-    getUsers();
-  }, []);
+    getUsers(user._id);
+  }, [user._id]);
 
   let currTable = null;
   if (currRank) {
