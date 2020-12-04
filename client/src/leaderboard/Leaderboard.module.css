@@ -41,5 +41,5 @@
     background-color: black;
 }
 .currUserProps{
-    color: white;
+    color: white !important;
 }
