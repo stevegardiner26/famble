@@ -104,7 +104,7 @@ function Dashboard() {
     if (games.length === 0) {
       getGames();
     }
-  });
+  }, []);
 
   return (
     // eslint-disable-next-line react/jsx-fragments
