@@ -13,7 +13,7 @@ async function getBets(req, res){
     return res.status(200).send(bets);
 }
 
-// app.get('/api/bets/users/:user_id', getBetsByUserID) 
+// app.get('/api/bets/users/:user_id', getBetsByUserID)
 async function getBetsByUserID(req, res){
     const { user_id } = req.params;
     const bets = await Bet.find({user_id: user_id});
@@ -68,40 +68,40 @@ async function postBets(req, res){
 
 async function postBetsHelper(body, bets, user){
   for (let i = 0; i < bets.length; i++){
-    if(bets[i].team_id === body.team_id){
-      if(body.amount > bets[i].amount){
-        await Bet.findByIdAndUpdate(bets[i]._id,{
-          amount: body.amount
-        });
-        await User.findByIdAndUpdate(body.user_id, {
-          shreddit_balance: user.shreddit_balance - (body.amount - bets[i].amount)
-        });
-        return {
-          status: 201,
-          data: {
-            error: false,
-          }
-        };
-        
-      } 
-      else{
-        return {
-          status: 500,
-          data: {
-            error: true,
-            msg: "Could not update because the updated amount is less than or equal to the current amount",
-          }
-        };
-      }
-    }
-    else{
-      return {
-        status: 500,
-        data: {
-          error: true,
-          msg: "You are trying to change the team you are betting on, you are locked in after placing your bet",
+    if (bets[i].type == body.type) {
+        if (bets[i].team_id === body.team_id) {
+            if (body.amount > bets[i].amount) {
+                await Bet.findByIdAndUpdate(bets[i]._id, {
+                    amount: body.amount
+                });
+                await User.findByIdAndUpdate(body.user_id, {
+                    shreddit_balance: user.shreddit_balance - (body.amount - bets[i].amount)
+                });
+                return {
+                    status: 201,
+                    data: {
+                        error: false,
+                    }
+                };
+
+            } else {
+                return {
+                    status: 500,
+                    data: {
+                        error: true,
+                        msg: "Could not update because the updated amount is less than or equal to the current amount",
+                    }
+                };
+            }
+        } else {
+            return {
+                status: 500,
+                data: {
+                    error: true,
+                    msg: "You are trying to change the team you are betting on, you are locked in after placing your bet",
+                }
+            };
         }
-      };
     }
   }
 }
@@ -115,7 +115,7 @@ async function deleteBets(req, res){
         bet,
     });
 }
-  
+
 exports.getBets = getBets;
 exports.getBetsByGameID = getBetsByGameID;
 exports.postBets = postBets;
