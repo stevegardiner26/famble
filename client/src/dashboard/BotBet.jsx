@@ -166,7 +166,7 @@ function BotBet(props) {
                 : null }
             </p>
             <p>
-              {`Number of Bets: ${homeBetStats.total_count} bets `}
+              {`Number of Bets: ${homeBetStats.total_count} bet(s) `}
               { ((homeBetStats.total_count / betStats.total_count) * 100)
                 ? (`(${parseFloat((homeBetStats.total_count / betStats.total_count) * 100).toFixed(2)} %)`)
                 : null }
@@ -174,7 +174,7 @@ function BotBet(props) {
           </div>
           <div className="col-md">
             <p>
-              {`Total Bets: ${betStats.total_count} bets`}
+              {`Total Bets: ${betStats.total_count} bet(s)`}
             </p>
             <p>
               {`Total Money Bet: $${betStats.total_amount}`}
@@ -188,7 +188,7 @@ function BotBet(props) {
                 : null }
             </p>
             <p>
-              {`Number of Bets: ${awayBetStats.total_count} bets`}
+              {`Number of Bets: ${awayBetStats.total_count} bet(s)`}
               { ((awayBetStats.total_count / betStats.total_count) * 100)
                 ? (`(${parseFloat((awayBetStats.total_count / betStats.total_count) * 100).toFixed(2)} %)`)
                 : null }
