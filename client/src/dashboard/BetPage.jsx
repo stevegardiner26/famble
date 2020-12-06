@@ -49,6 +49,7 @@ export default function BetPage(props) {
   const [tweets, setTweets] = useState(null);
   const [previousBet, setPrev] = useState(false);
   const [valid, setValid] = useState(false);
+  const [betAmount, setBetAmount] = useState('no');
   const userID = user._id;
   const balance = user.shreddit_balance;
 
@@ -135,10 +136,10 @@ export default function BetPage(props) {
                   className={classes.inline}
                   color="textPrimary"
                 >
-                  {`${tweets.tweet.user.name}`}
+                  {`${tweets.tweet.user.name}: `}
 
                 </Typography>
-                {`${tweets.tweet.text}`}
+                {` ${tweets.tweet.text}`}
               </>
             )}
           />
@@ -149,12 +150,11 @@ export default function BetPage(props) {
   }
   function DisplayCurrentBet() {
     let teamName = 'this game.';
-    let betAmount = 'no';
     if (bets.length > 0) {
       bets.forEach((row) => {
         if (row.user_id === userID) {
-          betAmount = row.amount;
           teamName = row.teamName;
+          setBetAmount(row.amount);
           setTeamID(row.team_id);
           setPrev(true);
         }
@@ -267,6 +267,7 @@ export default function BetPage(props) {
                   prev={previousBet}
                   teamID={teamID}
                   valid={setValid}
+                  betAmount={betAmount}
                 />
 
               </Paper>
