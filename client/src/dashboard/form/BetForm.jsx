@@ -53,7 +53,11 @@ function BetForm({
             if (res === []) {
               alert('Could not place bet at this time. Try again later.');
             } else {
-              dispatch(updateShreddits(values.betAmount - betAmount));
+              if (betAmount !== 'no') {
+                dispatch(updateShreddits(values.betAmount - betAmount));
+              } else {
+                dispatch(updateShreddits(values.betAmount));
+              }
               valid(true);
             }
           };
