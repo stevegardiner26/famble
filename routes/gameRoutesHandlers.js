@@ -49,8 +49,6 @@ async function fetchOddsByGame(req, res) {
     })
   }
 }
-<<<<<<< HEAD
-=======
 
 async function fetchOddsByGameHelper(data, res, id){
   let away_odds = data[0].PregameOdds[0].AwayMoneyLine;
@@ -76,7 +74,6 @@ async function fetchOddsByGameHelper(data, res, id){
   })
 }
 
->>>>>>> master
 // app.get('/api/fetch_weekly_scores', fetchWeeklyScores) 
 async function fetchWeeklyScores(req, res){
   // Check and only allow this to execute the api call if it is 10 minutes past the last time it was called:
