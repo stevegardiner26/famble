@@ -1,6 +1,5 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-underscore-dangle */
-/* eslint-disable no-console */
 /* eslint-disable max-len */
 /* eslint-disable no-alert */
 /* eslint-disable no-undef */
@@ -13,7 +12,6 @@ import {
 } from 'reactstrap';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-
 import {
   Link,
 } from 'react-router-dom';
@@ -22,7 +20,7 @@ import { selectUser, updateShreddits } from '../../store/slices/userSlice';
 import styles from '../BetModal.module.css';
 
 function BetForm({
-  homeTeamID, awayTeamID, homeTeamName, awayTeamName, balance, gameID, prev, teamID, valid,
+  homeTeamID, awayTeamID, homeTeamName, awayTeamName, balance, gameID, prev, teamID, valid, betAmount,
 }) {
   const dispatch = useDispatch();
   const user = useSelector(selectUser);
@@ -55,7 +53,7 @@ function BetForm({
             if (res === []) {
               alert('Could not place bet at this time. Try again later.');
             } else {
-              dispatch(updateShreddits(values.betAmount));
+              dispatch(updateShreddits(values.betAmount - betAmount));
               valid(true);
             }
           };

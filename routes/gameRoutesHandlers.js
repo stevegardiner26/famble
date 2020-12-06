@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 const Client = require('node-rest-client').Client;
 const mongoose = require('mongoose');
 const Game = mongoose.model('games');

@@ -6,7 +6,13 @@ const { betModel } = require('../models/Bet');
 const { userModel } = require('../models/User');
 const { teamModel } = require('../models/Team');
 const { gameModel } = require('../models/Game');
-const { getBets, getBetsByGameID, postBets, getBetsByUserID, deleteBets, helpers, postBetsHelper } = require('../routes/betRoutesHandlers');
+const { getBets, 
+  getBetsByGameID, 
+  postBets, getBetsByUserID, 
+  deleteBets, 
+  helpers, 
+  postBetsHelper,
+  getRegBets } = require('../routes/betRoutesHandlers');
 
 describe("GET /api/bets", function() {  
   let stub;
@@ -39,7 +45,7 @@ describe("GET /api/bets", function() {
     mockResponse.on('end', function() {
       try {
         assert.strictEqual(mockResponse.statusCode, 200);
-        assert.strictEqual(mockResponse._getData(), fixture);
+        assert.deepStrictEqual(mockResponse._getData(), fixture);
         done();
       }
       catch (error){
@@ -48,6 +54,59 @@ describe("GET /api/bets", function() {
     });
 
     getBets(mockRequest, mockResponse);
+  });
+});
+
+describe("GET /api/bets/getRegBets/:game_id", function() {  
+  let mockFind;
+  let fakeBets = [{
+    active: true,
+    user_id: "5fc41fd8ed695a5424fdbf52",
+    game_id: "17263",
+    team_id: "3",
+    amount: 100,
+    name: "Jay Rana",
+    type: "default",
+    teamName: "Baltimore Ravens"
+  }]
+  beforeEach((done) =>{
+    mockFind = sinon.stub(betModel, "find").returns(fakeBets);
+    done();
+  })
+
+  afterEach((done) => {
+    mockFind.restore();
+    done();
+  })
+
+  it("it should have status code 202 and pass data from Bet.find", function(done) {
+    const mockRequest = httpMocks.createRequest({
+      method: "GET",
+      url: "/api/bets/getRegBets/17263",
+      params: {
+        game_id: "17263"
+      }
+    });
+    const mockResponse = httpMocks.createResponse({
+      eventEmitter: require('events').EventEmitter
+    });
+    
+    mockResponse.on('end', function() {
+      const expected = {
+        error: false,
+        bets: fakeBets
+      }
+      try {
+        assert.strictEqual(mockResponse.statusCode, 202);
+        assert.deepStrictEqual(mockResponse._getData(), expected);
+        done();
+      }
+      catch (error){
+        done(error);
+      }
+    });
+
+    getRegBets(mockRequest, mockResponse);
   });
 });
 
