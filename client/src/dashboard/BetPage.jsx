@@ -19,6 +19,7 @@ import {
   CardContent, Grid, makeStyles, Paper, List,
   ListItem, ListItemText,
 } from '@material-ui/core';
+import BetForm from './form/BetForm';
 import styles from './BetModal.module.css';
 import betService from '../services/betService';
 import { selectUser } from '../store/slices/userSlice';
@@ -279,35 +280,14 @@ export default function BetPage(props) {
 
                 <Paper className={classes.paper}>
                   <DisplayCurrentBet />
-                  <Form className={styles.bet_form}>
-                    <FormGroup row>
-                      <Label for="betAmount" sm={3}>Bet Amount:</Label>
-                      <Col sm={9}>
-                        <Input type="number" name="betAmount" id="betAmount" onChange={changeBet} placeholder="Enter Bet Amount" />
-                      </Col>
-                    </FormGroup>
-                    <FormGroup id="selectTeam" tag="fieldset" row>
-                      <Label sm={4}>Select a Team:</Label>
-                      <FormGroup check>
-                        <Col sm={2}>
-                          <Label check>
-                            <Input onClick={() => changeTeamID(homeTeamID)} type="radio" name="team" disabled={previousBet} />
-                            {homeTeamName}
-                          </Label>
-                        </Col>
-                        <Col sm={2}>
-                          <Label check>
-                            <Input onClick={() => changeTeamID(awayTeamID)} type="radio" name="team" disabled={previousBet} />
-                            {awayTeam}
-                          </Label>
-                        </Col>
-                      </FormGroup>
-                    </FormGroup>
-                  </Form>
-                  <Button color="primary" style={{ margin: '10px' }} onClick={handleBet}>Submit Bet</Button>
-                  <Link to="/dashboard">
-                    <Button color="secondary">Cancel</Button>
-                  </Link>
+                  <BetForm
+                    homeTeamID={homeTeamID}
+                    awayTeamID={awayTeamID}
+                    balance={balance}
+                    homeTeamName={homeTeamName}
+                    awayTeamName={awayTeam}
+                  />
+
                 </Paper>
 
               </Grid>
