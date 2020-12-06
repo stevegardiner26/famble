@@ -36,7 +36,7 @@ const useStyles = makeStyles({
     padding: '20px',
   },
 });
-// TODO Alert User if the amount bet they placed is larger than their balance
+
 
 export default function BetPage(props) {
   if (!props.location.state) {
