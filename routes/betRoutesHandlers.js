@@ -32,7 +32,7 @@ async function getBetsByGameID(req, res){
         bets,
     });
 }
-//app.get('/api/bets/getRegBets/:game_id);
+//app.get('/api/bets/getRegBets/:game_id', getRegBets);
 async function getRegBets(req, res){
   const { game_id } = req.params;
   const bets = await Bet.find({game_id: game_id, type: "default"});
