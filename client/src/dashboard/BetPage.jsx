@@ -61,7 +61,6 @@ export default function BetPage(props) {
   const [tweets, setTweets] = useState([]);
   const [previousBet, setPrev] = useState(false);
   const [valid, setValid] = useState(false);
-
   const userID = user._id;
   const fullName = user.name;
   const balance = user.shreddit_balance;
@@ -80,7 +79,6 @@ export default function BetPage(props) {
   const getGameTweets = async (term) => {
     await twitterService.getTweet(term).then((response) => {
       setTweets(response);
-      console.log(tweets);
     });
   };
   function BetCount() {
@@ -134,7 +132,35 @@ export default function BetPage(props) {
 
     );
   }
+  function DisplayTweet() {
+    if (tweets.length > 0) {
+      return (
+        <ListItem alignItems="flex-start">
+          <ListItemAvatar>
+            <Avatar alt="" src={`${tweets.tweet.user.profile_image_url}`} />
+          </ListItemAvatar>
+          <ListItemText
+            primary="Brunch this weekend?"
+            secondary={(
+              <>
+                <Typography
+                  component="span"
+                  variant="body2"
+                  className={classes.inline}
+                  color="textPrimary"
+                >
+                  {`${tweets.tweet.user.name}`}
 
+                </Typography>
+                {`${tweets.tweet.text}`}
+              </>
+)}
+          />
+        </ListItem>
+      );
+    }
+    return (<p>No tweets yet</p>);
+  }
   function DisplayCurrentBet() {
     let teamName = 'this game.';
     let betAmount = 'no';
@@ -173,9 +199,14 @@ export default function BetPage(props) {
     return (<p>No bets have been placed</p>);
   }
   useEffect(() => {
+    if (tweets.length === 0) {
+      getGameTweets(homeTeamName);
+    }
+    console.log(tweets);
+  });
+  useEffect(() => {
     getHomeLogo(homeTeamID);
     getAwayLogo(awayTeamID);
-    getGameTweets(`${homeTeamName} vs ${awayTeam}`);
   }, []);
   useEffect(() => {
     getBetsForGame(gameID);
@@ -276,24 +307,7 @@ export default function BetPage(props) {
               </Grid>
               <Grid item xs={3}>
                 <Paper className={classes.paper}>
-                  <ListItem alignItems="flex-start">
-                    <ListItemAvatar>
-                      <Avatar alt="" src="" />
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary="Brunch this weekend?"
-                      secondary={(
-                        <>
-                          <Typography
-                            component="span"
-                            variant="body2"
-                            className={classes.inline}
-                            color="textPrimary"
-                          />
-                        </>
-          )}
-                    />
-                  </ListItem>
+                  <DisplayTweet />
                 </Paper>
               </Grid>
             </Grid>
