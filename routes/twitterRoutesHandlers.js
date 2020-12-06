@@ -10,7 +10,7 @@ var client = new Twitter({
 // app.get('/api/twitter/:search_term', getTweet) 
 async function getTweet(req, res){
     let { search_term } = req.params;
-    client.get('search/tweets', {q: search_term}, function(error, tweets, response) {
+    client.get('search/tweets', {q: search_term}, function(error, tweets) {
         return res.status(200).send({tweet: tweets.statuses[0]}); 
     });
 }
