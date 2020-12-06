@@ -78,7 +78,7 @@ In order for the login to work, follow these steps:
 2. Go to https://developers.facebook.com/apps and create an account with facebook.
 3. Set Up a Facebook Login under the Add a Product
 4. Under Valid OAuth Redirect URIs paste your URL and remove everything after the `.com` or whatever the end of your domain is. 
-# Note: Facebook wants https: not http:
+### Note: Facebook wants https: not http:
 6. Copy the app ID that is given to you and paste it into your code after following this process.
 7. Getting Started:
 ```sh
