@@ -4,6 +4,7 @@ const {
   postBets, 
   getBetsByUserID,
   deleteBets,
+  getRegBets
 } = require('./betRoutesHandlers');
 
 module.exports = (app) => {
@@ -11,7 +12,7 @@ module.exports = (app) => {
   app.get('/api/get_bets', getBets);
   app.get('/api/bets/users/:user_id', getBetsByUserID);
   app.get('/api/bets/:game_id', getBetsByGameID);
-  
+  app.get('/api/bets/getRegBets/:game_id', getRegBets);
   // Create
   app.post('/api/bets', postBets);
 
