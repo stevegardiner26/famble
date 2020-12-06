@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 var Twitter = require('twitter');
 
 var client = new Twitter({

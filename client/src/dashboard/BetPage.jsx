@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable guard-for-in */
 /* eslint-disable no-unused-vars */
@@ -17,7 +18,7 @@ import { useSelector } from 'react-redux';
 import {
   Container, CssBaseline, Typography, Card,
   CardContent, Grid, makeStyles, Paper, List,
-  ListItem, ListItemText,
+  ListItem, ListItemText, Avatar, ListItemAvatar,
 } from '@material-ui/core';
 import BetForm from './form/BetForm';
 import styles from './BetModal.module.css';
@@ -25,6 +26,7 @@ import betService from '../services/betService';
 import { selectUser } from '../store/slices/userSlice';
 import gameService from '../services/gameService';
 import FullWidthTabs from './statsTab';
+import twitterService from '../services/twitterService';
 
 const useStyles = makeStyles({
   root: {
@@ -56,28 +58,13 @@ export default function BetPage(props) {
   const [gameID] = useState(props.location.state.gameID);
   const [homeLogo, setHomeLogo] = useState('');
   const [awayLogo, setAwayLogo] = useState('');
+  const [tweets, setTweets] = useState([]);
   const [previousBet, setPrev] = useState(false);
   const [valid, setValid] = useState(false);
 
   const userID = user._id;
   const fullName = user.name;
   const balance = user.shreddit_balance;
-  useEffect(() => {
-    if (valid) {
-      const setBet = async () => {
-        const res = await betService.createBet(userID, gameID, teamID, amount, fullName, 'default');
-        if (res === []) {
-          alert('Could not place bet at this time. Try again later.');
-        } else {
-          const betAmt = document.getElementById('betAmount');
-          alert('Bet placed successfully!');
-          setValid(false);
-          betAmt.value = '';
-        }
-      };
-      setBet();
-    }
-  }, [valid, userID, gameID, teamID, amount, fullName]);
 
   const getHomeLogo = async (id) => {
     await gameService.getLogo(id).then(setHomeLogo);
@@ -87,12 +74,14 @@ export default function BetPage(props) {
   };
   const getBetsForGame = async (id) => {
     await betService.getRegBets(id).then((response) => {
-      // eslint-disable-next-line no-console
-      console.log(response);
       setBets(response.bets);
     });
-    // eslint-disable-next-line no-console
-    console.log(bets.bets);
+  };
+  const getGameTweets = async (term) => {
+    await twitterService.getTweet(term).then((response) => {
+      setTweets(response);
+      console.log(tweets);
+    });
   };
   function BetCount() {
     if (bets.length > 0) {
@@ -186,6 +175,7 @@ export default function BetPage(props) {
   useEffect(() => {
     getHomeLogo(homeTeamID);
     getAwayLogo(awayTeamID);
+    getGameTweets(`${homeTeamName} vs ${awayTeam}`);
   }, []);
   useEffect(() => {
     getBetsForGame(gameID);
@@ -261,6 +251,9 @@ export default function BetPage(props) {
                     gameID={gameID}
                     homeTeamName={homeTeamName}
                     awayTeamName={awayTeam}
+                    prev={previousBet}
+                    teamID={teamID}
+                    valid={setValid}
                   />
 
                 </Paper>
@@ -282,7 +275,26 @@ export default function BetPage(props) {
                 </Paper>
               </Grid>
               <Grid item xs={3}>
-                <Paper className={classes.paper}>xs=3</Paper>
+                <Paper className={classes.paper}>
+                  <ListItem alignItems="flex-start">
+                    <ListItemAvatar>
+                      <Avatar alt="" src="" />
+                    </ListItemAvatar>
+                    <ListItemText
+                      primary="Brunch this weekend?"
+                      secondary={(
+                        <>
+                          <Typography
+                            component="span"
+                            variant="body2"
+                            className={classes.inline}
+                            color="textPrimary"
+                          />
+                        </>
+          )}
+                    />
+                  </ListItem>
+                </Paper>
               </Grid>
             </Grid>
           </div>

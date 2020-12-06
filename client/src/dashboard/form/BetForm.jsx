@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable no-console */
 /* eslint-disable max-len */
@@ -6,7 +7,7 @@
 /* eslint-disable react/jsx-no-comment-textnodes */
 import React from 'react';
 
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   Col, Button, Form, FormGroup, Label, Input,
 } from 'reactstrap';
@@ -20,11 +21,10 @@ import betService from '../../services/betService';
 import { selectUser, updateShreddits } from '../../store/slices/userSlice';
 import styles from '../BetModal.module.css';
 
-// Schema for yup
-
 function BetForm({
-  homeTeamID, awayTeamID, homeTeamName, awayTeamName, balance, gameID, prev,
+  homeTeamID, awayTeamID, homeTeamName, awayTeamName, balance, gameID, prev, teamID, valid,
 }) {
+  const dispatch = useDispatch();
   const user = useSelector(selectUser);
   const userID = user._id;
   const validationSchema = Yup.object().shape({
@@ -46,6 +46,9 @@ function BetForm({
 
         // Simulate submitting to database, shows us values submitted, resets form
         setTimeout(() => {
+          if (prev) {
+            values.team = teamID;
+          }
           const setBet = async () => {
             const res = await betService.createBet(userID, gameID, values.team,
               values.betAmount, user.name, 'default');
@@ -53,7 +56,7 @@ function BetForm({
               alert('Could not place bet at this time. Try again later.');
             } else {
               dispatch(updateShreddits(values.betAmount));
-              alert('Bet placed successfully!');
+              valid(true);
             }
           };
           setBet();
