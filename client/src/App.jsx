@@ -13,6 +13,7 @@ import Home from './home/Home';
 import './App.css';
 import BetPage from './dashboard/BetPage';
 import Profile from './profile/Profile';
+import Leaderboard from './leaderboard/Leaderboard';
 
 function App() {
   const user = useSelector(selectUser);
@@ -29,6 +30,9 @@ function App() {
           </Route>
           <Route exact path="/profile">
             <Profile />
+          </Route>
+          <Route exact path="/leaderboard">
+            <Leaderboard />
           </Route>
           <Route
             path="/betpage/bot-bet/:id"

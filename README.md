@@ -72,6 +72,90 @@ In order for the login to work, follow these steps:
 3. Under `URIs`, paste your URL and remove everything after the `.com` or whatever the end of your domain is.
 4. Click `Save`
 
+### Note on Facebook Login Button
+In order for the login to work, follow these steps:
+1. Copy your URL either from `Preview your running application` or from your Heroku deployment. 
+2. Go to https://developers.facebook.com/apps and create an account with facebook.
+3. Set Up a Facebook Login under the Add a Product
+4. Under Valid OAuth Redirect URIs paste your URL and remove everything after the `.com` or whatever the end of your domain is. 
+# Note: Facebook wants https: not http:
+6. Copy the app ID that is given to you and paste it into your code after following this process.
+7. Getting Started:
+```sh
+$ yarn add react-facebook-login 
+```
+or
+```sh
+$ npm install react-facebook-login
+```
+8. will also need react-dom for Deployment so run:
+```sh
+$ npm isntall react react-dom react-facebook-login --save --force
+``` 
+
+## Setting up Sportsdata API
+1. Sign up to Sportsdata.io by Clicking on Register on the Top right
+2. After you've signed up, Start a free trial subscription
+3. To retrieve your API key go under 'My Account' > 'Subscriptions' There you will find API Keys: 
+4. Skip to 'Setting up .env..' and make sure to add the api key in your env file.
+
+## Setting up Twitter API
+1. Create a free Twitter user account, Head over to Twitter.com and register for a free account.
+2. Head over to the Twitter Dev Site and Create a New Application, Navigate to apps.twitter.com, sign in, and create a new application.
+3. You now should be able to access all the required API Keys and authorization credentials. You should be able to find everything under the “Keys and Access Tokens” Tab for all the Twitter API Key details. After that, fill out all the app details.
+4. Make sure to add these keys into your .env file, skip to 'Setting up .env...' for more information
+
+
+## Setting up .env should contain these variables
+1. Create a .env file
+```sh
+$ touch .env
+```
+
+2. Enter these key variables and fill in with youre secret/api keys
+```
+NFL_API_TOKEN
+MONGODB_URI
+
+TWITTER_API_KEY
+TWITTER_API_SECRET
+
+TWITTER_ACCESS_TOKEN
+TWITTER_ACCESS_TOKEN_SECRET
+```
+
+## Heroku Deployment
+1. Sign up for heroku at heroku.com 
+2. Install heroku by running npm install -g heroku
+3. Go through the following steps:
+    heroku login -i
+    heroku create
+    git push heroku master
+4. Navigate to your newly-created heroku site!
+5. Add your secret/API keys under settings in heroku (keys from sportsdata.io and mongodb.com) by going to https://sportsdata.io/members/subscriptions, by going to https://dashboard.heroku.com/apps and clicking into your app. Click on Settings, then scroll to "Config Vars." Click Reveal Config Vars" and add the key value pairs for each variable. Your config var key names should be:
+```
+NFL_API_TOKEN
+MONGODB_URI
+
+TWITTER_API_KEY
+TWITTER_API_SECRET
+
+TWITTER_ACCESS_TOKEN
+TWITTER_ACCESS_TOKEN_SECRET
+```
+6. Configure requirements.txt with all requirements needed to run your app.
+7. Configure Procfile with the command needed to run your app.
+8. If you are still having issues, you may use heroku logs --tail to see what's wrong.
+
+## CircleCI Sign Up and Set up with Heroku
+1. Navigate to https://circleci.com/signup/ and Sign up with Github
+2. Authorize CircleCI.
+3. Make sure you're in the right repo in the top right hand corner
+4. Once you've verified that, click "Set Up Project"
+5. Confirm that the language is set to Javascript and click "Add Config"
+6. CircleCI might ask if you want to see the new UI. If it does, click "yes" and it should redirect you.
+7. All you need to do to deploy to Heroku from CircleCI is to configure your Heroku credentials in circleCI UI, add a simple config.yml file to the project, and push.
+
 ## Contact
 
 - Jay Rana - jpr48@njit.edu

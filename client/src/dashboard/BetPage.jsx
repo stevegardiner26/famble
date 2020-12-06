@@ -284,6 +284,7 @@ export default function BetPage(props) {
                     homeTeamID={homeTeamID}
                     awayTeamID={awayTeamID}
                     balance={balance}
+                    gameID={gameID}
                     homeTeamName={homeTeamName}
                     awayTeamName={awayTeam}
                   />

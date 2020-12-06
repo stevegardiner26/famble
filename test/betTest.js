@@ -280,6 +280,111 @@ describe("POST /api/bets", function() {
 });
 
 describe("POST /api/bets 1", function() {  
+  let mockCreate;
+  let mockFindById;
+  let mockFindByIdUpdate;
+  let userResult;
+  let mockFind;
+  let mockTeamFind;
+  let mockResponse;
+  let mockFindGame;
+  let mockSetDate;
+  let curr = new Date('2020-11-23T00:00:00.000Z');
+  const start_time = new Date('2020-11-22T00:00:00.000Z') 
+  let fakeGame = [{
+    game_id: 17263,
+    sport_type: "NFL",
+    away_team_id: 13,
+    home_team_id: 16,
+    canceled: false,
+    status: "Final",
+    start_time: start_time
+  }]
+
+  beforeEach((done) =>{
+    userResult = {
+      shreddit_balance: 10000,
+      name: "Jay Rana",
+      profile_image: "https://lh3.googleusercontent.com/a-/AOh14Gg629IeUkf1lWpBcSqr7-m_pEhpvQI3CdAczWijeA=s96-c",
+      email: "jpr48@njit.edu",
+      google_id: "108376284041323611441"
+    }
+
+    const fakeTeam = [{
+      name: "Arizona Cardinals",
+      team_id: 1,
+      key: "ARI",
+      conference: "NFC",
+      division: "West",
+      stadium_id: 29
+    }]
+
+    game = {
+      game_id: "17403",
+      home_team_id: 1,
+    }
+    mockFindGame = sinon.stub(gameModel, "find").returns(fakeGame)
+    mockSetDate = sinon.useFakeTimers(curr);
+    mockResponse = sinon.stub(helpers,"postBetsHelper").returns(null);
+    mockCreate = sinon.stub(betModel, "create").callsFake((body) => {
+      return body;
+    })
+    mockTeamFind = sinon.stub(teamModel, "find").returns(fakeTeam);
+    mockFind = sinon.stub(betModel, "find").returns(game);
+    mockFindById = sinon.stub(userModel, "findById").returns(userResult);
+    mockFindByIdUpdate = sinon.stub(userModel, "findByIdAndUpdate").returns(null);
+    
+    done();
+  })
+
+  afterEach((done) => {
+    mockTeamFind.restore();
+    mockFind.restore();
+    mockCreate.restore();
+    mockFindById.restore();
+    mockFindByIdUpdate.restore();
+    mockResponse.restore();
+    mockFindGame.restore();
+    mockSetDate.restore();
+    done();
+  })
+
+  it("it should have status code 500 and return error message", function(done) {
+    const mockRequest = httpMocks.createRequest({
+      method: "POST",
+      url: "/api/bets",
+      body: {
+        user_id: "5fb83983417ae836a4e2b170",
+        game_id: "17403",
+        team_id: "1",
+        amount: 1100,
+        name: "Jay"
+      }
+    });
+    const mockResponse = httpMocks.createResponse({
+      eventEmitter: require('events').EventEmitter
+    });
+    
+    mockResponse.on('end', function() {
+      const expected = {
+        error: true,
+        message: 'The Game Has Already Started, the Bet Could Not be Placed.'
+      }
+      try {
+        assert.strictEqual(mockResponse.statusCode, 500);
+        assert.deepStrictEqual(mockResponse._getData(), expected);
+        done();
+      }
+      catch (error){
+        done(error);
+      }
+    });
+
+    postBets(mockRequest, mockResponse);
+  });
+});
+
+describe("POST /api/bets 2", function() {  
   let mockFindById;
   let mockFind;
   let mockResponse;

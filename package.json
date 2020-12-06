@@ -44,7 +44,11 @@
     "react-swipeable-views": "^0.13.9",
     "reactstrap": "^8.7.1",
     "redux": "^4.0.5",
+<<<<<<< HEAD
     "yup": "^0.31.1"
+=======
+    "twitter": "^1.7.1"
+>>>>>>> master
   },
   "devDependencies": {
     "chai": "^4.2.0",

@@ -24,52 +24,24 @@ async function getGameById(req, res){
 }
 // app.get('/api/current_week', getCurrentWeekGames)
 async function getCurrentWeekGames(req,res){
-  var curr = new Date;
-  var firstday = new Date(curr.setDate(curr.getDate() - curr.getDay()));
-  const games = await Game.find();
-  const currentWeekGames = [];
-
-  for (let i = vars.i; i < games.length; i++){
-    if (((games[i].start_time -firstday)/86400000).toFixed() > 14){
-      break;
-    }
-    if (games[i].start_time >= firstday){
-      currentWeekGames.push(games[i]);
-    }  
-  }
-  return res.status(200).send(currentWeekGames);
+  const curr = new Date;
+  const firstday = new Date(curr.setDate(curr.getDate() - curr.getDay()));
+  const lastday = new Date(curr.setDate(firstday.getDate() + 14))
+  const games = await Game.find({start_time:{$gte: firstday, $lt: lastday}}).sort({start_time: 1});
+  return res.status(200).send(games);
 }
 
+// app.get('/api/games/odds/:id', fetchOddsByGame);
 async function fetchOddsByGame(req, res) {
-  const { id } = req.params;
+  const id = parseInt(req.params.id, 10);
   var game = await Game.findOne({ game_id: id });
   
   if (!game.home_odds || !game.away_odds) {
-    await client.get(`https://api.sportsdata.io/v3/nfl/odds/json/GameOddsLineMovement/${game.score_id}`, {headers: {"Ocp-Apim-Subscription-Key": process.env['NFL_API_TOKEN']}}, async function (data, response) {
-      
-      var away_odds = data[0].PregameOdds[0].AwayMoneyLine;
-      var home_odds = data[0].PregameOdds[0].HomeMoneyLine;
-
-      var index = 1;
-      while (away_odds == null && home_odds == null) {
-        away_odds = data[0].PregameOdds[index].AwayMoneyLine;
-        home_odds = data[0].PregameOdds[index].HomeMoneyLine;
-        index++;
-      }
-
-      let payload = {
-        away_odds: away_odds,
-        home_odds: home_odds,
-      }
-        
-      await Game.findOneAndUpdate({game_id: id}, payload, {useFindAndModify: false});
-      return res.status(200).send({
-        error: false,
-        away_team_odds: away_odds,
-        home_team_odds: home_odds,
-      })
+    client.get(`https://api.sportsdata.io/v3/nfl/odds/json/GameOddsLineMovement/${game.score_id}`, {headers: {"Ocp-Apim-Subscription-Key": process.env['NFL_API_TOKEN']}}, async function (data) {
+      fetchOddsByGameHelper(data, res, id);
     });
-  } else {
+  } 
+  else {
     return res.status(200).send({
       error: false,
       away_team_odds: game.away_odds,
@@ -77,6 +49,34 @@ async function fetchOddsByGame(req, res) {
     })
   }
 }
+<<<<<<< HEAD
+=======
+
+async function fetchOddsByGameHelper(data, res, id){
+  let away_odds = data[0].PregameOdds[0].AwayMoneyLine;
+  let home_odds = data[0].PregameOdds[0].HomeMoneyLine;
+
+  let index = 1;
+  while (away_odds == null && home_odds == null) {
+    away_odds = data[0].PregameOdds[index].AwayMoneyLine;
+    home_odds = data[0].PregameOdds[index].HomeMoneyLine;
+    index++;
+  }
+
+  let payload = {
+    away_odds: away_odds,
+    home_odds: home_odds,
+  }
+    
+  await Game.findOneAndUpdate({game_id: id}, payload, {useFindAndModify: false});
+  return res.status(200).send({
+    error: false,
+    away_team_odds: away_odds,
+    home_team_odds: home_odds,
+  })
+}
+
+>>>>>>> master
 // app.get('/api/fetch_weekly_scores', fetchWeeklyScores) 
 async function fetchWeeklyScores(req, res){
   // Check and only allow this to execute the api call if it is 10 minutes past the last time it was called:
@@ -99,36 +99,41 @@ async function fetchWeeklyScores(req, res){
 function fetchWeeklyScoresHelper(week, res) {
   week.forEach(async (game) => {
     let winner_id = null;
-    if (game.Status == "Final") {          
+    if (game.Status == "Final") {
+      
+      let gameDB = Game.findOne({game_id: game.GlobalGameID}); 
+      let chosen_odds;         
+      
       if (game.AwayScore > game.HomeScore) {
         winner_id = game.GlobalAwayTeamID;
-      } else {
+        chosen_odds = gameDB.away_odds;
+      } 
+      else {
         winner_id = game.GlobalHomeTeamID;
+        chosen_odds = gameDB.home_odds;
       }
 
       let bets = Bet.find({game_id: game.GlobalGameID});
       if (bets.length > 1) {
         bets.forEach((b) => {
+          const user = User.findById(b.user_id);
           if (b.team_id == winner_id) {
-            const user = User.findById(b.user_id);
             if (b.type == "default") {
               User.findByIdAndUpdate(b.user_id, {
                   shreddit_balance: (user.shreddit_balance + (2 * b.amount))
               });
-            } else if (b.type == "bot") {
-              let winnings = b.amount;
-              let chosen_odds = game.away_odds;
-              if (game.away_team_id == winner_id) {
-                chosen_odds = game.away_odds;
-              } else if (game.home_team_id == winner_id) {
-                chosen_odds = game.home_odds;
-              }
-              
+            } 
+            else if (b.type == "bot") {
+              let winnings;
               if (chosen_odds < 0) {
                 winnings = b.amount * ((chosen_odds * -1) / 100);
-              } else {
+              } 
+              else {
                 winnings = b.amount * (chosen_odds / 100) + b.amount;
               }
+              User.findByIdAndUpdate(b.user_id, {
+                shreddit_balance: (user.shreddit_balance + winnings)
+              });
             }
           }
           Bet.findByIdAndUpdate(b.id, {active: false});
@@ -225,3 +230,4 @@ exports.updateGameById = updateGameById;
 exports.deleteGameById = deleteGameById;
 exports.vars = vars;
 exports.fetchOddsByGame = fetchOddsByGame;
+exports.fetchOddsByGameHelper = fetchOddsByGameHelper;

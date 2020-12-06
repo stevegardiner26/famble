@@ -14,6 +14,9 @@ const {
   fetchGamesHelper,
   updateGameById,
   deleteGameById,
+  fetchOddsByGame,
+  fetchOddsByGameHelper,
+  client,
   vars
 } = require('../routes/gameRoutesHandlers');
 
@@ -123,20 +126,9 @@ describe("GET /api/games/:id", function() {
 
 describe("GET /api/current_week", function() {  
   let mockFind;
-  let mockSetDate;
-  let mockStart;
-  let curr;
   let fakeGame;
 
-  afterEach((done) => {
-    mockFind.restore();
-    mockSetDate.restore();
-    mockStart.restore();
-    done();
-  })
-
-  it("it should have status code 200 and return array of games", function(done) {
-    curr = new Date('2020-11-23T00:00:00.000Z');
+  beforeEach((done) => {
     fakeGame = [{
       game_id: 17263,
       sport_type: "NFL",
@@ -144,11 +136,20 @@ describe("GET /api/current_week", function() {
       home_team_id: 16,
       canceled: false,
       status: "Final",
-      start_time: curr
+      start_time: "2020-09-13T17:00:00.000Z"
     }]
-    mockFind = sinon.stub(gameModel, "find").returns(fakeGame)
-    mockSetDate = sinon.useFakeTimers(curr);
-    mockStart = sinon.stub(vars, "i").value(0);
+    mockFind = sinon.stub(gameModel, "find").returns(
+      {sort: sinon.stub().returns(fakeGame)}
+      );
+    done();
+  });
+
+  afterEach((done) => {
+    mockFind.restore();
+    done();
+  })
+
+  it("it should have status code 200 and return array of games", function(done) {
 
     const mockRequest = httpMocks.createRequest({
       method: "GET",
@@ -160,45 +161,6 @@ describe("GET /api/current_week", function() {
     
     mockResponse.on('end', function() {
       const expected = fakeGame;
-      try {
-        assert.strictEqual(mockResponse.statusCode, 200);
-        assert.deepStrictEqual(mockResponse._getData(), expected);
-        done();
-      }
-      catch (error){
-        done(error);
-      }
-    });
-
-    getCurrentWeekGames(mockRequest, mockResponse);
-  });
-
-  it("it should have status code 200 and return array of no games", function(done) {
-    curr = new Date('2020-11-23T00:00:00.000Z');
-    const start_time = new Date('2020-12-22T00:00:00.000Z') 
-    fakeGame = [{
-      game_id: 17263,
-      sport_type: "NFL",
-      away_team_id: 13,
-      home_team_id: 16,
-      canceled: false,
-      status: "Final",
-      start_time: start_time
-    }]
-    mockFind = sinon.stub(gameModel, "find").returns(fakeGame)
-    mockSetDate = sinon.useFakeTimers(curr);
-    mockStart = sinon.stub(vars, "i").value(0);
-  
-    const mockRequest = httpMocks.createRequest({
-      method: "GET",
-      url: "/api/current_week"
-    });
-    const mockResponse = httpMocks.createResponse({
-      eventEmitter: require('events').EventEmitter
-    });
-    
-    mockResponse.on('end', function() {
-      const expected = [];
       try {
         assert.strictEqual(mockResponse.statusCode, 200);
         assert.deepStrictEqual(mockResponse._getData(), expected);
@@ -278,22 +240,28 @@ describe("fetchWeeklyScoresHelper", function() {
   const bets = [{
       active: true,
       user_id: "5fb83983417ae836a4e2b170",
-      game_id: "17420",
-      team_id: "10",
+      game_id: "17445",
+      team_id: "20",
       name: "Jay Rana",
-      amount: 3300,
-      teamName: "Denver Broncos"
+      amount: 100,
+      teamName: "Minnesota Vikings",
+      type: "bot"
   },
   {
-      active: true,
-      user_id: "5fb83983417ae836a4e2b170",
-      game_id: "17420",
-      team_id: "10",
-      name: "Jay Rana",
-      amount: 3300,
-      teamName: "Denver Broncos"
+    active: true,
+    user_id: "5fb83983417ae836a4e2b170",
+    game_id: "17445",
+    team_id: "20",
+    name: "Jay Rana",
+    amount: 100,
+    teamName: "Minnesota Vikings",
+    type: "default"
   }];
   const curr = new Date('2020-11-23T00:00:00.000Z');
+  const game = {
+    away_odds: 447,
+    home_odds: -534
+  }
 
   beforeEach((done) =>{
     mockSetDate = sinon.useFakeTimers(curr);
@@ -302,6 +270,7 @@ describe("fetchWeeklyScoresHelper", function() {
     mockFindByIdUpdateUser = sinon.stub(userModel, "findByIdAndUpdate").returns(null);
     mockFindByIdUpdateBet = sinon.stub(betModel, "findByIdAndUpdate").returns(null);
     mockFindOne = sinon.stub(gameModel, "findOneAndUpdate").returns(null);
+    mockFindOneGame = sinon.stub(gameModel, "findOne").returns(game);
     done();
   })
 
@@ -312,6 +281,7 @@ describe("fetchWeeklyScoresHelper", function() {
     mockFindByIdUpdateBet.restore();
     mockFindByIdUpdateUser.restore();
     mockFindOne.restore();
+    mockFindOneGame.restore();
     done();
   })
 
@@ -319,12 +289,12 @@ describe("fetchWeeklyScoresHelper", function() {
     week = [{
       AwayScore: 36,
       HomeScore: 30,
-      GlobalAwayTeamID: 10,
-      GlobalGameID: 17420,
+      GlobalAwayTeamID: 20,
+      GlobalGameID: 17445,
       Canceled: false,
       Status: "Final",
       IsInProgress: false,
-      GameEndDateTime: "2020-09-24T23:24:45"
+      GameEndDateTime: "2020-09-24T23:24:45"   
     }];
 
     const mockResponse = httpMocks.createResponse({
@@ -352,8 +322,8 @@ describe("fetchWeeklyScoresHelper", function() {
     week = [{
       AwayScore: 30,
       HomeScore: 36,
-      GlobalHomeTeamID: 10,
-      GlobalGameID: 17420,
+      GlobalHomeTeamID: 20,
+      GlobalGameID: 17445,
       Canceled: false,
       Status: "Final",
       IsInProgress: false,
@@ -598,5 +568,115 @@ describe("DELETE /api/games/:id", function() {
     }); 
 
     deleteGameById(mockRequest, mockResponse);
+  });
+});
+
+describe("GET /api/games/odds/:id", function() {  
+  let mockFind;
+  let mockClient;
+  const fakeGame = {
+    game_id: 17263,
+    sport_type: "NFL",
+    away_team_id: 13,
+    home_team_id: 16,
+    canceled: false,
+    status: "Final",
+    score_id: 17263,
+    away_odds: 447,
+    home_odds: -534
+  }
+
+  beforeEach((done) =>{
+    mockFind = sinon.stub(gameModel, "findOne").returns(fakeGame);
+    mockClient = sinon.stub(client, "get").returns(null);
+    done();
+  })
+
+  afterEach((done) => {
+    mockFind.restore();
+    mockClient.restore();
+    done();
+  })
+
+  it("it should have status code 200 and return game odds", function(done) {
+    const mockRequest = httpMocks.createRequest({
+      method: "GET",
+      url: "/api/games/odds/:id",
+      params: {
+        id: '17263'
+      }
+    });
+    const mockResponse = httpMocks.createResponse({
+      eventEmitter: require('events').EventEmitter
+    });
+    
+    mockResponse.on('end', function() {
+      const expected = {
+        error: false,
+        away_team_odds: fakeGame.away_odds,
+        home_team_odds: fakeGame.home_odds,
+      };
+      try {
+        assert.strictEqual(mockResponse.statusCode, 200);
+        assert.deepStrictEqual(mockResponse._getData(), expected);
+        done();
+      }
+      catch (error){
+        done(error);
+      }
+    }); 
+
+    fetchOddsByGame(mockRequest, mockResponse);
+  });
+});
+
+describe("fetchOddsByGameHelper", function() {  
+  let mockFind;
+  const data = [{
+    PregameOdds: 
+    [
+      {
+      AwayMoneyLine: null,
+      HomeMoneyLine: null
+      },
+      {
+        AwayMoneyLine: 467,
+        HomeMoneyLine: -561
+      }
+    ]
+  }]
+
+  beforeEach((done) =>{
+    mockFind = sinon.stub(gameModel, "findOneAndUpdate").returns(null);
+    done();
+  })
+
+  afterEach((done) => {
+    mockFind.restore();
+    done();
+  })
+
+  it("it should have status code 200 and return away and home team odds", function(done) {
+    const mockResponse = httpMocks.createResponse({
+      eventEmitter: require('events').EventEmitter
+    });
+    
+    mockResponse.on('end', function() {
+      const expected = {
+        error: false,
+        away_team_odds: 467,
+        home_team_odds: -561
+      };
+      try {
+        assert.strictEqual(mockResponse.statusCode, 200);
+        assert.deepStrictEqual(mockResponse._getData(), expected);
+        done();
+      }
+      catch (error){
+        done(error);
+      }
+    }); 
+
+    fetchOddsByGameHelper(data, mockResponse, 17263);
   });
 });

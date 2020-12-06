@@ -1,10 +1,9 @@
 /* eslint-disable no-underscore-dangle */
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
 import {
   TableContainer, Table, TableBody, TableCell,
   TableHead, TableRow, Paper, IconButton,
-  TableFooter, TablePagination,
+  TableFooter, TablePagination, ListItemAvatar,
 }
   from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
@@ -12,11 +11,12 @@ import FirstPageIcon from '@material-ui/icons/FirstPage';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import LastPageIcon from '@material-ui/icons/LastPage';
-import styles from './Profile.module.css';
-import betService from '../services/betService';
-import { selectUser } from '../store/slices/userSlice';
-import Bet from './bets/Bet';
+import { useSelector } from 'react-redux';
+import styles from './Leaderboard.module.css';
+import userService from '../services/userService';
+import User from './users/User';
 import NavBar from '../components/NavBar';
+import { selectUser } from '../store/slices/userSlice';
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -78,12 +78,12 @@ function TablePaginationActions(props) {
   );
 }
 
-function Profile() {
+function Leaderboard() {
   const user = useSelector(selectUser);
-  const [bets, setBets] = useState([]);
+  const [users, setUsers] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(9);
-  const userID = user._id;
+  const [currRank, setCurrRank] = useState(null);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -94,50 +94,68 @@ function Profile() {
     setPage(0);
   };
 
-  const getBet = async () => {
-    await betService.getBetsByUserId(userID).then((res) => {
-      if (res.error === false) {
-        setBets(res.bets);
-      }
+  const getUsers = async (id) => {
+    await userService.getUsers(id).then((res) => {
+      setUsers(res.users);
+      setCurrRank(res.rank);
     });
   };
 
+  // eslint-disable-next-line arrow-body-style
+  const mapFunction = (row, index) => {
+    const rank = index + 1;
+    return (<User key={row._id} info={row} index={rank} setCurrRank={setCurrRank} />);
+  };
+
   useEffect(() => {
-    getBet();
-  }, [userID]);
+    getUsers(user._id);
+  }, [user._id]);
+
+  let currTable = null;
+  if (currRank) {
+    currTable = (
+      <TableRow className={styles.currUser}>
+        <TableCell className={styles.currUserProps} align="center">{currRank}</TableCell>
+        <TableCell className={styles.currUserProps} align="center">
+          <ListItemAvatar>
+            <div style={{ marginLeft: 'auto', marginRight: 'auto' }} className="MuiAvatar-root MuiAvatar-circle">
+              <img alt="User" src={user.profile_image} className="MuiAvatar-img" referrerPolicy="no-referrer" />
+            </div>
+          </ListItemAvatar>
+        </TableCell>
+        <TableCell className={styles.currUserProps} align="center">{user.name}</TableCell>
+        <TableCell className={styles.currUserProps} align="center">{user.shreddit_balance}</TableCell>
+      </TableRow>
+    );
+  }
 
   return (
     <>
-      <NavBar pageName="Your Profile" />
+      <NavBar pageName="Leaderboard" />
       <div className={styles.page}>
         <TableContainer className={styles.tableContainer} component={Paper}>
           <Table className={styles.table} aria-label="simple table">
             <TableHead>
               <TableRow>
-                <TableCell className={styles.title} align="center" colSpan={5}>Bet History</TableCell>
+                <TableCell align="center">Rank:</TableCell>
+                <TableCell align="center">Profile Image:</TableCell>
+                <TableCell align="center">User:</TableCell>
+                <TableCell align="center">Total Shredits:</TableCell>
               </TableRow>
-              <TableRow>
-                <TableCell align="center">Date Placed:</TableCell>
-                <TableCell align="center">Team/Bot:</TableCell>
-                <TableCell align="center">Amount Bet:</TableCell>
-                <TableCell align="center">Game Status:</TableCell>
-                <TableCell align="center" />
-              </TableRow>
+              {currTable}
             </TableHead>
             <TableBody>
               {(rowsPerPage > 0
-                ? bets.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                : bets
-              ).map((row) => (
-                <Bet key={row.game_id} info={row} />
-              ))}
+                ? users.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                : users
+              ).map(mapFunction)}
             </TableBody>
             <TableFooter>
               <TableRow>
                 <TablePagination
                   rowsPerPageOptions={[9, 10, 25]}
                   colSpan={3}
-                  count={bets.length}
+                  count={users.length}
                   rowsPerPage={rowsPerPage}
                   page={page}
                   SelectProps={{
@@ -157,4 +175,4 @@ function Profile() {
   );
 }
 
-export default Profile;
+export default Leaderboard;

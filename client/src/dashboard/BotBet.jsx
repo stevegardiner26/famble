@@ -11,6 +11,7 @@ import BetModal from './BetModal';
 import betService from '../services/betService';
 import gameService from '../services/gameService';
 import teamService from '../services/teamService';
+import NavBar from '../components/NavBar';
 
 function BotBet(props) {
   const [betStats, setBetStats] = useState({ total_amount: 0, total_count: 0 });
@@ -102,8 +103,13 @@ function BotBet(props) {
 
   return (
     <div>
-      <Container maxWidth="md" style={{ background: 'white', textAlign: 'center' }}>
-        <h1>Bet Against the Bot</h1>
+      <NavBar pageName="Beat the Bot" />
+      <Container
+        maxWidth="md"
+        style={{
+          background: 'white', textAlign: 'center', marginTop: '50px', paddingTop: '20px',
+        }}
+      >
         <div className="row">
           <div className="col-md">
             <strong>Home Team</strong>
