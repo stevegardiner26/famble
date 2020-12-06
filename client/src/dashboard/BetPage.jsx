@@ -58,7 +58,7 @@ export default function BetPage(props) {
   const [gameID] = useState(props.location.state.gameID);
   const [homeLogo, setHomeLogo] = useState('');
   const [awayLogo, setAwayLogo] = useState('');
-  const [tweets, setTweets] = useState([]);
+  const [tweets, setTweets] = useState(null);
   const [previousBet, setPrev] = useState(false);
   const [valid, setValid] = useState(false);
   const userID = user._id;
@@ -133,7 +133,7 @@ export default function BetPage(props) {
     );
   }
   function DisplayTweet() {
-    if (tweets.length > 0) {
+    if (tweets) {
       return (
         <ListItem alignItems="flex-start">
           <ListItemAvatar>
@@ -199,11 +199,10 @@ export default function BetPage(props) {
     return (<p>No bets have been placed</p>);
   }
   useEffect(() => {
-    if (tweets.length === 0) {
+    if (!tweets) {
       getGameTweets(homeTeamName);
     }
-    console.log(tweets);
-  });
+  }, []);
   useEffect(() => {
     getHomeLogo(homeTeamID);
     getAwayLogo(awayTeamID);
