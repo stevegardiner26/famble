@@ -126,20 +126,9 @@ describe("GET /api/games/:id", function() {
 
 describe("GET /api/current_week", function() {  
   let mockFind;
-  let mockSetDate;
-  let mockStart;
-  let curr;
   let fakeGame;
 
-  afterEach((done) => {
-    mockFind.restore();
-    mockSetDate.restore();
-    mockStart.restore();
-    done();
-  })
-
-  it("it should have status code 200 and return array of games", function(done) {
-    curr = new Date('2020-11-23T00:00:00.000Z');
+  beforeEach((done) => {
     fakeGame = [{
       game_id: 17263,
       sport_type: "NFL",
@@ -147,11 +136,20 @@ describe("GET /api/current_week", function() {
       home_team_id: 16,
       canceled: false,
       status: "Final",
-      start_time: curr
+      start_time: "2020-09-13T17:00:00.000Z"
     }]
-    mockFind = sinon.stub(gameModel, "find").returns(fakeGame)
-    mockSetDate = sinon.useFakeTimers(curr);
-    mockStart = sinon.stub(vars, "i").value(0);
+    mockFind = sinon.stub(gameModel, "find").returns(
+      {sort: sinon.stub().returns(fakeGame)}
+      );
+    done();
+  });
+
+  afterEach((done) => {
+    mockFind.restore();
+    done();
+  })
+
+  it("it should have status code 200 and return array of games", function(done) {
 
     const mockRequest = httpMocks.createRequest({
       method: "GET",
@@ -163,45 +161,6 @@ describe("GET /api/current_week", function() {
     
     mockResponse.on('end', function() {
       const expected = fakeGame;
-      try {
-        assert.strictEqual(mockResponse.statusCode, 200);
-        assert.deepStrictEqual(mockResponse._getData(), expected);
-        done();
-      }
-      catch (error){
-        done(error);
-      }
-    });
-
-    getCurrentWeekGames(mockRequest, mockResponse);
-  });
-
-  it("it should have status code 200 and return array of no games", function(done) {
-    curr = new Date('2020-11-23T00:00:00.000Z');
-    const start_time = new Date('2020-12-22T00:00:00.000Z') 
-    fakeGame = [{
-      game_id: 17263,
-      sport_type: "NFL",
-      away_team_id: 13,
-      home_team_id: 16,
-      canceled: false,
-      status: "Final",
-      start_time: start_time
-    }]
-    mockFind = sinon.stub(gameModel, "find").returns(fakeGame)
-    mockSetDate = sinon.useFakeTimers(curr);
-    mockStart = sinon.stub(vars, "i").value(0);
-  
-    const mockRequest = httpMocks.createRequest({
-      method: "GET",
-      url: "/api/current_week"
-    });
-    const mockResponse = httpMocks.createResponse({
-      eventEmitter: require('events').EventEmitter
-    });
-    
-    mockResponse.on('end', function() {
-      const expected = [];
       try {
         assert.strictEqual(mockResponse.statusCode, 200);
         assert.deepStrictEqual(mockResponse._getData(), expected);
