@@ -125,7 +125,7 @@ function BotBet(props) {
             )}
           </div>
           <div className="col-md">
-            <p>Bot Image</p>
+            <img alt="Bot Icon" width="auto" height="80" src="/BotIcon.jpg" />
             <h1>VS</h1>
             <span>{new Date(currentGame.start_time).toLocaleDateString()}</span>
             <br />
