@@ -23,15 +23,15 @@ import styles from '../BetModal.module.css';
 // Schema for yup
 
 function BetForm({
-  homeTeamID, awayTeamID, homeTeamName, awayTeamName, balance, gameID,
+  homeTeamID, awayTeamID, homeTeamName, awayTeamName, balance, gameID, prev,
 }) {
   const user = useSelector(selectUser);
   const userID = user._id;
   const validationSchema = Yup.object().shape({
     betAmount: Yup.number()
       .min(1, 'Bets must be at least 1 shreddit')
-      .max(balance, "*Bets can't be placed larger than you're current balance")
-      .required('*Bet is required'),
+      .max(balance, "Bets can't be placed larger than you're current balance")
+      .required('Bet is required'),
   });
   return (
 
@@ -48,12 +48,11 @@ function BetForm({
         setTimeout(() => {
           const setBet = async () => {
             const res = await betService.createBet(userID, gameID, values.team,
-              values.betAmount, user.name, 'defualt');
+              values.betAmount, user.name, 'default');
             if (res === []) {
               alert('Could not place bet at this time. Try again later.');
             } else {
-              props.finishedBettingHandler();
-              dispatch(updateShreddits(amount));
+              dispatch(updateShreddits(values.betAmount));
               alert('Bet placed successfully!');
             }
           };
@@ -98,6 +97,7 @@ function BetForm({
                     type="radio"
                     value={homeTeamID}
                     checked={values.team === `${homeTeamID}`}
+                    disabled={prev}
                     onClick={() => setFieldValue('team', `${homeTeamID}`)}
                     name="team"
                   />
@@ -110,6 +110,7 @@ function BetForm({
                     type="radio"
                     value={awayTeamID}
                     checked={values.team === `${awayTeamID}`}
+                    disabled={prev}
                     onClick={() => setFieldValue('team', `${awayTeamID}`)}
                     name="team"
                   />

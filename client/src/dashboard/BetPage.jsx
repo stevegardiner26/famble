@@ -78,34 +78,7 @@ export default function BetPage(props) {
       setBet();
     }
   }, [valid, userID, gameID, teamID, amount, fullName]);
-  const changeTeamID = (teamSelectedID) => {
-    setTeamID(teamSelectedID);
-  };
 
-  const changeBet = (event) => {
-    // eslint-disable-next-line no-console
-    console.log(balance);
-    const betAmount = event.target.value;
-    if (betAmount <= 0 || amount > balance) {
-      alert('Please enter a valid bet amount');
-      event.target.value = null;
-    } else {
-      setAmount(betAmount);
-    }
-  };
-  const handleBet = () => {
-    // eslint-disable-next-line no-console
-    console.log(balance);
-    if (amount !== null && amount < balance) {
-      if (teamID !== null) {
-        setValid(true);
-      } else {
-        alert('Please select a team');
-      }
-    } else {
-      alert('Please enter a valid bet amount');
-    }
-  };
   const getHomeLogo = async (id) => {
     await gameService.getLogo(id).then(setHomeLogo);
   };
@@ -114,6 +87,8 @@ export default function BetPage(props) {
   };
   const getBetsForGame = async (id) => {
     await betService.getRegBets(id).then((response) => {
+      // eslint-disable-next-line no-console
+      console.log(response);
       setBets(response.bets);
     });
     // eslint-disable-next-line no-console
@@ -128,8 +103,7 @@ export default function BetPage(props) {
         <Paper className={classes.paper}>
           {`Bets placed on the ${homeTeamName}: ${homeCount}`}
           <br />
-          {`
-       Bets placed on the ${awayTeam}: ${awayCount}`}
+          {`Bets placed on the ${awayTeam}: ${awayCount}`}
 
         </Paper>
       );
