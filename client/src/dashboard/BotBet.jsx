@@ -1,9 +1,3 @@
-/* eslint-disable react/destructuring-assignment */
-/* eslint-disable max-len */
-/* eslint-disable no-unused-vars */
-/* eslint-disable react/jsx-one-expression-per-line */
-/* eslint-disable arrow-body-style */
-/* eslint-disable no-else-return */
 /* eslint-disable eqeqeq */
 import React, { useState, useEffect } from 'react';
 import Container from '@material-ui/core/Container';
@@ -11,6 +5,7 @@ import BetModal from './BetModal';
 import betService from '../services/betService';
 import gameService from '../services/gameService';
 import teamService from '../services/teamService';
+import statService from '../services/statService';
 import NavBar from '../components/NavBar';
 
 function BotBet(props) {
@@ -87,12 +82,22 @@ function BotBet(props) {
         });
       });
 
+      statService.getTeamStats(game.away_team_id).then((away) => {
+        const { teamStats } = away;
+        setAwayTeam((oldAway) => ({ ...oldAway, wins: teamStats.wins, losses: teamStats.losses }));
+      });
+
       teamService.getTeamById(game.home_team_id).then((home) => {
         setHomeTeam({
           name: home[0].name,
           image_url: home[0].image_url,
           team_id: home[0].team_id,
         });
+      });
+
+      statService.getTeamStats(game.home_team_id).then((home) => {
+        const { teamStats } = home;
+        setHomeTeam((oldHome) => ({ ...oldHome, wins: teamStats.wins, losses: teamStats.losses }));
       });
     });
   }, []);
@@ -119,14 +124,14 @@ function BotBet(props) {
             )}
             <img src={`${homeTeam.image_url}`} alt="Home Team Logo" width="50" height="50" />
             <p>{homeTeam.name}</p>
-            <p>11 - 0 - 12</p>
+            <p>{`${homeTeam.wins} W - ${homeTeam.losses} L`}</p>
             {homeOdds < awayOdds && (
               <h3>The Bot&apos;s Pick!</h3>
             )}
           </div>
           <div className="col-md">
             <img alt="Bot Icon" width="auto" height="80" src="/BotIcon.jpg" />
-            <h1>VS</h1>
+            <h3>VS</h3>
             <span>{new Date(currentGame.start_time).toLocaleDateString()}</span>
             <br />
             <span>{new Date(currentGame.start_time).toLocaleTimeString()}</span>
@@ -142,7 +147,7 @@ function BotBet(props) {
             )}
             <img src={awayTeam.image_url} alt="Away Team Logo" width="50" height="50" />
             <p>{awayTeam.name}</p>
-            <p>11 - 0 - 12</p>
+            <p>{`${awayTeam.wins} W - ${awayTeam.losses} L`}</p>
             {awayOdds < homeOdds && (
               <h3>The Bot&apos;s Pick!</h3>
             )}
@@ -150,18 +155,44 @@ function BotBet(props) {
         </div>
         <hr />
         <div className="row">
+          <h3 style={{ marginLeft: 'auto', marginRight: 'auto', marginBottom: '30px' }}>Current Betting Stats</h3>
+        </div>
+        <div className="row">
           <div className="col-md">
-            <p>Total Money Bet: ${homeBetStats.total_amount} ({(homeBetStats.total_amount / betStats.total_amount) * 100}%)</p>
-            <p>Number of Bets: {homeBetStats.total_count} bets ({(homeBetStats.total_count / betStats.total_count) * 100}%)</p>
+            <p>
+              {`Total Money Bet: $${homeBetStats.total_amount} `}
+              { ((homeBetStats.total_amount / betStats.total_amount) * 100)
+                ? (`(${parseFloat((homeBetStats.total_amount / betStats.total_amount) * 100).toFixed(2)} %)`)
+                : null }
+            </p>
+            <p>
+              {`Number of Bets: ${homeBetStats.total_count} bets `}
+              { ((homeBetStats.total_count / betStats.total_count) * 100)
+                ? (`(${parseFloat((homeBetStats.total_count / betStats.total_count) * 100).toFixed(2)} %)`)
+                : null }
+            </p>
           </div>
           <div className="col-md">
-            <h2>Current Betting Stats</h2>
-            <p>Total Bets: {betStats.total_count} bets</p>
-            <p>Total Money Bet: ${betStats.total_amount}</p>
+            <p>
+              {`Total Bets: ${betStats.total_count} bets`}
+            </p>
+            <p>
+              {`Total Money Bet: $${betStats.total_amount}`}
+            </p>
           </div>
           <div className="col-md">
-            <p>Total Money Bet: ${awayBetStats.total_amount} ({(awayBetStats.total_amount / betStats.total_amount) * 100}%)</p>
-            <p>Number of Bets: {awayBetStats.total_count} bets ({(awayBetStats.total_count / betStats.total_count) * 100}%)</p>
+            <p>
+              {`Total Money Bet: $${awayBetStats.total_amount} `}
+              { ((awayBetStats.total_amount / betStats.total_amount) * 100)
+                ? (`(${parseFloat((awayBetStats.total_amount / betStats.total_amount) * 100).toFixed(2)} %)`)
+                : null }
+            </p>
+            <p>
+              {`Number of Bets: ${awayBetStats.total_count} bets`}
+              { ((awayBetStats.total_count / betStats.total_count) * 100)
+                ? (`(${parseFloat((awayBetStats.total_count / betStats.total_count) * 100).toFixed(2)} %)`)
+                : null }
+            </p>
           </div>
         </div>
       </Container>
