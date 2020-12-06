@@ -23,20 +23,11 @@ async function getGameById(req, res){
 }
 // app.get('/api/current_week', getCurrentWeekGames)
 async function getCurrentWeekGames(req,res){
-  var curr = new Date;
-  var firstday = new Date(curr.setDate(curr.getDate() - curr.getDay()));
-  const games = await Game.find();
-  const currentWeekGames = [];
-
-  for (let i = vars.i; i < games.length; i++){
-    if (((games[i].start_time -firstday)/86400000).toFixed() > 14){
-      break;
-    }
-    if (games[i].start_time >= firstday){
-      currentWeekGames.push(games[i]);
-    }  
-  }
-  return res.status(200).send(currentWeekGames);
+  const curr = new Date;
+  const firstday = new Date(curr.setDate(curr.getDate() - curr.getDay()));
+  const lastday = new Date(curr.setDate(firstday.getDate() + 14))
+  const games = await Game.find({start_time:{$gte: firstday, $lt: lastday}}).sort({start_time: 1});
+  return res.status(200).send(games);
 }
 
 // app.get('/api/games/odds/:id', fetchOddsByGame);
