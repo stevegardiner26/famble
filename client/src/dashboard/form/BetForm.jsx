@@ -12,15 +12,14 @@ import {
 } from 'reactstrap';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import {
-  Link,
-} from 'react-router-dom';
+
 import betService from '../../services/betService';
 import { selectUser, updateShreddits } from '../../store/slices/userSlice';
 import styles from '../BetModal.module.css';
 
 function BetForm({
-  homeTeamID, awayTeamID, homeTeamName, awayTeamName, balance, gameID, prev, teamID, valid, betAmount,
+  homeTeamID, awayTeamID, homeTeamName, awayTeamName, balance, gameID, prev,
+  teamID, valid, betAmount, type,
 }) {
   const dispatch = useDispatch();
   const user = useSelector(selectUser);
@@ -30,6 +29,7 @@ function BetForm({
       .min(1, 'Bets must be at least 1 shreddit')
       .max(balance, "Bets can't be placed larger than you're current balance")
       .required('Bet is required'),
+    team: Yup.string().required('You must select a team to bet on'),
   });
   return (
 
@@ -49,7 +49,7 @@ function BetForm({
           }
           const setBet = async () => {
             const res = await betService.createBet(userID, gameID, values.team,
-              values.betAmount, user.name, 'default');
+              values.betAmount, user.name, type);
             if (res === []) {
               alert('Could not place bet at this time. Try again later.');
             } else {
@@ -89,9 +89,9 @@ function BetForm({
                 placeholder="Enter Bet Amount"
               />
             </Col>
-            {touched.betAmount && errors.betAmount ? (
+            {errors.betAmount && touched.betAmount && (
               <div className="error-message">{errors.betAmount}</div>
-            ) : null}
+            )}
           </FormGroup>
           <FormGroup id="selectTeam" tag="fieldset" row>
             <Label sm={4}>Select a Team:</Label>
@@ -122,7 +122,11 @@ function BetForm({
                   {awayTeamName}
                 </Label>
               </Col>
+              {errors.team && touched.team && (
+              <div align="center" className="error-message">{errors.team}</div>
+              )}
             </FormGroup>
+
           </FormGroup>
 
           <Button
@@ -133,9 +137,6 @@ function BetForm({
             Submit Bet
 
           </Button>
-          <Link to="/dashboard">
-            <Button color="secondary">Cancel</Button>
-          </Link>
         </Form>
       )}
     </Formik>
