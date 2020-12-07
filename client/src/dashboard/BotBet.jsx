@@ -1,14 +1,18 @@
 /* eslint-disable eqeqeq */
 import React, { useState, useEffect } from 'react';
 import Container from '@material-ui/core/Container';
+import { useSelector } from 'react-redux';
 import BetModal from './BetModal';
 import betService from '../services/betService';
 import gameService from '../services/gameService';
 import teamService from '../services/teamService';
 import statService from '../services/statService';
 import NavBar from '../components/NavBar';
+import { selectUser } from '../store/slices/userSlice';
 
 function BotBet(props) {
+  const user = useSelector(selectUser);
+  const [currentBetAmount, setCurrentBetAmount] = useState('no');
   const [betStats, setBetStats] = useState({ total_amount: 0, total_count: 0 });
   const [awayBetStats, setAwayBetStats] = useState({ total_amount: 0, total_count: 0, percent: 0 });
   const [homeBetStats, setHomeBetStats] = useState({ total_amount: 0, total_count: 0, percent: 0 });
@@ -99,6 +103,10 @@ function BotBet(props) {
         const { teamStats } = home;
         setHomeTeam((oldHome) => ({ ...oldHome, wins: teamStats.wins, losses: teamStats.losses }));
       });
+
+      betService.getBetByGameUserType({ user_id: user.id, game_id: game.game_id, type: 'bot' }).then((data) => {
+        setCurrentBetAmount(data.bet.amount);
+      });
     });
   }, []);
 
@@ -137,7 +145,7 @@ function BotBet(props) {
             <span>{new Date(currentGame.start_time).toLocaleTimeString()}</span>
             <br />
             <br />
-            <BetModal finishedBettingHandler={executeBet} gameID={currentGame.id} team1={{ name: `${homeTeam.name}`, id: `${homeTeam.team_id}` }} team2={{ name: `${awayTeam.name}`, id: `${awayTeam.team_id}` }} type="bot" />
+            <BetModal betAmount={currentBetAmount} finishedBettingHandler={executeBet} gameID={currentGame.id} team1={{ name: `${homeTeam.name}`, id: `${homeTeam.team_id}` }} team2={{ name: `${awayTeam.name}`, id: `${awayTeam.team_id}` }} type="bot" />
           </div>
           <div className="col-md">
             <strong>Away Team</strong>

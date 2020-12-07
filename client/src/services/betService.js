@@ -32,4 +32,9 @@ export default {
     });
     return res.data || [];
   },
+
+  getBetByGameUserType: async (user_id, game_id, type) => {
+    const res = await axios.get(`/api/bets/${user_id}/${game_id}/${type}`);
+    return res.data || [];
+  },
 };

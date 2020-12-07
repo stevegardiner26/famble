@@ -14,10 +14,10 @@ import BetForm from './form/BetForm';
 function BetModal(props) {
   const user = useSelector(selectUser);
   const [modal, setModal] = useState(false);
-  const [valid, setValid] = useState(false);
+  const [valid, setValid] = useState();
 
   const {
-    gameID, team1, team2, type,
+    gameID, team1, team2, type, betAmount
   } = props;
   const team1Name = team1.name;
   const team1ID = team1.id;
@@ -53,7 +53,7 @@ function BetModal(props) {
             awayTeamName={team2Name}
             gameID={gameID}
             balance={user.shreddit_balance}
-            betAmount="no"
+            betAmount={betAmount}
             type={type}
             valid={setValid}
 
