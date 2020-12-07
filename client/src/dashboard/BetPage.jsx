@@ -10,6 +10,7 @@ import {
   CardContent, Grid, makeStyles, Paper, List,
   ListItem, ListItemText, Avatar, ListItemAvatar,
 } from '@material-ui/core';
+import { Button } from 'reactstrap';
 import BetForm from './form/BetForm';
 import betService from '../services/betService';
 import { selectUser } from '../store/slices/userSlice';
@@ -268,8 +269,11 @@ export default function BetPage(props) {
                   teamID={teamID}
                   valid={setValid}
                   betAmount={betAmount}
+                  type="default"
                 />
-
+                <Link to="/dashboard">
+                  <Button color="secondary">Cancel</Button>
+                </Link>
               </Paper>
 
             </Grid>
