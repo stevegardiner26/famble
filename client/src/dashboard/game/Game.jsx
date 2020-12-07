@@ -70,13 +70,6 @@ function Game({ info }) {
       <TableCell align="center">{`${localDate.toLocaleDateString()} ${localDate.toLocaleTimeString()}`}</TableCell>
       <TableCell align="center">{status}</TableCell>
       <TableCell align="center">
-        {/*
-        <BetModal
-          gameID={game_id}
-          team1={{ name: `${homeTeamName}`, id: `${home_team_id}` }}
-          team2={{ name: `${awayTeamName}`, id: `${away_team_id}` }}
-        />
-        */}
         <LinkStatus />
       </TableCell>
     </TableRow>
