@@ -17,7 +17,7 @@ function BetModal(props) {
   const [valid, setValid] = useState();
 
   const {
-    gameID, team1, team2, type, betAmount
+    gameID, team1, team2, type, betAmount,
   } = props;
   const team1Name = team1.name;
   const team1ID = team1.id;
