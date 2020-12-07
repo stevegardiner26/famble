@@ -132,9 +132,9 @@ function BotBet(props) {
           <div className="col-md">
             <img alt="Bot Icon" width="auto" height="80" src="/BotIcon.jpg" />
             <h3>VS</h3>
-            <span>{new Date(currentGame.start_time).toLocaleDateString()}</span>
+            <span>{new Date(currentGame.start_time).toDateString()}</span>
             <br />
-            <span>{new Date(currentGame.start_time).toLocaleTimeString()}</span>
+            <span>{new Date(currentGame.start_time).toTimeString()}</span>
             <br />
             <br />
             <BetModal finishedBettingHandler={executeBet} gameID={currentGame.id} team1={{ name: `${homeTeam.name}`, id: `${homeTeam.team_id}` }} team2={{ name: `${awayTeam.name}`, id: `${awayTeam.team_id}` }} type="bot" />
