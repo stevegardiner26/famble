@@ -67,7 +67,7 @@ function Game({ info }) {
       <TableCell align="center">
         {awayTeamName}
       </TableCell>
-      <TableCell align="center">{`${localDate.toDateString()} ${localDate.toTimeString()}`}</TableCell>
+      <TableCell align="center">{`${localDate.toLocaleDateString()} ${localDate.toLocaleTimeString()}`}</TableCell>
       <TableCell align="center">{status}</TableCell>
       <TableCell align="center">
         {/*
