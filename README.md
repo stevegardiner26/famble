@@ -105,6 +105,19 @@ $ npm isntall react react-dom react-facebook-login --save --force
 3. You now should be able to access all the required API Keys and authorization credentials. You should be able to find everything under the “Keys and Access Tokens” Tab for all the Twitter API Key details. After that, fill out all the app details.
 4. Make sure to add these keys into your .env file, skip to 'Setting up .env...' for more information
 
+## Setting up MongoDB
+The easiest way to get started with MongoDB is to use Atlas, MongoDB’s fully-managed database-as-a-service.
+1. If you don’t have the MongoDB Node.js Driver installed, you can install it with the following command.
+```sh
+npm install mongodb
+```
+2. Create a free MongoDB Atlas by going to https://www.mongodb.com/cloud/atlas
+3. Get your cluster’s connection info: 
+4. In Atlas, navigate to your cluster and click CONNECT. The Cluster Connection Wizard will appear.
+5. The Wizard will prompt you to whitelist your current IP address and create a MongoDB user if you haven’t already done so.
+6. Be sure to note NOTE the USERNAME and PASSWORD you use for the new MongoDB user as you’ll need them in a later step.
+7. Wizard will prompt you to choose a connection method. Select Connect Your Application.
+8. When the Wizard prompts you to select your driver version, select Node.js and 3.0 or later. Copy the provided connection string.
 
 ## Setting up .env should contain these variables
 1. Create a .env file
