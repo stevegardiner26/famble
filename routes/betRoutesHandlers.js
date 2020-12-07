@@ -124,7 +124,17 @@ async function deleteBets(req, res){
     });
 }
 
+async function getBetByUserGameType(req, res) {
+    const { user_id, game_id, type } = req.params;
+    const bet = await Bet.find({user_id: user_id, game_id: game_id, type: type});
+    return res.status(202).send({
+        error: false,
+        bet,
+    });
+}
+
 exports.getBets = getBets;
+exports.getBetByUserGameType = getBetByUserGameType;
 exports.getBetsByGameID = getBetsByGameID;
 exports.postBets = postBets;
 exports.postBetsHelper = postBetsHelper;
