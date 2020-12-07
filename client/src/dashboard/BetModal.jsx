@@ -4,18 +4,16 @@
 /* eslint-disable no-alert */
 import React, { useEffect, useState } from 'react';
 import {
-  Col, Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input,
+  Button, Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import styles from './BetModal.module.css';
-import betService from '../services/betService';
-import { selectUser, updateShreddits } from '../store/slices/userSlice';
+import { selectUser } from '../store/slices/userSlice';
+import BetForm from './form/BetForm';
 
 function BetModal(props) {
   const user = useSelector(selectUser);
   const [modal, setModal] = useState(false);
-  const [teamID, setTeamID] = useState(null);
-  const [amount, setAmount] = useState(null);
   const [valid, setValid] = useState(false);
 
   const {
@@ -26,55 +24,19 @@ function BetModal(props) {
   const team2Name = team2.name;
   const team2ID = team2.id;
 
-  const userID = user._id;
-
-  const dispatch = useDispatch();
-
   const toggle = () => setModal(!modal);
 
   useEffect(() => {
     if (valid) {
       const setBet = async () => {
-        const res = await betService.createBet(userID, gameID, teamID, amount, user.name, type);
-        if (res === []) {
-          alert('Could not place bet at this time. Try again later.');
-        } else {
-          props.finishedBettingHandler();
-          dispatch(updateShreddits(amount));
-          alert('Bet placed successfully!');
-          setValid(false);
-          setModal(!modal);
-        }
+        alert('Bet placed successfully!');
+        setValid(false);
+        setModal(!modal);
       };
+
       setBet();
     }
-  }, [valid, userID, gameID, teamID, amount, type]);
-
-  const changeTeamID = (teamSelectedID) => {
-    setTeamID(teamSelectedID);
-  };
-
-  const changeBet = (event) => {
-    const betAmount = event.target.value;
-    if (betAmount <= 0) {
-      alert('Please enter a valid bet amount');
-      event.target.value = null;
-    } else {
-      setAmount(betAmount);
-    }
-  };
-
-  const handleBet = () => {
-    if (amount !== null) {
-      if (teamID !== null) {
-        setValid(true);
-      } else {
-        alert('Please select a team');
-      }
-    } else {
-      alert('Please enter a bet amount');
-    }
-  };
+  }, [valid]);
 
   // ModalBody is for the stats
   return (
@@ -84,34 +46,18 @@ function BetModal(props) {
         <ModalHeader toggle={toggle}>{`${team1Name} vs ${team2Name}`}</ModalHeader>
         <ModalBody />
         <ModalFooter className={styles.modal_footer}>
-          <Form className={styles.bet_form}>
-            <FormGroup row>
-              <Label for="betAmount" sm={3}>Bet Amount:</Label>
-              <Col sm={9}>
-                <Input type="number" name="betAmount" id="betAmount" onChange={changeBet} placeholder="Enter Bet Amount" />
-              </Col>
-            </FormGroup>
-            <FormGroup tag="fieldset" row>
-              <Label sm={4}>Select a Team:</Label>
-              <FormGroup check>
-                <Col sm={4}>
-                  <Label check>
-                    <Input onClick={() => changeTeamID(team1ID)} type="radio" name="team1" />
-                    {team1Name}
-                  </Label>
-                </Col>
-              </FormGroup>
-              <FormGroup check>
-                <Col sm={4}>
-                  <Label check>
-                    <Input onClick={() => changeTeamID(team2ID)} type="radio" name="team1" />
-                    {team2Name}
-                  </Label>
-                </Col>
-              </FormGroup>
-            </FormGroup>
-          </Form>
-          <Button color="primary" onClick={handleBet}>Submit Bet</Button>
+          <BetForm
+            homeTeamID={team1ID}
+            awayTeamID={team2ID}
+            homeTeamName={team1Name}
+            awayTeamName={team2Name}
+            gameID={gameID}
+            balance={user.shreddit_balance}
+            betAmount="no"
+            type={type}
+            valid={setValid}
+
+          />
           <Button color="secondary" onClick={toggle}>Cancel</Button>
         </ModalFooter>
       </Modal>
