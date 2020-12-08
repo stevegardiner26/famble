@@ -66,8 +66,10 @@ function BotBet(props) {
 
       if (!game.home_odds || !game.away_odds) {
         gameService.getGameOdds(game.game_id).then((data) => {
-          setAwayOdds(data.away_odds);
-          setHomeOdds(data.home_odds);
+          if (!data.error) {
+            setAwayOdds(data.away_odds);
+            setHomeOdds(data.home_odds);
+          }
         });
       } else {
         setHomeOdds(game.home_odds);
@@ -106,6 +108,20 @@ function BotBet(props) {
     executeBet();
   }, [awayTeam, homeTeam]);
 
+  let BotPickHome = null;
+  if (homeOdds && awayOdds) {
+    if (homeOdds < awayOdds) {
+      BotPickHome = (<h3>The Bot&apos;s Pick!</h3>);
+    }
+  }
+
+  let BotPickAway = null;
+  if (homeOdds && awayOdds) {
+    if (awayOdds < homeOdds) {
+      BotPickAway = (<h3>The Bot&apos;s Pick!</h3>);
+    }
+  }
+
   return (
     <div>
       <NavBar pageName="Beat the Bot" />
@@ -124,17 +140,22 @@ function BotBet(props) {
             )}
             <img src={`${homeTeam.image_url}`} alt="Home Team Logo" width="50" height="50" />
             <p>{homeTeam.name}</p>
-            <p>{`${homeTeam.wins} W - ${homeTeam.losses} L`}</p>
-            {homeOdds < awayOdds && (
-              <h3>The Bot&apos;s Pick!</h3>
-            )}
+            <p>{(homeTeam.wins && homeTeam.losses) ? (`${homeTeam.wins} W - ${homeTeam.losses} L`) : null}</p>
+            {BotPickHome}
           </div>
           <div className="col-md">
             <img alt="Bot Icon" width="auto" height="80" src="/BotIcon.jpg" />
             <h3>VS</h3>
-            <span>{new Date(currentGame.start_time).toLocaleDateString()}</span>
+            <span>
+              {(currentGame.start_time)
+                ? (new Date(currentGame.start_time).toLocaleDateString()) : null}
+            </span>
             <br />
-            <span>{new Date(currentGame.start_time).toLocaleTimeString()}</span>
+            <span>
+              {(currentGame.start_time)
+                ? (new Date(currentGame.start_time).toLocaleTimeString())
+                : null}
+            </span>
             <br />
             <br />
             <BetModal finishedBettingHandler={executeBet} gameID={currentGame.id} team1={{ name: `${homeTeam.name}`, id: `${homeTeam.team_id}` }} team2={{ name: `${awayTeam.name}`, id: `${awayTeam.team_id}` }} type="bot" />
@@ -147,10 +168,8 @@ function BotBet(props) {
             )}
             <img src={awayTeam.image_url} alt="Away Team Logo" width="50" height="50" />
             <p>{awayTeam.name}</p>
-            <p>{`${awayTeam.wins} W - ${awayTeam.losses} L`}</p>
-            {awayOdds < homeOdds && (
-              <h3>The Bot&apos;s Pick!</h3>
-            )}
+            <p>{(homeTeam.wins && homeTeam.losses) ? (`${awayTeam.wins} W - ${awayTeam.losses} L`) : null}</p>
+            {BotPickAway}
           </div>
         </div>
         <hr />

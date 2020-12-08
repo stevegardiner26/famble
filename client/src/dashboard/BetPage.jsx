@@ -64,6 +64,7 @@ export default function BetPage(props) {
   const getBetsForGame = async (id) => {
     await betService.getRegBets(id).then((response) => {
       setBets(response.bets);
+      setValid(false);
     });
   };
   const getGameTweets = async (term) => {
@@ -174,6 +175,7 @@ export default function BetPage(props) {
     }
     return (<p>No bets have been placed</p>);
   }
+
   useEffect(() => {
     betService.getCurrBet(userID, gameID, 'default').then((response) => {
       if (response.teamName && response.amount && response.team_id) {
@@ -181,9 +183,10 @@ export default function BetPage(props) {
         setTeamName(response.teamName);
         setTeamID(response.team_id);
         setPrev(true);
+        setValid(false);
       }
     });
-  }, [userID, gameID, bets]);
+  }, [userID, gameID, bets, valid]);
   useEffect(() => {
     if (!tweets) {
       getGameTweets(homeTeamName);

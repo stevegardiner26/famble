@@ -26,7 +26,7 @@ async function getCurrentWeekGames(req,res){
   const curr = new Date;
   curr.setUTCHours(0,0,0,0);
   const firstday = new Date(curr.setDate(curr.getDate() - curr.getDay()));
-  const lastday = new Date(curr.setDate(firstday.getDate() + 14))
+  const lastday = new Date(curr.setDate(firstday.getDate() + 7))
   const games = await Game.find({$and: [
     {start_time:{$gte: firstday, $lt: lastday}},
     {status: {$in: ['Scheduled', 'InProgress']}}
@@ -47,34 +47,41 @@ async function fetchOddsByGame(req, res) {
   else {
     return res.status(200).send({
       error: false,
-      away_team_odds: game.away_odds,
-      home_team_odds: game.home_odds,
+      away_odds: game.away_odds,
+      home_odds: game.home_odds,
     })
   }
 }
 
 async function fetchOddsByGameHelper(data, res, id){
-  let away_odds = data[0].PregameOdds[0].AwayMoneyLine;
-  let home_odds = data[0].PregameOdds[0].HomeMoneyLine;
+  if(data[0].PregameOdds.length > 0) {
+    let away_odds = null; 
+    let home_odds = null; 
 
-  let index = 1;
-  while (away_odds == null && home_odds == null) {
-    away_odds = data[0].PregameOdds[index].AwayMoneyLine;
-    home_odds = data[0].PregameOdds[index].HomeMoneyLine;
-    index++;
+    let index = 0;
+    do{
+      away_odds = data[0].PregameOdds[index].AwayMoneyLine;
+      home_odds = data[0].PregameOdds[index].HomeMoneyLine;
+      index++;
+    } while (away_odds == null && home_odds == null)
+
+    let payload = {
+      away_odds: away_odds,
+      home_odds: home_odds,
+    }
+
+    await Game.findOneAndUpdate({game_id: id}, {$set: payload}, {useFindAndModify: false});
+    return res.status(200).send({
+      error: false,
+      away_odds: away_odds,
+      home_odds: home_odds,
+    })
   }
-
-  let payload = {
-    away_odds: away_odds,
-    home_odds: home_odds,
+  else{
+    return res.status(200).send({
+    error: true
+    })
   }
-
-  await Game.findOneAndUpdate({game_id: id}, payload, {useFindAndModify: false});
-  return res.status(200).send({
-    error: false,
-    away_team_odds: away_odds,
-    home_team_odds: home_odds,
-  })
 }
 
 // app.get('/api/fetch_weekly_scores', fetchWeeklyScores)
