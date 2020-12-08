@@ -1,5 +1,6 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-unused-vars, no-param-reassign, no-underscore-dangle, prefer-const */
+/* eslint-disable no-restricted-globals */
 import { createSlice } from '@reduxjs/toolkit';
 
 export const userSlice = createSlice({
@@ -23,6 +24,7 @@ export const userSlice = createSlice({
         localStorage.removeItem('user_id');
       }
       state.current_user = {};
+      location.reload();
     },
     updateShreddits: (state, action) => {
       const amount = action.payload;
