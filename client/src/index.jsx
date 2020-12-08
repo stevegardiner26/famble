@@ -14,8 +14,14 @@ if (localStorage.user_id) {
   userService.getCurrentUser().then((response) => {
     // TODO: If the response comes back bad we should
     // remove the localStorage val and redirect the user to sign in again
-    store.dispatch(login(response));
-    gameService.updateScores();
+    userService.dailyFunding(localStorage.user_id).then((res) => {
+      if (res.status === 200) {
+        store.dispatch(login(response));
+      } else if (res.status === 202) {
+        store.dispatch(login(res.data.user));
+      }
+      gameService.updateScores();
+    });
   });
 }
 
