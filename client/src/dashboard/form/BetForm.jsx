@@ -1,10 +1,8 @@
+/* eslint-disable no-undef */
+/* eslint-disable no-alert */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-underscore-dangle */
-/* eslint-disable max-len */
-/* eslint-disable no-alert */
-/* eslint-disable no-undef */
-/* eslint-disable react/jsx-no-comment-textnodes */
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -19,11 +17,12 @@ import styles from '../BetModal.module.css';
 
 function BetForm({
   homeTeamID, awayTeamID, homeTeamName, awayTeamName, balance, gameID, prev,
-  teamID, valid, betAmount, type,
+  teamID, valid, type,
 }) {
   const dispatch = useDispatch();
   const user = useSelector(selectUser);
   const userID = user._id;
+  const [betAmount, setBetAmount] = useState(null);
   const validationSchema = Yup.object().shape({
     betAmount: Yup.number()
       .min(1, 'Bets must be at least 1 shreddit')
@@ -31,6 +30,15 @@ function BetForm({
       .required('Bet is required'),
     team: Yup.string().required('You must select a team to bet on'),
   });
+
+  useEffect(() => {
+    betService.getCurrBet(userID, gameID, type).then((response) => {
+      if (response) {
+        setBetAmount(response.amount);
+      }
+    });
+  }, [userID, gameID]);
+
   return (
 
   // Sets initial values for form inputs
@@ -53,7 +61,8 @@ function BetForm({
             if (res === []) {
               alert('Could not place bet at this time. Try again later.');
             } else {
-              if (betAmount !== 'no') {
+              console.log(values.betAmount, betAmount);
+              if (betAmount) {
                 dispatch(updateShreddits(values.betAmount - betAmount));
               } else {
                 dispatch(updateShreddits(values.betAmount));
