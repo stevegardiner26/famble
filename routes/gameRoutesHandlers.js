@@ -116,7 +116,7 @@ function fetchWeeklyScoresHelper(week, res) {
       let bets = Bet.find({game_id: game.GlobalGameID});
       if (bets.length > 1) {
         let d_bets = bets.filter((bet) => bet.type === "default");
-        let total_winner_bets, total_loser_bets;
+        let total_winner_bets = 0, total_loser_bets = 0;
         d_bets.forEach((dbet) => {
           if (dbet.team_id == winner_id) {
             total_winner_bets += dbet.amount;
@@ -133,7 +133,7 @@ function fetchWeeklyScoresHelper(week, res) {
                 winnings = b.amount;
               } else {
                 let percentage_of_winnings = b.amount / total_winner_bets;
-                winnings = Math.round(total_loser_bets * percentage_of_winnings);
+                winnings = Math.round((total_loser_bets * percentage_of_winnings) + b.amount);
               }
               User.findByIdAndUpdate(b.user_id, {
                   shreddit_balance: (user.shreddit_balance + winnings)
