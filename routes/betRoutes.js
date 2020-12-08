@@ -14,7 +14,7 @@ module.exports = (app) => {
   app.get('/api/bets/users/:user_id', getBetsByUserID);
   app.get('/api/bets/:game_id', getBetsByGameID);
   app.get('/api/bets/getRegBets/:game_id', getRegBets);
-  app.get('/api/bet/get_curr_bet/:user_id/:game_id', getCurrUserBet);
+  app.get('/api/bet/:user_id/:game_id/:type', getCurrUserBet);
   
   // Create
   app.post('/api/bets', postBets);

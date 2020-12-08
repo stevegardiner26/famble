@@ -33,8 +33,8 @@ export default {
     return res.data || [];
   },
 
-  getCurrBet: async (user_id, game_id) => {
-    const res = await axios.get(`/api/bet/get_curr_bet/${user_id}/${game_id}`);
+  getCurrBet: async (user_id, game_id, type) => {
+    const res = await axios.get(`/api/bet/${user_id}/${game_id}/${type}`);
     return res.data || [];
   },
 };

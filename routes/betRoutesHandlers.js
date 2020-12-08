@@ -128,7 +128,8 @@ async function deleteBets(req, res){
 async function getCurrUserBet(req, res){
     const { game_id } = req.params;
     const { user_id } = req.params;
-    const bet = await Bet.findOne( {game_id: game_id, user_id: user_id} );
+    const { type } = req.params;
+    const bet = await Bet.findOne( {game_id: game_id, user_id: user_id, type: type} );
     return res.status(200).send(bet);
 }
 
