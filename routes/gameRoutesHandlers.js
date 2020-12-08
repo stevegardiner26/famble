@@ -54,16 +54,16 @@ async function fetchOddsByGame(req, res) {
 }
 
 async function fetchOddsByGameHelper(data, res, id){
-  if(data[0].PregameOdds && data[0].PregameOdds[0].AwayMoneyLine && data[0].PregameOdds[0].HomeMoneyLine) {
-    let away_odds = data[0].PregameOdds[0].AwayMoneyLine;
-    let home_odds = data[0].PregameOdds[0].HomeMoneyLine;
+  if(data[0].PregameOdds.length > 0) {
+    let away_odds = null; 
+    let home_odds = null; 
 
-    let index = 1;
-    while (away_odds == null && home_odds == null) {
+    let index = 0;
+    do{
       away_odds = data[0].PregameOdds[index].AwayMoneyLine;
       home_odds = data[0].PregameOdds[index].HomeMoneyLine;
       index++;
-    }
+    } while (away_odds == null && home_odds == null)
 
     let payload = {
       away_odds: away_odds,
