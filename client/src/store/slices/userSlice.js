@@ -24,7 +24,9 @@ export const userSlice = createSlice({
         localStorage.removeItem('user_id');
       }
       state.current_user = {};
-      location.reload();
+      setTimeout(function() {
+        location.reload();
+      }, 2000);
     },
     updateShreddits: (state, action) => {
       const amount = action.payload;
