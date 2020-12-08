@@ -278,9 +278,9 @@ function Home() {
           <div className="container">
             <div className="row">
               <div className="col-lg-12">
-                <h2>Read Our Customer Testimonials</h2>
-                <p className="p-heading">Our clients are our partners and we can not imagine a better future for our
-                  company without helping them reach their objectives</p>
+                <h2>Read Our User Testimonials</h2>
+                <p className="p-heading">Our users are our partners and we can not imagine a better future for our
+                  product without helping them cure their addictions.</p>
               </div>
             </div>
             <div className="row">
@@ -292,10 +292,10 @@ function Home() {
                         <div className="card">
                           <img className="card-image" src="images/testimonial-1.jpg" alt="alternative"/>
                           <div className="card-body">
-                            <div className="testimonial-text">The guys from Aria helped with getting my business off the
-                              ground and turning into a profitable company.
+                            <div className="testimonial-text">The guys from Famble helped with getting my husband to
+                              stop spending all our money!
                             </div>
-                            <div className="testimonial-author">Jude Thorn - Founder</div>
+                            <div className="testimonial-author">Judie Horn - Happy Wife</div>
                           </div>
                         </div>
                       </div>
