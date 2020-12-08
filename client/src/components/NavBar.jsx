@@ -33,6 +33,7 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     flexGrow: 1,
+    color: 'white',
   },
   MuiIconButtonRoot: {
     borderRadius: '0%',
@@ -158,7 +159,7 @@ function NavBar(props) {
                   <img alt="User" src={user.profile_image} className="MuiAvatar-img" referrerPolicy="no-referrer" />
                 </div>
               </ListItemAvatar>
-              <h6 style={{ paddingTop: '6px' }}>
+              <h6 style={{ paddingTop: '6px', color: 'white' }}>
                 {user.name}
                 <br />
                 {`${numberWithCommas(user.shreddit_balance)} Shredits`}
