@@ -1,3 +1,4 @@
+/* eslint-disable eqeqeq */
 /* eslint-disable no-undef */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable no-param-reassign */
@@ -17,6 +18,7 @@ function BetModal(props) {
   const [modal, setModal] = useState(false);
   const [valid, setValid] = useState(false);
   const [previousBet, setPrev] = useState(false);
+  const [teamID, setTeamID] = useState(null);
   const userID = user._id;
 
   const {
@@ -43,8 +45,11 @@ function BetModal(props) {
 
   useEffect(() => {
     betService.getCurrBet(userID, gameID, 'bot').then((response) => {
-      if (response === []) {
+      if (response) {
         setPrev(true);
+        setTeamID(response.team_id);
+      } else {
+        setPrev(false);
       }
     });
   }, [userID, gameID]);
@@ -64,7 +69,7 @@ function BetModal(props) {
             gameID={gameID}
             prev={previousBet}
             balance={user.shreddit_balance}
-            betAmount="no"
+            teamID={teamID}
             type={type}
             valid={setValid}
 
