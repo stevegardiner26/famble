@@ -50,9 +50,10 @@ export default function BetPage(props) {
   const [tweets, setTweets] = useState(null);
   const [previousBet, setPrev] = useState(false);
   const [valid, setValid] = useState(false);
-  const [betAmount, setBetAmount] = useState('no');
   const userID = user._id;
   const balance = user.shreddit_balance;
+  const [betAmount, setBetAmount] = useState('no');
+  const [teamName, setTeamName] = useState('this game.');
 
   const getHomeLogo = async (id) => {
     await gameService.getLogo(id).then(setHomeLogo);
@@ -96,8 +97,9 @@ export default function BetPage(props) {
     if (bets.length > 0) {
       return (
         bets.map((row) => (
-          <ListItem alignItems="flex-start">
+          <ListItem key={row.user_id} alignItems="flex-start">
             <ListItemText
+              key={row.user_id}
               primary={row.name}
               secondary={(
                 <>
@@ -150,16 +152,7 @@ export default function BetPage(props) {
     return (<p>No tweets yet</p>);
   }
   function DisplayCurrentBet() {
-    let teamName = 'this game.';
-    if (bets.length > 0) {
-      bets.forEach((row) => {
-        if (row.user_id === userID) {
-          teamName = row.teamName;
-          setBetAmount(row.amount);
-          setTeamID(row.team_id);
-          setPrev(true);
-        }
-      });
+    if (betAmount !== 'no') {
       return (
         <ListItem alignItems="flex-start">
           <ListItemText
@@ -181,6 +174,16 @@ export default function BetPage(props) {
     }
     return (<p>No bets have been placed</p>);
   }
+  useEffect(() => {
+    betService.getCurrBet(userID, gameID, 'default').then((response) => {
+      if (response.teamName && response.amount && response.team_id) {
+        setBetAmount(response.amount);
+        setTeamName(response.teamName);
+        setTeamID(response.team_id);
+        setPrev(true);
+      }
+    });
+  }, [userID, gameID, bets]);
   useEffect(() => {
     if (!tweets) {
       getGameTweets(homeTeamName);
@@ -268,7 +271,6 @@ export default function BetPage(props) {
                   prev={previousBet}
                   teamID={teamID}
                   valid={setValid}
-                  betAmount={betAmount}
                   type="default"
                 />
                 <Link to="/dashboard">
