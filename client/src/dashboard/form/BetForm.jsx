@@ -25,8 +25,8 @@ function BetForm({
   const [betAmount, setBetAmount] = useState(null);
   const validationSchema = Yup.object().shape({
     betAmount: Yup.number()
-      .min(1, 'Bets must be at least 1 shreddit')
-      .max(balance, "Bets can't be placed larger than you're current balance")
+      .min(1, 'Bets must be at least 1 shredit')
+      .max(balance, "Bets can't be placed larger than your current balance")
       .required('Bet is required'),
     team: Yup.string().notRequired('You must select a team to bet on'),
   });
