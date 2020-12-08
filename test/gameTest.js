@@ -613,8 +613,8 @@ describe("GET /api/games/odds/:id", function() {
     mockResponse.on('end', function() {
       const expected = {
         error: false,
-        away_team_odds: fakeGame.away_odds,
-        home_team_odds: fakeGame.home_odds,
+        away_odds: fakeGame.away_odds,
+        home_odds: fakeGame.home_odds,
       };
       try {
         assert.strictEqual(mockResponse.statusCode, 200);
@@ -632,19 +632,7 @@ describe("GET /api/games/odds/:id", function() {
 
 describe("fetchOddsByGameHelper", function() {  
   let mockFind;
-  const data = [{
-    PregameOdds: 
-    [
-      {
-      AwayMoneyLine: null,
-      HomeMoneyLine: null
-      },
-      {
-        AwayMoneyLine: 467,
-        HomeMoneyLine: -561
-      }
-    ]
-  }]
+  let data;
 
   beforeEach((done) =>{
     mockFind = sinon.stub(gameModel, "findOneAndUpdate").returns(null);
@@ -657,6 +645,19 @@ describe("fetchOddsByGameHelper", function() {
   })
 
   it("it should have status code 200 and return away and home team odds", function(done) {
+    data = [{
+      PregameOdds: 
+      [
+        {
+        AwayMoneyLine: null,
+        HomeMoneyLine: null
+        },
+        {
+          AwayMoneyLine: 467,
+          HomeMoneyLine: -561
+        }
+      ]
+    }];
     const mockResponse = httpMocks.createResponse({
       eventEmitter: require('events').EventEmitter
     });
@@ -664,8 +665,33 @@ describe("fetchOddsByGameHelper", function() {
     mockResponse.on('end', function() {
       const expected = {
         error: false,
-        away_team_odds: 467,
-        home_team_odds: -561
+        away_odds: 467,
+        home_odds: -561
+      };
+      try {
+        assert.strictEqual(mockResponse.statusCode, 200);
+        assert.deepStrictEqual(mockResponse._getData(), expected);
+        done();
+      }
+      catch (error){
+        done(error);
+      }
+    }); 
+
+    fetchOddsByGameHelper(data, mockResponse, 17263);
+  });
+
+  it("it should have status code 200 and return error", function(done) {
+    data = [{
+      PregameOdds: []
+    }];
+    const mockResponse = httpMocks.createResponse({
+      eventEmitter: require('events').EventEmitter
+    });
+    
+    mockResponse.on('end', function() {
+      const expected = {
+        error: true
       };
       try {
         assert.strictEqual(mockResponse.statusCode, 200);
