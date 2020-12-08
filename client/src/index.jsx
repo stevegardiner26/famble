@@ -1,4 +1,5 @@
 /* eslint-disable no-undef */
+/* eslint-disable no-restricted-globals */
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
@@ -8,6 +9,10 @@ import App from './App';
 import userService from './services/userService';
 import gameService from './services/gameService';
 import { login } from './store/slices/userSlice';
+
+if (!localStorage.user_id && location.pathname !== '/') {
+  location.href = '/';
+}
 
 // Checking if the user has been signed in already on this computer
 if (localStorage.user_id) {
