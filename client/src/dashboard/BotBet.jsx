@@ -180,12 +180,14 @@ function BotBet(props) {
           <div className="col-md">
             <p>
               {`Total Shredits Bet: ${homeBetStats.total_amount} `}
+              <br />
               { ((homeBetStats.total_amount / betStats.total_amount) * 100)
                 ? (`(${parseFloat((homeBetStats.total_amount / betStats.total_amount) * 100).toFixed(2)} %)`)
                 : null }
             </p>
             <p>
               {`Number of Bets: ${homeBetStats.total_count} bet(s) `}
+              <br />
               { ((homeBetStats.total_count / betStats.total_count) * 100)
                 ? (`(${parseFloat((homeBetStats.total_count / betStats.total_count) * 100).toFixed(2)} %)`)
                 : null }
@@ -201,13 +203,15 @@ function BotBet(props) {
           </div>
           <div className="col-md">
             <p>
-              {`Total Shredits Bet: $${awayBetStats.total_amount} `}
+              {`Total Shredits Bet: ${awayBetStats.total_amount} `}
+              <br />
               { ((awayBetStats.total_amount / betStats.total_amount) * 100)
-                ? (`(${parseFloat((awayBetStats.total_amount / betStats.total_amount) * 100).toFixed(2)} %)`)
+                ? (`\n(${parseFloat((awayBetStats.total_amount / betStats.total_amount) * 100).toFixed(2)} %)`)
                 : null }
             </p>
             <p>
               {`Number of Bets: ${awayBetStats.total_count} bet(s)`}
+              <br />
               { ((awayBetStats.total_count / betStats.total_count) * 100)
                 ? (`(${parseFloat((awayBetStats.total_count / betStats.total_count) * 100).toFixed(2)} %)`)
                 : null }
