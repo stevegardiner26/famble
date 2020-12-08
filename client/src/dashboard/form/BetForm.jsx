@@ -25,10 +25,10 @@ function BetForm({
   const [betAmount, setBetAmount] = useState(null);
   const validationSchema = Yup.object().shape({
     betAmount: Yup.number()
-      .min(1, 'Bets must be at least 1 shreddit')
-      .max(balance, "Bets can't be placed larger than you're current balance")
+      .min(1, 'Bets must be at least 1 shredit')
+      .max(balance, "Bets can't be placed larger than your current balance")
       .required('Bet is required'),
-    team: Yup.string().required('You must select a team to bet on'),
+    team: Yup.string().notRequired('You must select a team to bet on'),
   });
 
   useEffect(() => {
@@ -130,8 +130,8 @@ function BetForm({
                   {awayTeamName}
                 </Label>
               </Col>
-              {errors.team && touched.team && (
-              <div align="center" className="error-message">{errors.team}</div>
+              {errors.team && touched.team(
+                <div align="center" className="error-message">{errors.team}</div>,
               )}
             </FormGroup>
 

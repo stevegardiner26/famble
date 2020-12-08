@@ -355,8 +355,6 @@ function Home() {
                         </div>
                       </div>
                     </div>
-                    <div className="swiper-button-next"/>
-                    <div className="swiper-button-prev"/>
                   </div>
                 </div>
               </div>
