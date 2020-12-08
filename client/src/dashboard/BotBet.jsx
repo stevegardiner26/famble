@@ -160,7 +160,7 @@ function BotBet(props) {
         <div className="row">
           <div className="col-md">
             <p>
-              {`Total Money Bet: $${homeBetStats.total_amount} `}
+              {`Total Shredits Bet: ${homeBetStats.total_amount} `}
               { ((homeBetStats.total_amount / betStats.total_amount) * 100)
                 ? (`(${parseFloat((homeBetStats.total_amount / betStats.total_amount) * 100).toFixed(2)} %)`)
                 : null }
@@ -177,12 +177,12 @@ function BotBet(props) {
               {`Total Bets: ${betStats.total_count} bet(s)`}
             </p>
             <p>
-              {`Total Money Bet: $${betStats.total_amount}`}
+              {`Total Shredits Bet: ${betStats.total_amount}`}
             </p>
           </div>
           <div className="col-md">
             <p>
-              {`Total Money Bet: $${awayBetStats.total_amount} `}
+              {`Total Shredits Bet: $${awayBetStats.total_amount} `}
               { ((awayBetStats.total_amount / betStats.total_amount) * 100)
                 ? (`(${parseFloat((awayBetStats.total_amount / betStats.total_amount) * 100).toFixed(2)} %)`)
                 : null }
