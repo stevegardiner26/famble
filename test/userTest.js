@@ -2,7 +2,7 @@ const httpMocks = require('node-mocks-http');
 const sinon = require('sinon');
 const assert = require('chai').assert;
 const { userModel } = require('../models/User');
-const { getUserById, createUser, getUsers } = require('../routes/userRoutesHandlers');
+const { getUserById, createUser, getUsers, dailyFunding } = require('../routes/userRoutesHandlers');
 
 describe("GET /api/users/:id", function() {  
   let mockFindById;
@@ -247,5 +247,106 @@ describe("GET /api/users/rank/:id", function() {
     });
 
     getUsers(mockRequest, mockResponse);
+  });
+});
+
+describe("PUT /api/users/:id/daily_fund", function() {  
+  let mockFindById;
+  let mockFindByIdUpdate;
+  let mockSetDate;
+  let fakeUser;
+
+  beforeEach((done) =>{
+    mockFindByIdUpdate = sinon.stub(userModel, "findByIdAndUpdate").returns(null);
+    done();
+  })
+
+  afterEach((done) => {
+    mockFindById.restore();
+    mockSetDate.restore();
+    mockFindByIdUpdate.restore();
+    done();
+  })
+
+  it("it should have status code 202 and return success", function(done) {
+    fakeUser = {
+      shreddit_balance: 7770,
+      name: "Jay Rana",
+      profile_image: "https://lh3.googleusercontent.com/a-/AOh14Gg629IeUkf1lWpBcSqr7-m_pEhpvQI3CdAczWijeA=s96-c",
+      email: "jpr48@njit.edu",
+      google_id: "108376284041323611441",
+      _id: "5fc41fd8ed695a5424fdbf52",
+      last_funding: new Date("2020-12-08T06:16:48.467+00:00")
+    }
+    mockFindById = sinon.stub(userModel, "findById").returns(fakeUser);
+    mockSetDate = sinon.useFakeTimers(new Date('2020-12-09T06:17:48.467+00:00'));
+    const mockRequest = httpMocks.createRequest({
+      method: "PUT",
+      url: "/api/users/5fc41fd8ed695a5424fdbf52/daily_fund",
+      params: {
+        id: "5fc41fd8ed695a5424fdbf52"
+      }
+    });
+    const mockResponse = httpMocks.createResponse({
+      eventEmitter: require('events').EventEmitter
+    });
+    
+    mockResponse.on('end', function() {
+      const expected = {
+        message: "Added Moneyz!",
+        user: fakeUser
+      }
+      try {
+        assert.strictEqual(mockResponse.statusCode, 202);
+        assert.deepStrictEqual(mockResponse._getData(), expected);
+        done();
+      }
+      catch (error){
+        done(error);
+      }
+    });
+
+    dailyFunding(mockRequest, mockResponse);
+  });
+
+  it("it should have status code 200 and return fail", function(done) {
+    fakeUser = {
+      shreddit_balance: 7770,
+      name: "Jay Rana",
+      profile_image: "https://lh3.googleusercontent.com/a-/AOh14Gg629IeUkf1lWpBcSqr7-m_pEhpvQI3CdAczWijeA=s96-c",
+      email: "jpr48@njit.edu",
+      google_id: "108376284041323611441",
+      _id: "5fc41fd8ed695a5424fdbf52",
+      last_funding: new Date("2020-12-08T06:16:48.467+00:00")
+    }
+    mockFindById = sinon.stub(userModel, "findById").returns(fakeUser);
+    mockSetDate = sinon.useFakeTimers(new Date('2020-12-07T06:16:48.467+00:00'));
+    const mockRequest = httpMocks.createRequest({
+      method: "PUT",
+      url: "/api/users/5fc41fd8ed695a5424fdbf52/daily_fund",
+      params: {
+        id: "5fc41fd8ed695a5424fdbf52"
+      }
+    });
+    const mockResponse = httpMocks.createResponse({
+      eventEmitter: require('events').EventEmitter
+    });
+    
+    mockResponse.on('end', function() {
+      const expected = {
+        message: "Not Time Yet!",
+        last_funding: fakeUser.last_funding
+      }
+      try {
+        assert.strictEqual(mockResponse.statusCode, 200);
+        assert.deepStrictEqual(mockResponse._getData(), expected);
+        done();
+      }
+      catch (error){
+        done(error);
+      }
+    });
+
+    dailyFunding(mockRequest, mockResponse);
   });
 });
