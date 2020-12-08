@@ -12,6 +12,7 @@ const { getBets,
   deleteBets, 
   helpers, 
   postBetsHelper,
+  getCurrUserBet,
   getRegBets } = require('../routes/betRoutesHandlers');
 
 describe("GET /api/bets", function() {  
@@ -691,5 +692,57 @@ describe("DELETE /api/bets/:id", function() {
     });
 
     deleteBets(mockRequest, mockResponse);
+  });
+});
+
+describe("GET /api/bet/:user_id/:game_id/:type", function() {  
+  let mockFind;
+  let fakeBet = {
+    active: true,
+    user_id: "5fc41fd8ed695a5424fdbf52",
+    game_id: "17263",
+    team_id: "3",
+    amount: 100,
+    name: "Jay Rana",
+    type: "default",
+    teamName: "Baltimore Ravens"
+  }
+  beforeEach((done) =>{
+    mockFind = sinon.stub(betModel, "findOne").returns(fakeBet);
+    done();
+  })
+
+  afterEach((done) => {
+    mockFind.restore();
+    done();
+  })
+
+  it("it should have status code 200 and pass data from Bet.findOne", function(done) {
+    const mockRequest = httpMocks.createRequest({
+      method: "GET",
+      url: "/api/bet/5fc41fd8ed695a5424fdbf52/17263/default",
+      params: {
+        user_id: "5fc41fd8ed695a5424fdbf52",
+        game_id: "17263",
+        type: "default"
+      }
+    });
+    const mockResponse = httpMocks.createResponse({
+      eventEmitter: require('events').EventEmitter
+    });
+    
+    mockResponse.on('end', function() {
+      const expected = fakeBet;
+      try {
+        assert.strictEqual(mockResponse.statusCode, 200);
+        assert.deepStrictEqual(mockResponse._getData(), expected);
+        done();
+      }
+      catch (error){
+        done(error);
+      }
+    });
+
+    getCurrUserBet(mockRequest, mockResponse);
   });
 });
