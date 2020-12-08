@@ -166,11 +166,15 @@ async function fetchGames(req, res){
 function fetchGamesHelper(data, res) {
   data.forEach(async (game) => {
     let current_game = await Game.findOne({game_id: game.GlobalGameID});
+    let date = game.Date;
+    if(date){
+      date += '-05:00';
+    }
     if (!current_game) {
       let payload = {
         game_id: game.GlobalGameID,
         sport_type: "NFL",
-        start_time: game.Date,
+        start_time: date,
         away_team_id: game.GlobalAwayTeamID,
         home_team_id: game.GlobalHomeTeamID,
         canceled: game.Canceled,
@@ -181,7 +185,7 @@ function fetchGamesHelper(data, res) {
     } 
     else {
       let payload = {
-        start_time: game.Date,          
+        start_time: date,          
         canceled: game.Canceled,
         status: game.Status,
         score_id: game.ScoreID,
