@@ -24,7 +24,7 @@ export const userSlice = createSlice({
         localStorage.removeItem('user_id');
       }
       state.current_user = {};
-      setTimeout(function() {
+      setTimeout(() => {
         location.reload();
       }, 2000);
     },
