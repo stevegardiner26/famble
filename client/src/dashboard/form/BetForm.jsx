@@ -23,17 +23,22 @@ function BetForm({
   const user = useSelector(selectUser);
   const userID = user._id;
   const [betAmount, setBetAmount] = useState(null);
-  const validationSchema = Yup.object().shape({
+  const validationShape = {
     betAmount: Yup.number()
       .min(1, 'Bets must be at least 1 shredit')
       .max(balance, "Bets can't be placed larger than your current balance")
       .required('Bet is required'),
-    team: Yup.string().notRequired('You must select a team to bet on'),
-  });
+    team: Yup.string().required('You must select a team to bet on'),
+  };
+  if (prev) {
+    validationShape.team = Yup.string().notRequired('You must select a team to bet on');
+  }
+
+  const validationSchema = Yup.object().shape(validationShape);
 
   useEffect(() => {
     betService.getCurrBet(userID, gameID, type).then((response) => {
-      if (response === []) {
+      if (response) {
         setBetAmount(response.amount);
       }
     });
@@ -130,8 +135,8 @@ function BetForm({
                   {awayTeamName}
                 </Label>
               </Col>
-              {errors.team && touched.team(
-                <div align="center" className="error-message">{errors.team}</div>,
+              {errors.team && touched.team && (
+                <div align="center" className="error-message">{errors.team}</div>
               )}
             </FormGroup>
 
