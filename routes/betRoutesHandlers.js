@@ -124,6 +124,16 @@ async function deleteBets(req, res){
     });
 }
 
+// app.get('/api/bet/get_curr_bet/:user_id/:game_id', getCurrUserBet);
+async function getCurrUserBet(req, res){
+    const { game_id } = req.params;
+    const { user_id } = req.params;
+    const { type } = req.params;
+    const bet = await Bet.findOne( {game_id: game_id, user_id: user_id, type: type} );
+    return res.status(200).send(bet);
+}
+
+exports.getCurrUserBet = getCurrUserBet;
 exports.getBets = getBets;
 exports.getBetsByGameID = getBetsByGameID;
 exports.postBets = postBets;

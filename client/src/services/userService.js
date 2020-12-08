@@ -14,4 +14,8 @@ export default {
     const res = await axios.get(`/api/users/rank/${id}`);
     return res.data || [];
   },
+  dailyFunding: async (id) => {
+    const res = await axios.put(`/api/users/${id}/daily_fund`);
+    return res || [];
+  },
 };

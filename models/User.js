@@ -8,7 +8,8 @@ const userSchema = new Schema({
     profile_image: String,
     auth_type: String,
     google_id: String,
-    shreddit_balance: {type: Number, default: 10000}
+    shreddit_balance: {type: Number, default: 10000},
+    last_funding: {type: Date, default: new Date()},
 }, {timestamps: true})
 
 
