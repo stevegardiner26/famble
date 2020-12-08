@@ -25,7 +25,7 @@ async function dailyFunding(req, res) {
     let rtn_user = await User.findById(id);
     return res.status(202).send({message: "Added Moneyz!", user: rtn_user});
   } else {
-    return res.status(200).send({message: "Not Time Yet!"});
+    return res.status(200).send({message: "Not Time Yet!", last_funding: user.last_funding});
   }
 }
 
