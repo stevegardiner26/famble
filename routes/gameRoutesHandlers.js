@@ -24,9 +24,13 @@ async function getGameById(req, res){
 // app.get('/api/current_week', getCurrentWeekGames)
 async function getCurrentWeekGames(req,res){
   const curr = new Date;
+  curr.setUTCHours(0,0,0,0);
   const firstday = new Date(curr.setDate(curr.getDate() - curr.getDay()));
   const lastday = new Date(curr.setDate(firstday.getDate() + 14))
-  const games = await Game.find({start_time:{$gte: firstday, $lt: lastday}}).sort({start_time: 1});
+  const games = await Game.find({$and: [
+    {start_time:{$gte: firstday, $lt: lastday}},
+    {status: {$in: ['Scheduled', 'InProgress']}}
+  ]}).sort({start_time: 1});
   return res.status(200).send(games);
 }
 
