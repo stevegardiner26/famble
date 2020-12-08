@@ -20,7 +20,7 @@ async function dailyFunding(req, res) {
       amount: new_amount,
       last_funding: new Date()
     };
-    await User.update(payload);
+    await User.findByIdAndUpdate(user['_id'], payload);
     let rtn_user = await User.findById(id);
     return res.status(202).send({message: "Added Moneyz!", user: rtn_user});
   } else {
