@@ -11,6 +11,13 @@ function User(props) {
   const { profile_image } = info;
   const { shreddit_balance } = info;
 
+  const numberWithCommas = (x) => {
+    if (x) {
+      return x.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',');
+    }
+    return null;
+  };
+
   return (
     <TableRow>
       <TableCell align="center">{index}</TableCell>
@@ -22,7 +29,7 @@ function User(props) {
         </ListItemAvatar>
       </TableCell>
       <TableCell align="center">{name}</TableCell>
-      <TableCell align="center">{shreddit_balance}</TableCell>
+      <TableCell align="center">{`${numberWithCommas(shreddit_balance)}`}</TableCell>
     </TableRow>
   );
 }

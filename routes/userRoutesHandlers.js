@@ -34,12 +34,15 @@ async function getUsers(req, res){
   const {id} = req.params;
   let users = await User.find().sort({shreddit_balance: -1});
   let rank;
+  let usersRank = [];
   users.forEach((user, index) => {
+
     if (user.id === id){
       rank = index + 1;
-      return res.status(200).send({users, rank});
     }
+    usersRank.push({rank: index + 1, user});
   });
+  return res.status(200).send({usersRank, rank});  
 }
 
 // app.post(`/api/users`, createUser)

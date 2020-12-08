@@ -96,20 +96,26 @@ function Leaderboard() {
 
   const getUsers = async (id) => {
     await userService.getUsers(id).then((res) => {
-      setUsers(res.users);
+      setUsers(res.usersRank);
       setCurrRank(res.rank);
     });
   };
 
   // eslint-disable-next-line arrow-body-style
-  const mapFunction = (row, index) => {
-    const rank = index + 1;
-    return (<User key={row._id} info={row} index={rank} setCurrRank={setCurrRank} />);
+  const mapFunction = (row) => {
+    return (<User key={row.user._id} info={row.user} index={row.rank} />);
   };
 
   useEffect(() => {
     getUsers(user._id);
   }, [user._id]);
+
+  const numberWithCommas = (x) => {
+    if (x) {
+      return x.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',');
+    }
+    return null;
+  };
 
   let currTable = null;
   if (currRank) {
@@ -124,7 +130,7 @@ function Leaderboard() {
           </ListItemAvatar>
         </TableCell>
         <TableCell className={styles.currUserProps} align="center">{user.name}</TableCell>
-        <TableCell className={styles.currUserProps} align="center">{user.shreddit_balance}</TableCell>
+        <TableCell className={styles.currUserProps} align="center">{`${numberWithCommas(user.shreddit_balance)}`}</TableCell>
       </TableRow>
     );
   }
