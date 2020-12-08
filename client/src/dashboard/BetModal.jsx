@@ -10,14 +10,17 @@ import { useSelector } from 'react-redux';
 import styles from './BetModal.module.css';
 import { selectUser } from '../store/slices/userSlice';
 import BetForm from './form/BetForm';
+import betService from '../services/betService';
 
 function BetModal(props) {
   const user = useSelector(selectUser);
   const [modal, setModal] = useState(false);
   const [valid, setValid] = useState(false);
+  const [previousBet, setPrev] = useState(false);
+  const userID = user._id;
 
   const {
-    gameID, team1, team2, type,
+    gameID, team1, team2, type, finishedBettingHandler,
   } = props;
   const team1Name = team1.name;
   const team1ID = team1.id;
@@ -29,8 +32,8 @@ function BetModal(props) {
   useEffect(() => {
     if (valid) {
       const setBet = async () => {
-        alert('Bet placed successfully!');
         setValid(false);
+        finishedBettingHandler();
         setModal(!modal);
       };
 
@@ -38,6 +41,13 @@ function BetModal(props) {
     }
   }, [valid]);
 
+  useEffect(() => {
+    betService.getCurrBet(userID, gameID, 'bot').then((response) => {
+      if (response) {
+        setPrev(true);
+      }
+    });
+  }, [userID, gameID]);
   // ModalBody is for the stats
   return (
     <div>
@@ -52,6 +62,7 @@ function BetModal(props) {
             homeTeamName={team1Name}
             awayTeamName={team2Name}
             gameID={gameID}
+            prev={previousBet}
             balance={user.shreddit_balance}
             betAmount="no"
             type={type}
