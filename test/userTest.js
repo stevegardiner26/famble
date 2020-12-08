@@ -173,7 +173,28 @@ describe("POST /api/users 1", function() {
 
 describe("GET /api/users/rank/:id", function() {  
   let mockFind;
-  let fakeUsers = [{
+  let fake = [{
+    rank: 1,
+    user: {
+      name: "Jay Rana",
+      profile_image: "https://lh3.googleusercontent.com/a-/AOh14Gg629IeUkf1lWpBcSqr7-m_pEhpvQI3CdAczWijeA=s96-c",
+      email: "jpr48@njit.edu",
+      google_id: "108376284041323611441",
+      id: "5fb83983417ae836a4e2b1701234"
+    }
+  }, 
+  {
+    rank: 2,
+    user: {
+      name: "Jay Rana",
+      profile_image: "https://lh3.googleusercontent.com/a-/AOh14Gg629IeUkf1lWpBcSqr7-m_pEhpvQI3CdAczWijeA=s96-c",
+      email: "jpr48@njit.edu",
+      google_id: "108376284041323611441",
+      id: "5fb83983417ae836a4e2b170"
+    }
+  }]
+  let fakeUsers = [
+  {
     name: "Jay Rana",
     profile_image: "https://lh3.googleusercontent.com/a-/AOh14Gg629IeUkf1lWpBcSqr7-m_pEhpvQI3CdAczWijeA=s96-c",
     email: "jpr48@njit.edu",
@@ -212,7 +233,7 @@ describe("GET /api/users/rank/:id", function() {
     
     mockResponse.on('end', function() {
       const expected = {
-        users: fakeUsers,
+        usersRank: fake,
         rank: 2
       };
       try {
