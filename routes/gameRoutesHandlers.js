@@ -26,7 +26,7 @@ async function getCurrentWeekGames(req,res){
   const curr = new Date;
   curr.setUTCHours(0,0,0,0);
   const firstday = new Date(curr.setDate(curr.getDate() - curr.getDay()));
-  const lastday = new Date(curr.setDate(firstday.getDate() + 7))
+  const lastday = new Date(curr.setDate(firstday.getDate() + 10))
   const games = await Game.find({$and: [
     {start_time:{$gte: firstday, $lt: lastday}},
     {status: {$in: ['Scheduled', 'InProgress']}}
