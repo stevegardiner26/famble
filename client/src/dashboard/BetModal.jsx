@@ -43,7 +43,7 @@ function BetModal(props) {
 
   useEffect(() => {
     betService.getCurrBet(userID, gameID, 'bot').then((response) => {
-      if (response) {
+      if (response === []) {
         setPrev(true);
       }
     });

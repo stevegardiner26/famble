@@ -33,7 +33,7 @@ function BetForm({
 
   useEffect(() => {
     betService.getCurrBet(userID, gameID, type).then((response) => {
-      if (response) {
+      if (response === []) {
         setBetAmount(response.amount);
       }
     });
