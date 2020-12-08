@@ -1,14 +1,17 @@
-const { 
+const {
   getUserById,
   createUser,
-  getUsers
+  getUsers,
+  dailyFunding
 } = require('./userRoutesHandlers');
 
 module.exports = (app) => {
-  // Get  
+  // Get
   app.get(`/api/users/:id`, getUserById);
   app.get(`/api/users/rank/:id`, getUsers);
 
+  app.put(`/api/users/:id/daily_fund`, dailyFunding);
+
   // Create
-  app.post(`/api/users`, createUser); 
+  app.post(`/api/users`, createUser);
 }
