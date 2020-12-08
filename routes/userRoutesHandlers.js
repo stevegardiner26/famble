@@ -9,18 +9,19 @@ async function getUserById(req, res){
   return res.status(200).send(user);
 }
 
+// app.put(`/api/users/:id/daily_fund`, dailyFunding);
 async function dailyFunding(req, res) {
   const {id} = req.params;
   let user = await User.findById(id);
-  let new_amount = user.amount;
-
-  if ((new Date(new Date(user.last_funding).getTime() + 60 * 60 * 24 * 1000)) < new Date()) {
+  let new_amount = user.shreddit_balance;
+  const currPlus24 = new Date(new Date(user.last_funding).getTime() + 60 * 60 * 24 * 1000);
+  if (currPlus24 < new Date()) {
     new_amount += 500;
     let payload = {
-      amount: new_amount,
+      shreddit_balance: new_amount,
       last_funding: new Date()
     };
-    await User.findByIdAndUpdate(user['_id'], payload);
+    await User.findByIdAndUpdate(user._id, {$set: payload});
     let rtn_user = await User.findById(id);
     return res.status(202).send({message: "Added Moneyz!", user: rtn_user});
   } else {

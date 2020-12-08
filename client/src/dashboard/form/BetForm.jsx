@@ -61,7 +61,6 @@ function BetForm({
             if (res === []) {
               alert('Could not place bet at this time. Try again later.');
             } else {
-              console.log(values.betAmount, betAmount);
               if (betAmount) {
                 dispatch(updateShreddits(values.betAmount - betAmount));
               } else {
