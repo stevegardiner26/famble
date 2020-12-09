@@ -168,7 +168,7 @@ function BotBet(props) {
             )}
             <img src={awayTeam.image_url} alt="Away Team Logo" width="50" height="50" />
             <p>{awayTeam.name}</p>
-            <p>{(homeTeam.wins && homeTeam.losses) ? (`${awayTeam.wins} W - ${awayTeam.losses} L`) : null}</p>
+            <p>{(awayTeam.wins && awayTeam.losses) ? (`${awayTeam.wins} W - ${awayTeam.losses} L`) : null}</p>
             {BotPickAway}
           </div>
         </div>
