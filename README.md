@@ -90,7 +90,7 @@ $ npm install react-facebook-login
 ```
 8. will also need react-dom for Deployment so run:
 ```sh
-$ npm isntall react react-dom react-facebook-login --save --force
+$ npm install react react-dom react-facebook-login --save --force
 ``` 
 
 ## Setting up Sportsdata API
